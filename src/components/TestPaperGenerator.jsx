@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Printer, Download, Sparkles, FileText, CheckCircle2, RefreshCw, Layers, BookOpen, Clock, Award, HelpCircle, FileUp, AlertCircle, Columns2, Edit3, Eye, FileScan, Key, ExternalLink, Bot, Zap, Sparkle } from 'lucide-react';
+import { Printer, Download, Sparkles, FileText, CheckCircle2, RefreshCw, Layers, BookOpen, Clock, Award, HelpCircle, FileUp, AlertCircle, Columns2, Edit3, Eye, FileScan, Key, ExternalLink, Bot, Zap } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function TestPaperGenerator() {
   // Config State
-  const [selectedClass, setSelectedClass] = useState('कक्षा 8वीं (Class 8th Foundation)');
-  const [selectedSubject, setSelectedSubject] = useState('सामाजिक विज्ञान / भूगोल (Social Science)');
-  const [chapterName, setChapterName] = useState('संसाधन एवं विकास (Resources & Development)');
-  const [examTitle, setExamTitle] = useState('अध्यायवार वस्तुनिष्ठ परीक्षा (Chapter MCQ Test)');
+  const [selectedClass, setSelectedClass] = useState('कक्षा 8 (Class 8th)');
+  const [examHeading, setExamHeading] = useState('UP NMMS (National Means cum Merit Scholarship) - कक्षा 8 अभ्यास प्रश्न पत्र');
+  const [selectedSubject, setSelectedSubject] = useState('गणित (Mathematics)');
+  const [chapterName, setChapterName] = useState('समीकरण, प्रतिशत, ब्याज एवं क्षेत्रफल (Maths Complete Syllabus)');
   const [numQuestions, setNumQuestions] = useState(20);
-  const [timeAllowed, setTimeAllowed] = useState('45 मिनट (45 Mins)');
-  const [maxMarks, setMaxMarks] = useState('20 अंक (20 Marks)');
+  const [timeAllowed, setTimeAllowed] = useState('60 मिनट (1 Hour)');
+  const [maxMarks, setMaxMarks] = useState('20 अंक');
   const [includeAnswerKey, setIncludeAnswerKey] = useState(true);
 
   // Gemini API Key State (Stored in localStorage)
@@ -46,17 +46,15 @@ export default function TestPaperGenerator() {
 
   // Clean filename to extract readable chapter name
   const cleanChapterTitle = (rawName, textSnippet) => {
-    if (!rawName) return 'अध्यायवार परीक्षा';
-    // If it's a random hash or Google Drive token like ACFrOg...
+    if (!rawName) return 'अभ्यास प्रश्न पत्र';
     if (rawName.startsWith('ACFrOg') || rawName.length > 30) {
-      // Try to find chapter title in the first 200 characters of text
       if (textSnippet) {
         const match = textSnippet.match(/(?:अध्याय|पाठ|Chapter)\s*[-:]?\s*(\d+)?\s*[-:]?\s*([^\n\r।]+)/i);
         if (match) {
           return match[0].slice(0, 45).trim();
         }
       }
-      return 'संसाधन एवं विकास (अध्याय 1)';
+      return 'कक्षा 8/10 अभ्यास प्रश्न पत्र';
     }
     return rawName.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
   };
@@ -127,9 +125,9 @@ export default function TestPaperGenerator() {
 
   // REAL GEMINI AI QUESTION GENERATION ENGINE
   const generateQuestionsWithGemini = async (text, key) => {
-    setAiStatusMessage('🤖 Google Gemini AI PDF को समझ कर वास्तविक हिंदी प्रश्न बना रहा है...');
+    setAiStatusMessage('🤖 Google Gemini AI PDF को समझ कर वास्तविक प्रश्न बना रहा है...');
 
-    const prompt = `आप RK EDUCATION के लिए एक वरिष्ठ भारतीय स्कूल शिक्षक हैं।
+    const prompt = `आप RK EDUCATION के लिए एक वरिष्ठ शिक्षक हैं।
 नीचे दी गई पाठ्यपुस्तक की सामग्री (Text from scanned Chapter PDF) को ध्यानपूर्वक पढ़ें:
 
 कक्षा: ${selectedClass}
@@ -140,24 +138,23 @@ export default function TestPaperGenerator() {
 ${text.slice(0, 9000)}
 --- END TEXT ---
 
-कार्य: ऊपर दिए गए अध्याय के आधार पर शुद्ध हिंदी (Pure Hindi) में ठीक ${numQuestions} वस्तुनिष्ठ (Multiple Choice Questions - MCQs) प्रश्न तैयार करें।
+कार्य: ऊपर दिए गए अध्याय के आधार पर शुद्ध हिंदी में ठीक ${numQuestions} वस्तुनिष्ठ (MCQs) प्रश्न तैयार करें।
 
 नियम:
-1. प्रत्येक प्रश्न अध्याय के वास्तविक तथ्यों, परिभाषाओं, सूत्रों, उदाहरणों और नियमों पर आधारित होना चाहिए (कोई फर्जी या जेनेरिक प्रश्न न बनाएं)।
-2. प्रत्येक प्रश्न के 4 वास्तविक और अलग-अलग विकल्प (A, B, C, D) होने चाहिए।
+1. प्रश्न वास्तविक तथ्यों, सूत्रों, परिभाषाओं, गणितीय समीकरणों और उदाहरणों पर आधारित होने चाहिए।
+2. 4 अलग-अलग और सटीक विकल्प (A, B, C, D) दें।
 3. सही उत्तर (A, B, C, या D) और संक्षिप्त स्पष्टीकरण दें।
 
-आउटपुट का प्रारूप केवल और केवल नीचे दिया गया वैध JSON Array होना चाहिए (कोई अतिरिक्त शब्द या markdown नहीं):
+आउटपुट का प्रारूप केवल और केवल नीचे दिया गया वैध JSON Array होना चाहिए:
 [
   {
     "num": 1,
-    "q": "संसाधन किसे कहते हैं?",
-    "optA": "प्रत्येक वस्तु जिसका उपयोग आवश्यकताओं को पूरा करने में किया जाता है",
-    "optB": "केवल वह वस्तु जिसका कोई आर्थिक मूल्य न हो",
-    "optC": "केवल प्रयोगशाला में निर्मित रासायनिक पदार्थ",
-    "optD": "उपर्युक्त में से कोई नहीं",
-    "ans": "A",
-    "exp": "आवश्यकता पूरी करने वाली उपयोगी वस्तु संसाधन कहलाती है।"
+    "q": "यदि x - 15 = 100 है, तो x का मान क्या होगा?",
+    "optA": "110",
+    "optB": "115",
+    "optC": "120",
+    "optD": "125",
+    "ans": "B"
   }
 ]`;
 
@@ -168,7 +165,7 @@ ${text.slice(0, 9000)}
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
         generationConfig: {
-          temperature: 0.3,
+          temperature: 0.2,
           response_mime_type: "application/json"
         }
       })
@@ -181,65 +178,49 @@ ${text.slice(0, 9000)}
 
     const data = await res.json();
     const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    const parsed = JSON.parse(rawText);
-    return parsed;
+    return JSON.parse(rawText);
   };
 
-  // SMART LOCAL FALLBACK GENERATOR (Real Subject-Specific Geography/Science Questions)
-  const generateSmartSubjectQuestions = () => {
-    // Topic: Geography / Resources (संसाधन एवं विकास)
-    const resourceQuestions = [
-      { q: "प्रत्येक वस्तु जिसका उपयोग मानवीय आवश्यकताओं को पूरा करने के लिए किया जा सकता है, क्या कहलाती है?", optA: "संसाधन (Resource)", optB: "उत्पाद", optC: "प्रौद्योगिकी", optD: "अवशेष", ans: "A" },
-      { q: "संसाधनों के निर्माण में सबसे महत्वपूर्ण कारक कौन सा है?", optA: "समय और प्रौद्योगिकी", optB: "केवल वायु", optC: "केवल जल", optD: "स्थलाकृति", ans: "A" },
-      { q: "वे संसाधन जो प्रकृति से प्राप्त होते हैं और बिना अधिक संशोधन के उपयोग में लाए जाते हैं, क्या कहलाते हैं?", optA: "प्राकृतिक संसाधन", optB: "मानव निर्मित संसाधन", optC: "कृत्रिम संसाधन", optD: "अजैविक उत्पाद", ans: "A" },
-      { q: "निम्न में से कौन नवीकरणीय संसाधन (Renewable Resource) का सही उदाहरण है?", optA: "सौर एवं पवन ऊर्जा", optB: "कोयला", optC: "पेट्रोलियम", optD: "प्राकृतिक गैस", ans: "A" },
-      { q: "कोयला, पेट्रोलियम और प्राकृतिक गैस किस प्रकार के संसाधन हैं?", optA: "अनवीकरणीय संसाधन", optB: "नवीकरणीय संसाधन", optC: "सर्वव्यापक संसाधन", optD: "अपरिमित संसाधन", ans: "A" },
-      { q: "संसाधनों का सतर्कतापूर्वक उपयोग करना और उन्हें नवीकरण के लिए समय देना क्या कहलाता है?", optA: "संसाधन संरक्षण", optB: "संसाधन दोहन", optC: "संसाधन प्रदूषण", optD: "सतत विकास", ans: "A" },
-      { q: "संसाधनों का उपयोग करने की आवश्यकता और भविष्य के लिए उनके संरक्षण में संतुलन बनाए रखना क्या कहलाता है?", optA: "सततपोषणीय विकास", optB: "आर्थिक दोहन", optC: "औद्योगिक विकास", optD: "पर्यावरण क्षरण", ans: "A" },
-      { q: "वे संसाधन जिनकी संपूर्ण मात्रा ज्ञात नहीं है और जिनका उपयोग वर्तमान में नहीं किया जा रहा है, क्या कहलाते हैं?", optA: "संभाव्य संसाधन (Potential)", optB: "वास्तविक संसाधन", optC: "अजैविक संसाधन", optD: "सर्वव्यापक", ans: "A" },
-      { q: "लद्दाख में पाया गया यूरेनियम किस प्रकार के संसाधन का उदाहरण है?", optA: "संभाव्य संसाधन", optB: "वास्तविक संसाधन", optC: "मानव निर्मित", optD: "अनवीकरणीय", ans: "A" },
-      { q: "जो संसाधन सभी जगह पाए जाते हैं, जैसे वायु जिसमें हम सांस लेते हैं, उन्हें क्या कहते हैं?", optA: "सर्वव्यापक संसाधन", optB: "स्थानिक संसाधन", optC: "दुर्लभ संसाधन", optD: "स्थानबद्ध संसाधन", ans: "A" },
-      { q: "तांबा, लोहा और बॉक्साइट जैसे खनिज किस प्रकार के संसाधन हैं?", optA: "स्थानिक संसाधन", optB: "सर्वव्यापक संसाधन", optC: "नवीकरणीय संसाधन", optD: "जैविक संसाधन", ans: "A" },
-      { q: "निर्जीव वस्तुओं से बने संसाधन (जैसे मृदा, चट्टानें और खनिज) क्या कहलाते हैं?", optA: "अजैव संसाधन (Abiotic)", optB: "जैव संसाधन (Biotic)", optC: "मानव संसाधन", optD: "कृत्रिम संसाधन", ans: "A" },
-      { q: "पेड़-पौधे और जीव-जंतु किस श्रेणी के संसाधन के अंतर्गत आते हैं?", optA: "जैव संसाधन (Biotic)", optB: "अजैव संसाधन", optC: "अनवीकरणीय संसाधन", optD: "संभाव्य संसाधन", ans: "A" },
-      { q: "मानव अपनी बुद्धि, कौशल और तकनीक का उपयोग करके प्राकृतिक पदार्थों को किसमें बदल देता है?", optA: "मानव निर्मित संसाधन", optB: "अजैव संसाधन", optC: "स्थानिक संसाधन", optD: "प्राकृतिक कचरा", ans: "A" },
-      { q: "लोगों की संख्या और योग्यता (मानसिक एवं शारीरिक) को क्या कहा जाता है?", optA: "मानव संसाधन (Human Resource)", optB: "तकनीकी पूंजी", optC: "प्राकृतिक संपदा", optD: "भौतिक पूंजी", ans: "A" },
-      { q: "अधिक संसाधनों के निर्माण में समर्थ होने के लिए लोगों के कौशल में सुधार करना क्या कहलाता है?", optA: "मानव संसाधन विकास", optB: "औद्योगिक प्रशिक्षण", optC: "संसाधन संरक्षण", optD: "जनसंख्या नियंत्रण", ans: "A" },
-      { q: "निम्नलिखित में से कौन सा सततपोषणीय विकास का एक महत्वपूर्ण सिद्धांत है?", optA: "जीवन के सभी रूपों का आदर और देखभाल", optB: "प्राकृतिक संसाधनों का अंधाधुंध दोहन", optC: "पर्यावरण की अनदेखी", optD: "केवल वर्तमान लाभ", ans: "A" },
-      { q: "पवन चक्कियों द्वारा विद्युत उत्पादन सबसे पहले किस देश में तेजी से विकसित हुआ?", optA: "नीदरलैंड्स", optB: "जापान", optC: "ब्राजील", optD: "मिस्र", ans: "A" },
-      { q: "भारत में तमिलनाडु के नागरकोइल तथा किस राज्य के तट पर पवन ऊर्जा के विशाल फार्म हैं?", optA: "गुजरात", optB: "बिहार", optC: "पंजाब", optD: "असम", ans: "A" },
-      { q: "पृथ्वी पर मानव जीवन के अस्तित्व और विकास का आधार क्या है?", optA: "संसाधन और उनका विवेकपूर्ण उपयोग", optB: "केवल खनिज तेल", optC: "केवल धातुएं", optD: "असीमित उपभोग", ans: "A" }
-    ];
+  // EXACT MATHEMATICS & SCIENCE DATABASE MATCHING USER SCREENSHOT
+  const sampleMathAndSciencePool = [
+    { q: "यदि x - 15 = 100 है, तो x का मान क्या होगा?", optA: "110", optB: "115", optC: "120", optD: "125", ans: "B" },
+    { q: "दो संख्याओं का HCF = 18 और LCM = 540 है। यदि एक संख्या 90 है, तो दूसरी संख्या क्या होगी?", optA: "96", optB: "108", optC: "120", optD: "126", ans: "B" },
+    { q: "दो संख्याओं का योग 195 है। यदि पहली संख्या का 32% दूसरी संख्या के 46% के बराबर है, तो बड़ी संख्या क्या है?", optA: "105", optB: "110", optC: "115", optD: "120", ans: "C" },
+    { q: "यदि x = 12 तथा y = 63, तो x × y का मान क्या होगा?", optA: "756", optB: "810", optC: "864", optD: "900", ans: "A" },
+    { q: "एक वस्तु को उसके क्रय मूल्य से 40% अधिक पर अंकित किया गया। उस पर 15% की छूट देने के बाद लाभ प्रतिशत कितना होगा?", optA: "17%", optB: "19%", optC: "21%", optD: "23%", ans: "B" },
+    { q: "एक पाइप किसी टंकी को 12 घंटे में भरता है और दूसरा पाइप 18 घंटे में। एक निकासी पाइप पूरी टंकी को 36 घंटे में खाली करता है। तीनों को एक साथ खोलने पर टंकी कितने घंटे में भरेगी?", optA: "8 घंटे", optB: "9 घंटे", optC: "10 घंटे", optD: "12 घंटे", ans: "B" },
+    { q: "यदि समीकरण x² - 5x + 6 = 0 के मूल α और β हैं, तो α² + β² का मान क्या होगा?", optA: "13", optB: "12", optC: "15", optD: "10", ans: "A" },
+    { q: "एक ट्रेन 72 km/h की गति से चल रही है। वह एक खंभे को 15 सेकंड में पार करती है। ट्रेन की लंबाई कितनी है?", optA: "250 m", optB: "280 m", optC: "300 m", optD: "320 m", ans: "C" },
+    { q: "किसी त्रिभुज की भुजाएँ 13 cm, 14 cm और 15 cm हैं। उसका क्षेत्रफल कितना होगा?", optA: "72 cm²", optB: "84 cm²", optC: "90 cm²", optD: "96 cm²", ans: "B" },
+    { q: "यदि A:B = 2:3 और B:C = 4:5 है, तो A:B क्या होगा?", optA: "2:3", optB: "3:4", optC: "4:5", optD: "8:9", ans: "A" },
+    { q: "एक धनराशि पर 2 वर्षों का चक्रवृद्धि ब्याज ₹1,050 तथा साधारण ब्याज ₹1,000 है। वार्षिक ब्याज दर क्या है?", optA: "8%", optB: "9%", optC: "10%", optD: "12%", ans: "C" },
+    { q: "यदि √x = 4 है, तो x का मान क्या होगा?", optA: "12", optB: "16", optC: "20", optD: "25", ans: "B" },
+    { q: "प्रथम 10 विषम प्राकृतिक संख्याओं का औसत क्या होगा?", optA: "9", optB: "10", optC: "11", optD: "12", ans: "B" },
+    { q: "एक वृत्त की त्रिज्या 7 cm है। उसका क्षेत्रफल क्या होगा?", optA: "144 cm²", optB: "154 cm²", optC: "164 cm²", optD: "174 cm²", ans: "B" },
+    { q: "यदि किसी घन का आयतन 512 cm³ है, तो उसकी भुजा की लंबाई क्या होगी?", optA: "6 cm", optB: "8 cm", optC: "10 cm", optD: "12 cm", ans: "B" },
+    { q: "एक समचतुर्भुज के विकर्ण 16 cm और 12 cm हैं। उसका क्षेत्रफल कितना होगा?", optA: "96 cm²", optB: "100 cm²", optC: "120 cm²", optD: "144 cm²", ans: "A" },
+    { q: "संख्या 0.000064 का मानक रूप (Standard Form) क्या होगा?", optA: "6.4 × 10⁻⁴", optB: "6.4 × 10⁻⁵", optC: "6.4 × 10⁻⁶", optD: "64 × 10⁻⁶", ans: "B" },
+    { q: "यदि 15 मजदूर एक काम को 8 दिन में पूरा करते हैं, तो 12 मजदूर उसी काम को कितने दिन में पूरा करेंगे?", optA: "9 दिन", optB: "10 दिन", optC: "11 दिन", optD: "12 दिन", ans: "B" },
+    { q: "एक विद्यालय में 60% छात्र लड़के हैं। यदि लड़कियों की संख्या 240 है, तो कुल छात्रों की संख्या क्या है?", optA: "500", optB: "600", optC: "700", optD: "800", ans: "B" },
+    { q: "संख्या 10648 का घनमूल (Cube Root) क्या होगा?", optA: "20", optB: "22", optC: "24", optD: "26", ans: "B" }
+  ];
 
-    const generated = [];
+  // Smart Fallback Generator
+  const generateSmartFallback = () => {
+    const list = [];
     for (let i = 0; i < numQuestions; i++) {
-      const qItem = resourceQuestions[i % resourceQuestions.length];
-      
-      // Shuffle options so A isn't always correct
-      const opts = [
-        { label: qItem.optA, isCorrect: true },
-        { label: qItem.optB, isCorrect: false },
-        { label: qItem.optC, isCorrect: false },
-        { label: qItem.optD, isCorrect: false }
-      ];
-
-      // Deterministic shift based on index
-      const shift = i % 4;
-      const shuffled = [...opts.slice(shift), ...opts.slice(0, shift)];
-      const correctIdx = shuffled.findIndex(o => o.isCorrect);
-      const letter = ["A", "B", "C", "D"][correctIdx];
-
-      generated.push({
+      const template = sampleMathAndSciencePool[i % sampleMathAndSciencePool.length];
+      list.push({
         num: i + 1,
-        q: qItem.q,
-        optA: shuffled[0].label,
-        optB: shuffled[1].label,
-        optC: shuffled[2].label,
-        optD: shuffled[3].label,
-        ans: letter
+        q: template.q,
+        optA: template.optA,
+        optB: template.optB,
+        optC: template.optC,
+        optD: template.optD,
+        ans: template.ans
       });
     }
-    return generated;
+    return list;
   };
 
   // MAIN GENERATE HANDLER
@@ -250,36 +231,32 @@ ${text.slice(0, 9000)}
     try {
       let questions = [];
 
-      // If user has provided a Gemini API Key and text is extracted from PDF
-      if (geminiApiKey.trim() && extractedPdfText.length > 100) {
+      if (geminiApiKey.trim() && extractedPdfText.length > 80) {
         try {
           questions = await generateQuestionsWithGemini(extractedPdfText, geminiApiKey.trim());
         } catch (apiErr) {
-          console.warn("Gemini API Error, falling back to smart subject engine", apiErr);
-          alert(`Gemini AI Notice: ${apiErr.message}. Falling back to Smart Subject Engine.`);
-          questions = generateSmartSubjectQuestions();
+          console.warn("Gemini API Error", apiErr);
+          alert(`Gemini AI Notice: ${apiErr.message}. Smart Math/Science Engine se generate kiya ja raha hai.`);
+          questions = generateSmartFallback();
         }
       } else {
-        // Smart Local Question Engine (Resource / Science)
-        await new Promise(r => setTimeout(r, 700));
-        questions = generateSmartSubjectQuestions();
+        await new Promise(r => setTimeout(r, 600));
+        questions = generateSmartFallback();
       }
 
       setGeneratedPaper({
         instituteName: "RK EDUCATION",
-        examTitle: `${examTitle.toUpperCase()} - सत्र 2026-27`,
+        examHeading: examHeading,
         className: selectedClass,
         subject: selectedSubject,
         chapter: chapterName,
-        time: timeAllowed,
-        marks: maxMarks,
         questions: questions,
         generatedDate: new Date().toLocaleDateString('hi-IN', { day: '2-digit', month: 'long', year: 'numeric' })
       });
 
     } catch (err) {
       console.error(err);
-      alert('Error generating questions: ' + err.message);
+      alert('Error: ' + err.message);
     } finally {
       setIsGenerating(false);
       setAiStatusMessage('');
@@ -295,21 +272,21 @@ ${text.slice(0, 9000)}
     <section id="test-generator" className="py-24 px-4 sm:px-6 md:px-8 relative z-10 w-full overflow-hidden">
       <div className="max-w-6xl mx-auto w-full">
         
-        {/* Section Header (Hidden in Print) */}
+        {/* Header (Hidden in Print) */}
         <div className="text-center space-y-3 mb-12 no-print">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono shadow-lg shadow-cyan-950/40">
             <Bot className="w-3.5 h-3.5 text-[#00f0ff]" />
-            <span>AI POWERED PDF CHAPTER EXAM ENGINE</span>
+            <span>AI EXAM & MOCK TEST PAPER PRINTING ENGINE</span>
           </div>
           <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-display text-white tracking-tight">
-            अध्याय PDF से <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f0ff] via-pink-400 to-amber-300">असली हिंदी MCQ प्रश्न-पत्र</span> बनाएं
+            UP NMMS & Board Exam <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f0ff] via-pink-400 to-amber-300">Side-by-Side A4 Paper Generator</span>
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto">
-            कक्षा 8वीं, 10वीं या 12वीं की किसी भी PDF से वास्तविक कॉन्सेप्ट वाले प्रश्न जनरेट करें और A4 शीट में Side-by-Side (दो कॉलम) में प्रिंट निकालें।
+            कक्षा 8वीं NMMS, 10वीं व 12वीं बोर्ड परीक्षा के लिए सटीक दो-कॉलम वाला A4 अभ्यास प्रश्न-पत्र तैयार करें और 1-क्लिक में प्रिंट निकालें।
           </p>
         </div>
 
-        {/* Gemini AI API Key Banner (Free 1-Click Setup) */}
+        {/* Gemini API Key Bar */}
         <div className="mb-8 p-4 rounded-2xl bg-gradient-to-r from-[#0d1630] to-[#160c28] border border-cyan-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 no-print shadow-xl">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-[#00f0ff] flex items-center justify-center shrink-0">
@@ -320,16 +297,16 @@ ${text.slice(0, 9000)}
                 <span className="text-xs font-bold text-white font-display">Google Gemini AI Engine</span>
                 {geminiApiKey ? (
                   <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/40">
-                    ✓ AI Active
+                    ✓ AI Key Active
                   </span>
                 ) : (
                   <span className="px-2 py-0.5 rounded-full bg-amber-950 text-amber-300 text-[10px] font-mono font-bold border border-amber-500/40">
-                    Smart Engine Ready
+                    Smart Engine Active
                   </span>
                 )}
               </div>
               <p className="text-[11px] text-slate-400">
-                {geminiApiKey ? 'Gemini AI आपकी PDF के एक-एक पैराग्राफ को पढ़कर सीधे प्रश्न बनाएगा।' : 'अपनी PDF से 100% सटीक AI प्रश्न बनाने के लिए अपनी फ्री Google Gemini API Key जोड़ें।'}
+                {geminiApiKey ? 'Gemini AI आपकी PDF को स्कैन करके सीधे प्रश्न बना रहा है।' : 'अपनी PDF से सीधे प्रश्न बनाने के लिए अपनी फ्री Google Gemini API Key जोड़ें।'}
               </p>
             </div>
           </div>
@@ -340,7 +317,7 @@ ${text.slice(0, 9000)}
               className="px-3.5 py-2 rounded-xl bg-[#091122] hover:bg-[#121c38] border border-cyan-500/40 text-cyan-300 text-xs font-mono font-semibold transition-all flex items-center gap-1.5 shrink-0"
             >
               <Key className="w-3.5 h-3.5" />
-              <span>{geminiApiKey ? 'Change AI Key' : '+ Add Free Gemini Key'}</span>
+              <span>{geminiApiKey ? 'Change Key' : '+ Add Free Gemini Key'}</span>
             </button>
 
             <a
@@ -356,7 +333,7 @@ ${text.slice(0, 9000)}
           </div>
         </div>
 
-        {/* Expandable API Key Input Box */}
+        {/* API Key Modal Input */}
         {showApiKeyInput && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
@@ -364,7 +341,7 @@ ${text.slice(0, 9000)}
             className="mb-8 p-4 rounded-2xl bg-[#080e20] border border-amber-500/30 space-y-2 no-print"
           >
             <label className="block text-xs font-mono text-amber-300">
-              Google Gemini API Key पेस्ट करें (Stored securely in your browser):
+              Google Gemini API Key पेस्ट करें (Browser me save rahegi):
             </label>
             <div className="flex gap-2">
               <input
@@ -381,19 +358,16 @@ ${text.slice(0, 9000)}
                 }}
                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-xs font-bold font-mono"
               >
-                Save Key
+                Save
               </button>
             </div>
-            <p className="text-[10px] text-slate-400">
-              🔗 <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-cyan-300 underline">यहाँ क्लिक करके Google AI Studio</a> से 5 सेकंड में बिना क्रेडिट कार्ड के फ्री की प्राप्त करें।
-            </p>
           </motion.div>
         )}
 
-        {/* Configuration Grid (Hidden in Print) */}
+        {/* Controls Panel (Hidden in Print) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12 items-start no-print">
           
-          {/* Left: Step 1 - PDF Upload & Scanner Box */}
+          {/* Left: Step 1 - PDF Upload & Scanner */}
           <motion.div
             initial={{ opacity: 0, x: -25 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -403,7 +377,7 @@ ${text.slice(0, 9000)}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base sm:text-lg font-bold text-white font-display flex items-center gap-2">
-                  <FileScan className="w-5 h-5 text-amber-400" /> स्टेप 1: अध्याय PDF अपलोड करें
+                  <FileScan className="w-5 h-5 text-amber-400" /> स्टेप 1: अध्याय PDF अपलोड
                 </h3>
                 <span className="px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/30 text-cyan-300 text-[10px] font-mono">
                   PDF Scanner
@@ -446,16 +420,16 @@ ${text.slice(0, 9000)}
                   <div className="space-y-2 py-3">
                     <FileUp className="w-10 h-10 text-cyan-400 mx-auto group-hover:scale-110 transition-transform" />
                     <p className="text-xs sm:text-sm font-bold text-white">
-                      अध्याय की PDF (UP Board / CBSE) यहाँ अपलोड करें
+                      अध्याय की PDF (UP Board / NMMS / CBSE) यहाँ अपलोड करें
                     </p>
                     <p className="text-[11px] text-slate-400">
-                      Supports: Class 8th, 10th, 12th Geography, Science, Maths
+                      कक्षा 8वीं, 10वीं, 12वीं गणित, विज्ञान, सामाजिक विज्ञान
                     </p>
                   </div>
                 )}
               </div>
 
-              {/* Extracted Text Snippet Preview */}
+              {/* Extracted Text Snippet */}
               {extractedPdfText && (
                 <div className="mb-3">
                   <button
@@ -463,7 +437,7 @@ ${text.slice(0, 9000)}
                     className="text-[11px] text-cyan-300 font-mono flex items-center gap-1.5 hover:underline mb-1"
                   >
                     <Eye className="w-3.5 h-3.5" />
-                    <span>{showExtractedText ? 'स्कैन किया टेक्स्ट छिपाएं' : 'स्कैन किया हुआ टेक्स्ट देखें (Extracted Text)'}</span>
+                    <span>{showExtractedText ? 'स्कैन टेक्स्ट छिपाएं' : 'स्कैन किया हुआ टेक्स्ट देखें (Extracted Text)'}</span>
                   </button>
 
                   {showExtractedText && (
@@ -476,11 +450,11 @@ ${text.slice(0, 9000)}
             </div>
 
             <p className="text-[11px] text-slate-400 font-sans">
-              💡 <strong>Note:</strong> सिस्टम अध्याय का नाम और असली प्रश्नों को ऑटोमैटिक पहचान कर शुद्ध हिंदी में तैयार करता है।
+              💡 <strong>Note:</strong> PDF अपलोड न करने पर भी सिस्टम कक्षा 8वीं NMMS / बोर्ड परीक्षा के मानक गणित व विज्ञान प्रश्न तैयार करेगा।
             </p>
           </motion.div>
 
-          {/* Right: Step 2 - Class, Marks & Format Customizer */}
+          {/* Right: Step 2 - Header & Exam Details */}
           <motion.div
             initial={{ opacity: 0, x: 25 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -490,14 +464,26 @@ ${text.slice(0, 9000)}
             <div>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-base sm:text-lg font-bold text-white font-display flex items-center gap-2">
-                  <Columns2 className="w-5 h-5 text-cyan-400" /> स्टेप 2: परीक्षा विवरण व सेटिंग्स
+                  <Columns2 className="w-5 h-5 text-cyan-400" /> स्टेप 2: परीक्षा शीर्षक व सेटिंग्स
                 </h3>
                 <span className="px-2.5 py-0.5 rounded-full bg-cyan-950 border border-cyan-500/40 text-cyan-300 text-[10px] font-mono">
-                  A4 Side-by-Side
+                  NMMS / Board Format
                 </span>
               </div>
 
               <div className="space-y-3.5 text-xs">
+                {/* Exam Subtitle */}
+                <div>
+                  <label className="block font-mono text-slate-300 mb-1">परीक्षा का मुख्य शीर्षक (Subtitle)</label>
+                  <input
+                    type="text"
+                    value={examHeading}
+                    onChange={(e) => setExamHeading(e.target.value)}
+                    placeholder="e.g. UP NMMS (National Means cum Merit Scholarship) - कक्षा 8 अभ्यास प्रश्न पत्र"
+                    className="w-full px-3.5 py-2 rounded-xl bg-[#080e20] border border-cyan-500/30 text-white focus:outline-none focus:border-amber-400"
+                  />
+                </div>
+
                 {/* Class & Subject */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
@@ -507,13 +493,11 @@ ${text.slice(0, 9000)}
                       onChange={(e) => setSelectedClass(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl bg-[#080e20] border border-cyan-500/30 text-white focus:outline-none focus:border-amber-400"
                     >
-                      <option>कक्षा 8वीं (Class 8th Foundation)</option>
-                      <option>कक्षा 9वीं (Class 9th Foundation)</option>
-                      <option>कक्षा 10वीं (Class 10th Board)</option>
-                      <option>कक्षा 11वीं विज्ञान (Class 11th Science)</option>
-                      <option>कक्षा 11वीं कला (Class 11th Arts)</option>
-                      <option>कक्षा 12वीं विज्ञान (Class 12th Board PCM/PCB)</option>
-                      <option>कक्षा 12वीं मानविकी (Class 12th Board Arts)</option>
+                      <option>कक्षा 8 (Class 8th)</option>
+                      <option>कक्षा 9 (Class 9th)</option>
+                      <option>कक्षा 10 (Class 10th Board)</option>
+                      <option>कक्षा 11 (Class 11th Science/Arts)</option>
+                      <option>कक्षा 12 (Class 12th Board)</option>
                     </select>
                   </div>
 
@@ -524,29 +508,17 @@ ${text.slice(0, 9000)}
                       onChange={(e) => setSelectedSubject(e.target.value)}
                       className="w-full px-3 py-2 rounded-xl bg-[#080e20] border border-cyan-500/30 text-white focus:outline-none focus:border-amber-400"
                     >
-                      <option>सामाजिक विज्ञान / भूगोल (Social Science)</option>
-                      <option>विज्ञान (Science / Physics, Chem, Bio)</option>
                       <option>गणित (Mathematics)</option>
-                      <option>हिंदी (Hindi Literature & Grammar)</option>
-                      <option>अंग्रेजी (English)</option>
+                      <option>विज्ञान (Science)</option>
+                      <option>सामाजिक विज्ञान (Social Science)</option>
+                      <option>मानसिक योग्यता परीक्षण (MAT / Reasoning)</option>
+                      <option>हिंदी (Hindi)</option>
                     </select>
                   </div>
                 </div>
 
-                {/* Chapter Name Input */}
-                <div>
-                  <label className="block font-mono text-slate-300 mb-1">अध्याय का नाम (Chapter Name)</label>
-                  <input
-                    type="text"
-                    value={chapterName}
-                    onChange={(e) => setChapterName(e.target.value)}
-                    placeholder="e.g. संसाधन एवं विकास, विद्युत धारा, बल एवं दाब"
-                    className="w-full px-3.5 py-2 rounded-xl bg-[#080e20] border border-cyan-500/30 text-white focus:outline-none focus:border-amber-400"
-                  />
-                </div>
-
-                {/* Questions Count & Total Marks */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {/* Number of Questions */}
+                <div className="grid grid-cols-2 gap-3">
                   <div>
                     <label className="block font-mono text-slate-300 mb-1">प्रश्नों की संख्या</label>
                     <select
@@ -554,46 +526,27 @@ ${text.slice(0, 9000)}
                       onChange={(e) => setNumQuestions(Number(e.target.value))}
                       className="w-full px-3 py-2 rounded-xl bg-[#080e20] border border-cyan-500/30 text-white focus:outline-none focus:border-amber-400"
                     >
-                      <option value={10}>10 प्रश्न (Quick Test)</option>
-                      <option value={15}>15 प्रश्न (Chapter Test)</option>
-                      <option value={20}>20 प्रश्न (Standard A4)</option>
-                      <option value={30}>30 प्रश्न (Full Exam 2-Sheet)</option>
+                      <option value={12}>12 प्रश्न (Standard Side-by-Side Page)</option>
+                      <option value={20}>20 प्रश्न (Full NMMS / Board Mock)</option>
+                      <option value={30}>30 प्रश्न (2-Page Exam)</option>
                     </select>
                   </div>
 
                   <div>
-                    <label className="block font-mono text-slate-300 mb-1">पूर्णांक (Marks)</label>
-                    <input
-                      type="text"
-                      value={maxMarks}
-                      onChange={(e) => setMaxMarks(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#080e20] border border-cyan-500/30 text-white focus:outline-none focus:border-amber-400"
-                    />
+                    <label className="block font-mono text-slate-300 mb-1">उत्तर तालिका (Answer Key)</label>
+                    <div className="pt-2">
+                      <input
+                        type="checkbox"
+                        id="includeKey2"
+                        checked={includeAnswerKey}
+                        onChange={(e) => setIncludeAnswerKey(e.target.checked)}
+                        className="rounded text-amber-500 bg-[#080e20] border-cyan-500 mr-2"
+                      />
+                      <label htmlFor="includeKey2" className="text-slate-300 font-mono cursor-pointer">
+                        अंतिम में उत्तर कुंजी जोड़ें
+                      </label>
+                    </div>
                   </div>
-
-                  <div className="col-span-2 sm:col-span-1">
-                    <label className="block font-mono text-slate-300 mb-1">समय (Time)</label>
-                    <input
-                      type="text"
-                      value={timeAllowed}
-                      onChange={(e) => setTimeAllowed(e.target.value)}
-                      className="w-full px-3 py-2 rounded-xl bg-[#080e20] border border-cyan-500/30 text-white focus:outline-none focus:border-amber-400"
-                    />
-                  </div>
-                </div>
-
-                {/* Teacher Key Toggle */}
-                <div className="flex items-center gap-2 pt-1">
-                  <input
-                    type="checkbox"
-                    id="includeKey"
-                    checked={includeAnswerKey}
-                    onChange={(e) => setIncludeAnswerKey(e.target.checked)}
-                    className="rounded text-amber-500 bg-[#080e20] border-cyan-500"
-                  />
-                  <label htmlFor="includeKey" className="text-[11px] text-slate-300 font-mono cursor-pointer">
-                    अंतिम में शिक्षक मूल्यांकन उत्तर तालिका (Answer Key) शामिल करें
-                  </label>
                 </div>
               </div>
             </div>
@@ -612,7 +565,7 @@ ${text.slice(0, 9000)}
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 text-black" />
-                  <span>Generate Side-by-Side A4 Exam Paper</span>
+                  <span>Generate Side-by-Side Exam Paper (Exact Screen Format)</span>
                 </>
               )}
             </button>
@@ -620,16 +573,18 @@ ${text.slice(0, 9000)}
 
         </div>
 
-        {/* Live A4 Side-by-Side Question Paper */}
+        {/* =========================================================================
+            LIVE QUESTION PAPER DISPLAY (EXACTLY MATCHING USER'S SCREENSHOT)
+            ========================================================================= */}
         {generatedPaper ? (
           <div id="printable-paper-area" className="w-full">
             
-            {/* Action Bar (Hidden in Print) */}
+            {/* Top Toolbar (Hidden in Print) */}
             <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-2xl bg-[#0a1126] border border-cyan-500/30 mb-6 no-print">
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
                 <span className="text-xs font-mono text-emerald-300 font-bold">
-                  A4 दो-कॉलम प्रश्न-पत्र तैयार है ({generatedPaper.questions.length} वास्तविक MCQ प्रश्न)
+                  प्रश्न-पत्र तैयार है ({generatedPaper.questions.length} प्रश्न • Side-by-Side Layout)
                 </span>
               </div>
 
@@ -638,88 +593,102 @@ ${text.slice(0, 9000)}
                 className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-black font-extrabold text-xs font-mono shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
               >
                 <Printer className="w-4 h-4 text-black" />
-                <span>प्रिंट हार्ड-कॉपी निकालें (A4 Print Sheet)</span>
+                <span>प्रिंट हार्ड-कॉपी निकालें (A4 Print)</span>
               </button>
             </div>
 
-            {/* Formal A4 Dual Column Sheet */}
-            <div className="printable-paper-sheet bg-white text-black p-6 sm:p-10 rounded-2xl shadow-2xl border-2 border-black max-w-5xl mx-auto font-serif">
+            {/* The Clean White Exam Sheet (Exact 1:1 Layout from User's Screenshot) */}
+            <div className="printable-paper-sheet bg-white text-slate-900 p-8 sm:p-12 rounded-2xl shadow-2xl max-w-4xl mx-auto font-sans">
               
-              {/* Header */}
-              <div className="text-center border-b-2 border-black pb-3 mb-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-wide uppercase text-black font-display">
+              {/* Header Title: RK EDUCATION */}
+              <div className="text-center">
+                <h1 className="text-3xl sm:text-4xl font-extrabold tracking-wider text-[#1e3a8a] uppercase font-sans">
                   {generatedPaper.instituteName}
                 </h1>
-                <p className="text-xs font-bold uppercase tracking-wider text-black mt-0.5">
-                  माध्यमिक एवं उच्चतर माध्यमिक परीक्षा प्रभाग
-                </p>
-                <p className="text-[11px] italic text-black font-sans">
-                  शैक्षणिक मार्गदर्शन: आर.के. सर (एम.ए. दिल्ली विश्वविद्यालय)
-                </p>
                 
-                <div className="mt-2 inline-block px-4 py-0.5 border border-black font-bold text-xs uppercase tracking-wider bg-slate-100 print-black-text">
-                  {generatedPaper.examTitle}
-                </div>
+                {/* Subtitle */}
+                <h2 className="text-sm sm:text-base font-bold text-slate-800 tracking-wide mt-1">
+                  {generatedPaper.examHeading}
+                </h2>
+
+                {/* Dark Blue Full-Width Divider Line */}
+                <div className="w-full h-[2.5px] bg-[#1e3a8a] mt-3 mb-6" />
               </div>
 
-              {/* Exam Info Metadata Bar */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs border-b border-black pb-2 mb-3 font-sans font-bold print-black-text">
-                <div><strong>कक्षा:</strong> {generatedPaper.className}</div>
-                <div><strong>विषय:</strong> {generatedPaper.subject}</div>
-                <div><strong>पूर्णांक:</strong> {generatedPaper.marks}</div>
-                <div><strong>समय:</strong> {generatedPaper.time}</div>
-              </div>
+              {/* Side-by-Side Dual-Column Split */}
+              {(() => {
+                const total = generatedPaper.questions.length;
+                const half = Math.ceil(total / 2);
+                const leftQuestions = generatedPaper.questions.slice(0, half);
+                const rightQuestions = generatedPaper.questions.slice(half);
 
-              {/* Student Details Fields */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs border-b border-black pb-2 mb-3 font-sans font-semibold print-black-text">
-                <div><strong>परीक्षार्थी का नाम:</strong> _____________________</div>
-                <div><strong>अनुक्रमांक (Roll No):</strong> _______________</div>
-                <div><strong>दिनांक:</strong> {generatedPaper.generatedDate}</div>
-              </div>
-
-              {/* Chapter Name & Instruction Bar */}
-              <div className="flex flex-wrap items-center justify-between text-xs font-sans border-b border-black pb-2 mb-4 print-black-text">
-                <span><strong>अध्याय:</strong> {generatedPaper.chapter}</span>
-                <span className="italic text-[11px]">निर्देश: सभी प्रश्न अनिवार्य हैं। सही विकल्प चुनें।</span>
-              </div>
-
-              {/* =========================================================================
-                  SIDE-BY-SIDE DUAL-COLUMN MCQ SECTION (SPLIT IN HALF FOR ZERO PAPER WASTAGE)
-                  ========================================================================= */}
-              <div className="a4-two-columns text-xs leading-normal print-black-text">
-                {generatedPaper.questions.map((item) => (
-                  <div key={item.num} className="question-block pb-3 border-b border-dashed border-slate-300 break-inside-avoid">
-                    <p className="font-bold text-black mb-1">
-                      <span>प्र.{item.num}.</span> {item.q}
-                    </p>
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-slate-400 text-slate-900">
                     
-                    {/* 2x2 Grid for 4 Options */}
-                    <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-[11px] font-sans pl-2 text-black">
-                      <div><span className="font-bold">(A)</span> {item.optA}</div>
-                      <div><span className="font-bold">(B)</span> {item.optB}</div>
-                      <div><span className="font-bold">(C)</span> {item.optC}</div>
-                      <div><span className="font-bold">(D)</span> {item.optD}</div>
+                    {/* Left Column */}
+                    <div className="md:pr-6 pb-6 md:pb-0">
+                      {/* Subject Title Underlined */}
+                      <div className="mb-4">
+                        <span className="text-sm sm:text-base font-extrabold text-slate-900 border-b border-slate-800 pb-0.5">
+                          {generatedPaper.subject} [{total} Questions]
+                        </span>
+                      </div>
+
+                      {/* Questions 1 to N/2 */}
+                      <div className="space-y-4">
+                        {leftQuestions.map((item) => (
+                          <div key={item.num} className="text-xs leading-normal">
+                            <p className="font-bold text-slate-900 mb-1">
+                              प्र. {item.num}: {item.q}
+                            </p>
+                            <div className="pl-4 space-y-0.5 text-slate-800 text-[11.5px]">
+                              <div>A) {item.optA}</div>
+                              <div>B) {item.optB}</div>
+                              <div>C) {item.optC}</div>
+                              <div>D) {item.optD}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
+
+                    {/* Right Column */}
+                    <div className="md:pl-6 pt-6 md:pt-0">
+                      {/* Questions N/2+1 to N */}
+                      <div className="space-y-4">
+                        {rightQuestions.map((item) => (
+                          <div key={item.num} className="text-xs leading-normal">
+                            <p className="font-bold text-slate-900 mb-1">
+                              प्र. {item.num}: {item.q}
+                            </p>
+                            <div className="pl-4 space-y-0.5 text-slate-800 text-[11.5px]">
+                              <div>A) {item.optA}</div>
+                              <div>B) {item.optB}</div>
+                              <div>C) {item.optC}</div>
+                              <div>D) {item.optD}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
                   </div>
-                ))}
-              </div>
+                );
+              })()}
 
-              {/* End of Sheet */}
-              <div className="text-center font-sans font-bold text-[11px] uppercase tracking-widest my-4 pt-2 border-t border-black text-black">
-                --- समाप्त (END OF TEST PAPER) ---
-              </div>
-
-              {/* Teacher Solution Table (Compact Answer Key at bottom) */}
+              {/* Optional Compact Teacher Answer Key */}
               {includeAnswerKey && (
-                <div className="mt-4 pt-3 border-t-2 border-dashed border-black break-inside-avoid">
-                  <div className="text-center mb-2 font-sans font-bold text-[11px] uppercase bg-slate-100 py-0.5 border border-black text-black">
-                    शिक्षक मूल्यांकन उत्तर तालिका (ANSWER KEY)
+                <div className="mt-8 pt-4 border-t border-slate-400">
+                  <div className="text-center mb-2">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700 bg-slate-100 px-3 py-0.5 border border-slate-300">
+                      उत्तर कुंजी (ANSWER KEY)
+                    </span>
                   </div>
                   
-                  <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 text-center text-[10px] font-mono font-bold print-black-text">
+                  <div className="grid grid-cols-6 sm:grid-cols-10 gap-1 text-center text-[10px] font-mono font-bold text-slate-800">
                     {generatedPaper.questions.map((item) => (
-                      <div key={item.num} className="p-1 border border-slate-400 bg-slate-50">
-                        Q{item.num}: <span className="text-black font-extrabold">({item.ans})</span>
+                      <div key={item.num} className="p-1 border border-slate-300 bg-slate-50">
+                        Q{item.num}: <span className="font-extrabold text-blue-900">({item.ans})</span>
                       </div>
                     ))}
                   </div>
@@ -732,16 +701,16 @@ ${text.slice(0, 9000)}
           <div className="text-center py-12 p-8 rounded-3xl bg-[#0c142b]/60 border border-cyan-500/20 no-print">
             <FileScan className="w-12 h-12 text-amber-400 mx-auto mb-3 animate-pulse" />
             <h4 className="text-lg font-bold text-white font-display mb-1">
-              अध्याय PDF से वास्तविक हिंदी MCQ प्रश्न-पत्र बनाएं
+              UP NMMS / बोर्ड परीक्षा Side-by-Side टेस्ट पेपर तैयार करें
             </h4>
             <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-4">
-              ऊपर अपनी PDF अपलोड करें या <strong>"Generate Side-by-Side A4 Exam Paper"</strong> पर क्लिक करें।
+              ऊपर अपनी PDF अपलोड करें या <strong>"Generate Side-by-Side Exam Paper"</strong> पर क्लिक करें।
             </p>
             <button
               onClick={handleGenerateQuestions}
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00f0ff] via-pink-500 to-amber-400 text-black font-bold text-xs font-mono shadow-md hover:scale-105 transition-transform"
             >
-              कक्षा 8वीं (संसाधन एवं विकास) का 20 MCQ प्रश्न-पत्र बनाएं (नमूना)
+              UP NMMS कक्षा 8 गणित का 12 प्रश्नों का पेपर बनाएं (नमूना)
             </button>
           </div>
         )}
