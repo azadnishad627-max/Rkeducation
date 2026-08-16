@@ -1,8 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { jsPDF } from 'jspdf';
 import { Printer, Download, Sparkles, FileText, CheckCircle2, RefreshCw, Layers, BookOpen, Clock, Award, HelpCircle, FileUp, AlertCircle, Columns2, Edit3, Eye, FileScan, Key, ExternalLink, Bot, Zap, Cpu, FileDown } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
+
+// Active NVIDIA NIM Key
+const DEFAULT_NVIDIA_API_KEY = "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";
 
 export default function TestPaperGenerator() {
   // Config State
@@ -306,19 +308,26 @@ export default function TestPaperGenerator() {
   <style>
     @page {
       size: A4 portrait;
-      margin: 12mm 15mm;
+      margin: 10mm 12mm;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+    html, body {
+      font-family: Arial, 'Plus Jakarta Sans', sans-serif;
       color: #0f172a;
       background: #ffffff;
+      padding: 0;
+      margin: 0;
+      overflow: visible !important;
+      height: auto !important;
+    }
+    .page-container {
+      width: 100%;
       padding: 10px;
     }
-    .header { text-align: center; margin-bottom: 12px; }
-    .title { font-size: 26px; font-weight: 800; color: #1e3a8a; letter-spacing: 1px; }
-    .subtitle { font-size: 13px; font-weight: 700; color: #1e293b; margin-top: 4px; }
-    .divider { width: 100%; height: 2px; background: #1e3a8a; margin: 8px 0 14px 0; }
+    .header { text-align: center; margin-bottom: 10px; }
+    .title { font-size: 24px; font-weight: 800; color: #1e3a8a; letter-spacing: 1px; }
+    .subtitle { font-size: 13px; font-weight: 700; color: #1e293b; margin-top: 3px; }
+    .divider { width: 100%; height: 2.5px; background: #1e3a8a; margin: 8px 0 12px 0; }
     
     .subject-title {
       font-size: 13px;
@@ -332,51 +341,51 @@ export default function TestPaperGenerator() {
     .grid-container {
       display: flex;
       width: 100%;
-      gap: 24px;
+      gap: 20px;
     }
     .column {
       flex: 1;
       width: 50%;
     }
     .col-left {
-      padding-right: 16px;
+      padding-right: 14px;
       border-right: 1px solid #94a3b8;
     }
     .col-right {
-      padding-left: 16px;
+      padding-left: 14px;
     }
     
     .q-box {
-      margin-bottom: 16px;
-      font-size: 12px;
+      margin-bottom: 14px;
+      font-size: 11.5px;
       line-height: 1.35;
       page-break-inside: avoid;
     }
-    .q-text { font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-    .options { padding-left: 12px; font-size: 11.5px; color: #1e293b; }
+    .q-text { font-weight: 700; color: #0f172a; margin-bottom: 3px; }
+    .options { padding-left: 10px; font-size: 11px; color: #1e293b; }
     .options div { margin-bottom: 1.5px; }
     
     .ans-key-section {
-      margin-top: 20px;
-      padding-top: 10px;
+      margin-top: 16px;
+      padding-top: 8px;
       border-top: 1px dashed #64748b;
       page-break-inside: avoid;
     }
     .ans-key-title {
       text-align: center;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: bold;
       background: #f1f5f9;
       padding: 3px;
       border: 1px solid #cbd5e1;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
     .ans-grid {
       display: grid;
       grid-template-columns: repeat(10, 1fr);
-      gap: 4px;
+      gap: 3px;
       text-align: center;
-      font-size: 10px;
+      font-size: 9.5px;
       font-family: monospace;
       font-weight: bold;
     }
@@ -388,59 +397,61 @@ export default function TestPaperGenerator() {
   </style>
 </head>
 <body>
-  <div class="header">
-    <div class="title">${generatedPaper.instituteName}</div>
-    <div class="subtitle">${generatedPaper.examHeading}</div>
-    <div class="divider"></div>
-  </div>
-
-  <div class="grid-container">
-    <div class="column col-left">
-      <div class="subject-title">${generatedPaper.subject} [${total} Questions]</div>
-      ${leftQuestions.map(item => `
-        <div class="q-box">
-          <div class="q-text">प्र. ${item.num}: ${item.q}</div>
-          <div class="options">
-            <div>A) ${item.optA}</div>
-            <div>B) ${item.optB}</div>
-            <div>C) ${item.optC}</div>
-            <div>D) ${item.optD}</div>
-          </div>
-        </div>
-      `).join('')}
+  <div class="page-container">
+    <div class="header">
+      <div class="title">${generatedPaper.instituteName}</div>
+      <div class="subtitle">${generatedPaper.examHeading}</div>
+      <div class="divider"></div>
     </div>
 
-    <div class="column col-right">
-      ${rightQuestions.map(item => `
-        <div class="q-box">
-          <div class="q-text">प्र. ${item.num}: ${item.q}</div>
-          <div class="options">
-            <div>A) ${item.optA}</div>
-            <div>B) ${item.optB}</div>
-            <div>C) ${item.optC}</div>
-            <div>D) ${item.optD}</div>
+    <div class="grid-container">
+      <div class="column col-left">
+        <div class="subject-title">${generatedPaper.subject} [${total} Questions]</div>
+        ${leftQuestions.map(item => `
+          <div class="q-box">
+            <div class="q-text">प्र. ${item.num}: ${item.q}</div>
+            <div class="options">
+              <div>A) ${item.optA}</div>
+              <div>B) ${item.optB}</div>
+              <div>C) ${item.optC}</div>
+              <div>D) ${item.optD}</div>
+            </div>
           </div>
-        </div>
-      `).join('')}
-    </div>
-  </div>
+        `).join('')}
+      </div>
 
-  ${includeAnswerKey ? `
-    <div class="ans-key-section">
-      <div class="ans-key-title">उत्तर कुंजी (ANSWER KEY)</div>
-      <div class="ans-grid">
-        ${generatedPaper.questions.map(item => `
-          <div class="ans-item">Q${item.num}: (${item.ans})</div>
+      <div class="column col-right">
+        ${rightQuestions.map(item => `
+          <div class="q-box">
+            <div class="q-text">प्र. ${item.num}: ${item.q}</div>
+            <div class="options">
+              <div>A) ${item.optA}</div>
+              <div>B) ${item.optB}</div>
+              <div>C) ${item.optC}</div>
+              <div>D) ${item.optD}</div>
+            </div>
+          </div>
         `).join('')}
       </div>
     </div>
-  ` : ''}
+
+    ${includeAnswerKey ? `
+      <div class="ans-key-section">
+        <div class="ans-key-title">उत्तर कुंजी (ANSWER KEY)</div>
+        <div class="ans-grid">
+          ${generatedPaper.questions.map(item => `
+            <div class="ans-item">Q${item.num}: (${item.ans})</div>
+          `).join('')}
+        </div>
+      </div>
+    ` : ''}
+  </div>
 
   <script>
     window.onload = function() {
       setTimeout(function() {
         window.print();
-      }, 250);
+      }, 300);
     };
   </script>
 </body>
