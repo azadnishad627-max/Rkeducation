@@ -9,13 +9,11 @@
   
   html {
     scroll-behavior: smooth;
-    overflow-x: hidden;
   }
 
   body {
     background-color: #050a18;
     color: #f1f5f9;
-    overflow-x: hidden;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -64,63 +62,58 @@
 }
 
 /* =======================================================
-   A4 DUAL-COLUMN PRINT STYLES (SIDE-BY-SIDE MCQ EXAM SHEET)
+   A4 COMPLETE PRINT STYLES - ZERO CUTOFF / ALL PAGES PRINT
    ======================================================= */
 @media print {
   @page {
     size: A4 portrait;
-    margin: 8mm 10mm;
+    margin: 10mm 12mm;
   }
 
-  body {
+  html, body, #root, main {
     background: #ffffff !important;
     color: #000000 !important;
-    font-family: 'Times New Roman', 'Mangal', 'Kruti Dev 010', serif !important;
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    position: static !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Plus Jakarta Sans', Arial, sans-serif !important;
   }
 
-  /* Hide UI elements during printing */
+  /* Hide screen-only components */
   header, footer, nav, #home, #founders, #app-features, #courses, #contact, .no-print {
     display: none !important;
   }
 
   #printable-paper-area {
     display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
-    box-shadow: none !important;
-    border: none !important;
+    overflow: visible !important;
+    height: auto !important;
+    position: static !important;
   }
 
   .printable-paper-sheet {
-    border: 2px solid #000000 !important;
-    padding: 12px 16px !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
     width: 100% !important;
-    min-height: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+    box-shadow: none !important;
   }
 
-  /* 2-Column Split for MCQs */
-  .a4-two-columns {
-    column-count: 2 !important;
-    column-gap: 20px !important;
-    column-rule: 1px solid #333333 !important;
-    width: 100% !important;
-  }
-
-  .question-block {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
-    margin-bottom: 12px !important;
-  }
-
-  .print-black-text {
-    color: #000000 !important;
+  .page-break-after {
+    page-break-after: always !important;
+    break-after: page !important;
   }
 }

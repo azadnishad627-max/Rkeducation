@@ -10,12 +10,12 @@ import Footer from './components/Footer';
 
 export default function App() {
   return (
-    <div className="relative min-h-screen w-full bg-[#050a18] text-slate-100 selection:bg-amber-500 selection:text-black font-sans overflow-x-hidden">
+    <div className="relative min-h-screen w-full bg-[#050a18] text-slate-100 selection:bg-amber-500 selection:text-black font-sans">
       {/* Navigation */}
       <Navbar />
 
       {/* Main Content Sections */}
-      <main className="relative z-10 w-full flex flex-col items-center overflow-x-hidden">
+      <main className="relative z-10 w-full flex flex-col items-center">
         <HeroEducation3D />
         <TestPaperGenerator />
         <AppDownloadSection />

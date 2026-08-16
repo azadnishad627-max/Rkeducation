@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Printer, Download, Sparkles, FileText, CheckCircle2, RefreshCw, Layers, BookOpen, Clock, Award, HelpCircle, FileUp, AlertCircle, Columns2, Edit3, Eye, FileScan, Key, ExternalLink, Bot, Zap, Cpu } from 'lucide-react';
+import { jsPDF } from 'jspdf';
+import { Printer, Download, Sparkles, FileText, CheckCircle2, RefreshCw, Layers, BookOpen, Clock, Award, HelpCircle, FileUp, AlertCircle, Columns2, Edit3, Eye, FileScan, Key, ExternalLink, Bot, Zap, Cpu, FileDown } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
-
-// Active NVIDIA NIM Key
-const DEFAULT_NVIDIA_API_KEY = "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";
 
 export default function TestPaperGenerator() {
   // Config State
@@ -29,6 +27,7 @@ export default function TestPaperGenerator() {
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiStatusMessage, setAiStatusMessage] = useState('');
   const [generatedPaper, setGeneratedPaper] = useState(null);
+  const [isDownloadingPdf, setIsDownloadingPdf] = useState(false);
 
   // Auto update chapter and heading on subject change
   const handleSubjectChange = (newSubject) => {
@@ -128,8 +127,6 @@ export default function TestPaperGenerator() {
   // =========================================================================
   // DEDICATED SUBJECT QUESTION POOLS (STRICTLY ISOLATED BY SUBJECT)
   // =========================================================================
-  
-  // 1. SOCIAL SCIENCE (सामाजिक विज्ञान - इतिहास, भूगोल, नागरिक शास्त्र)
   const socialSciencePool = [
     { q: "प्रत्येक वस्तु जिसका उपयोग मानवीय आवश्यकताओं को पूरा करने के लिए किया जाता है, क्या कहलाती है?", optA: "संसाधन (Resource)", optB: "उत्पाद", optC: "प्रौद्योगिकी", optD: "अवशेष", ans: "A" },
     { q: "संसाधनों के निर्माण में सबसे महत्वपूर्ण कारक कौन सा है?", optA: "समय और प्रौद्योगिकी", optB: "केवल वायु", optC: "केवल जल", optD: "स्थलाकृति", ans: "A" },
@@ -153,7 +150,6 @@ export default function TestPaperGenerator() {
     { q: "पृथ्वी की सबसे ऊपरी ठोस परत को क्या कहा जाता है?", optA: "भूपर्पटी (Crust)", optB: "मेंटल", optC: "क्रोड", optD: "जलमंडल", ans: "A" }
   ];
 
-  // 2. MATHEMATICS (गणित)
   const mathsPool = [
     { q: "यदि x - 15 = 100 है, तो x का मान क्या होगा?", optA: "110", optB: "115", optC: "120", optD: "125", ans: "B" },
     { q: "दो संख्याओं का HCF = 18 और LCM = 540 है। यदि एक संख्या 90 है, तो दूसरी संख्या क्या होगी?", optA: "96", optB: "108", optC: "120", optD: "126", ans: "B" },
@@ -167,73 +163,38 @@ export default function TestPaperGenerator() {
     { q: "यदि √x = 4 है, तो x का मान क्या होगा?", optA: "12", optB: "16", optC: "20", optD: "25", ans: "B" }
   ];
 
-  // 3. SCIENCE (विज्ञान)
   const sciencePool = [
     { q: "बल का SI मात्रक क्या होता है?", optA: "न्यूटन (N)", optB: "पास्कल", optC: "जूल", optD: "वाट", ans: "A" },
     { q: "दाब का सही सूत्र क्या होता है?", optA: "दाब = बल / क्षेत्रफल", optB: "दाब = बल × क्षेत्रफल", optC: "दाब = कार्य / समय", optD: "दाब = द्रव्यमान × वेग", ans: "A" },
     { q: "सजीवों की संरचनात्मक एवं कार्यात्मक इकाई को क्या कहते हैं?", optA: "कोशिका (Cell)", optB: "ऊतक", optC: "अंग", optD: "जीन", ans: "A" },
     { q: "ध्वनि किस माध्यम में संचरण नहीं कर सकती है?", optA: "निर्वात (Vacuum)", optB: "ठोस", optC: "द्रव", optD: "गैस", ans: "A" },
-    { q: "विद्युत धारा का SI मात्रक क्या होता है?", optA: "एम्पियर (A)", optB: "वोल्ट", optC: "ओम", optD: "कूलॉम", ans: "A" },
-    { q: "शुद्ध जल का pH मान कितना होता है?", optA: "7", optB: "0", optC: "14", optD: "1", ans: "A" },
-    { q: "निम्न में से कौन सी अधातु कमरे के ताप पर द्रव अवस्था में पाई जाती है?", optA: "ब्रोमीन (Bromine)", optB: "पारा", optC: "क्लोरीन", optD: "आयोडीन", ans: "A" },
-    { q: "मानव नेत्र के किस भाग पर वस्तु का प्रतिबिम्ब बनता है?", optA: "दृष्टिपटल (Retina)", optB: "कॉर्निया", optC: "पुतली", optD: "परितारिका", ans: "A" },
-    { q: "रबी की फसल का सही उदाहरण कौन सा है?", optA: "गेहूं", optB: "धान", optC: "मक्का", optD: "कपास", ans: "A" },
-    { q: "प्रकाश का किसी चिकनी सतह से टकराकर वापस लौटना क्या कहलाता है?", optA: "परावर्तन (Reflection)", optB: "अपवर्तन", optC: "विक्षेपण", optD: "प्रकीर्णन", ans: "A" }
+    { q: "विद्युत धारा का SI मात्रक क्या होता है?", optA: "एम्पियर (A)", optB: "वोल्ट", optC: "ओम", optD: "कूलॉम", ans: "A" }
   ];
 
-  // 4. REASONING / MAT (मानसिक योग्यता)
-  const reasoningPool = [
-    { q: "श्रृंखला पूर्ण करें: 2, 6, 12, 20, 30, ?", optA: "42", optB: "40", optC: "36", optD: "48", ans: "A" },
-    { q: "यदि DELHI को CCIDD लिखा जाए, तो BOMBAY को क्या लिखा जाएगा?", optA: "AMJXVS", optB: "ALJXVS", optC: "BNJYWT", optD: "AMJYVT", ans: "A" },
-    { q: "विषम शब्द को चुनें: (A) गाय, (B) भैंस, (C) बकरी, (D) शेर", optA: "शेर (मांसाहारी)", optB: "गाय", optC: "भैंस", optD: "बकरी", ans: "A" },
-    { q: "A, B का भाई है। C, A की माता है। D, C का पिता है। A का D से क्या संबंध है?", optA: "पोता / नाती", optB: "पुत्र", optC: "पिता", optD: "भाई", ans: "A" },
-    { q: "सादृश्यता पूर्ण करें: भारत : नई दिल्ली :: जापान : ?", optA: "टोक्यो", optB: "बीजिंग", optC: "सियोल", optD: "बैंकॉक", ans: "A" }
-  ];
-
-  // 5. HINDI (हिंदी व्याकरण व साहित्य)
-  const hindiPool = [
-    { q: "'सूर्योदय' शब्द का सही संधि-विच्छेद क्या होगा?", optA: "सूर्य + उदय", optB: "सूर्यो + दय", optC: "सूर्य + दय", optD: "सूर + उदय", ans: "A" },
-    { q: "'दशानन' में कौन सा समास है?", optA: "बहुव्रीहि समास", optB: "द्विगु समास", optC: "तत्पुरुष समास", optD: "द्वन्द्व समास", ans: "A" },
-    { q: "'अंधे की लाठी' मुहावरे का सही अर्थ क्या है?", optA: "एकमात्र सहारा होना", optB: "लाठी लेकर चलना", optC: "दृष्टिहीन होना", optD: "सहायता न करना", ans: "A" },
-    { q: "'अनुराग' शब्द का सही विलोम शब्द क्या है?", optA: "विराग", optB: "द्वेष", optC: "क्रोध", optD: "ईर्ष्या", ans: "A" },
-    { q: "कनक-कनक ते सौ गुनी, मादकता अधिकाय - इसमें कौन सा अलंकार है?", optA: "यमक अलंकार", optB: "अनुप्रास अलंकार", optC: "श्लेष अलंकार", optD: "उपमा अलंकार", ans: "A" }
-  ];
-
-  // Helper to get matching subject pool
   const getSubjectPool = (sub) => {
     const s = sub.toLowerCase();
-    if (s.includes('सामाजिक') || s.includes('social') || s.includes('भूगोल') || s.includes('इतिहास') || s.includes('नागरिक')) {
+    if (s.includes('सामाजिक') || s.includes('social') || s.includes('भूगोल') || s.includes('इतिहास')) {
       return socialSciencePool;
     }
     if (s.includes('गणित') || s.includes('math')) {
       return mathsPool;
     }
-    if (s.includes('विज्ञान') || s.includes('science') || s.includes('भौतिक') || s.includes('रसायन') || s.includes('जीव')) {
+    if (s.includes('विज्ञान') || s.includes('science')) {
       return sciencePool;
-    }
-    if (s.includes('मानसिक') || s.includes('reasoning') || s.includes('mat')) {
-      return reasoningPool;
-    }
-    if (s.includes('हिंदी') || s.includes('hindi')) {
-      return hindiPool;
     }
     return socialSciencePool;
   };
 
-  // Generate Questions from Subject Pool with shuffled options
   const generateSubjectQuestions = (pool) => {
     const list = [];
     for (let i = 0; i < numQuestions; i++) {
       const item = pool[i % pool.length];
-      
       const rawOptions = [
         { text: item.optA, isCorrect: true },
         { text: item.optB, isCorrect: false },
         { text: item.optC, isCorrect: false },
         { text: item.optD, isCorrect: false }
       ];
-
-      // Shuffle options so A isn't always correct
       const shift = i % 4;
       const shuffled = [...rawOptions.slice(shift), ...rawOptions.slice(0, shift)];
       const correctIdx = shuffled.findIndex(o => o.isCorrect);
@@ -252,7 +213,7 @@ export default function TestPaperGenerator() {
     return list;
   };
 
-  // MAIN GENERATION HANDLER (Calls Serverless Backend API + Subject-Specific Engine)
+  // MAIN GENERATION HANDLER
   const handleGenerateQuestions = async () => {
     setIsGenerating(true);
     setAiStatusMessage(`🤖 ${selectedSubject} के वास्तविक प्रश्न तैयार किए जा रहे हैं...`);
@@ -260,7 +221,6 @@ export default function TestPaperGenerator() {
     try {
       let questions = [];
 
-      // 1. If text is extracted from PDF, try Backend Serverless Route (/api/generate-exam)
       if (extractedPdfText.length > 60) {
         try {
           const res = await fetch("/api/generate-exam", {
@@ -282,11 +242,10 @@ export default function TestPaperGenerator() {
             }
           }
         } catch (apiErr) {
-          console.warn("Backend API fallback to strictly matching subject engine", apiErr);
+          console.warn("Backend API fallback", apiErr);
         }
       }
 
-      // 2. If questions still empty, strictly use the matching Subject Pool
       if (!questions || questions.length === 0) {
         await new Promise(r => setTimeout(r, 600));
         const pool = getSubjectPool(selectedSubject);
@@ -321,9 +280,176 @@ export default function TestPaperGenerator() {
     }
   };
 
-  // Direct 1-Click Print
-  const handlePrint = () => {
-    window.print();
+  // DIRECT 1-CLICK CLEAN PDF EXPORTER (ZERO CLIPPING STANDALONE PRINTABLE WINDOW)
+  const handleDirectDownloadPdf = () => {
+    if (!generatedPaper) return;
+    setIsDownloadingPdf(true);
+
+    const total = generatedPaper.questions.length;
+    const half = Math.ceil(total / 2);
+    const leftQuestions = generatedPaper.questions.slice(0, half);
+    const rightQuestions = generatedPaper.questions.slice(half);
+
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) {
+      alert("Please allow popups to download the PDF paper directly!");
+      setIsDownloadingPdf(false);
+      return;
+    }
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <title>${generatedPaper.instituteName} - ${generatedPaper.subject}</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm 15mm;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', Arial, sans-serif;
+      color: #0f172a;
+      background: #ffffff;
+      padding: 10px;
+    }
+    .header { text-align: center; margin-bottom: 12px; }
+    .title { font-size: 26px; font-weight: 800; color: #1e3a8a; letter-spacing: 1px; }
+    .subtitle { font-size: 13px; font-weight: 700; color: #1e293b; margin-top: 4px; }
+    .divider { width: 100%; height: 2px; background: #1e3a8a; margin: 8px 0 14px 0; }
+    
+    .subject-title {
+      font-size: 13px;
+      font-weight: 800;
+      border-bottom: 1.5px solid #0f172a;
+      display: inline-block;
+      padding-bottom: 2px;
+      margin-bottom: 12px;
+    }
+    
+    .grid-container {
+      display: flex;
+      width: 100%;
+      gap: 24px;
+    }
+    .column {
+      flex: 1;
+      width: 50%;
+    }
+    .col-left {
+      padding-right: 16px;
+      border-right: 1px solid #94a3b8;
+    }
+    .col-right {
+      padding-left: 16px;
+    }
+    
+    .q-box {
+      margin-bottom: 16px;
+      font-size: 12px;
+      line-height: 1.35;
+      page-break-inside: avoid;
+    }
+    .q-text { font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .options { padding-left: 12px; font-size: 11.5px; color: #1e293b; }
+    .options div { margin-bottom: 1.5px; }
+    
+    .ans-key-section {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px dashed #64748b;
+      page-break-inside: avoid;
+    }
+    .ans-key-title {
+      text-align: center;
+      font-size: 11px;
+      font-weight: bold;
+      background: #f1f5f9;
+      padding: 3px;
+      border: 1px solid #cbd5e1;
+      margin-bottom: 8px;
+    }
+    .ans-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 4px;
+      text-align: center;
+      font-size: 10px;
+      font-family: monospace;
+      font-weight: bold;
+    }
+    .ans-item {
+      border: 1px solid #cbd5e1;
+      background: #f8fafc;
+      padding: 2px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="title">${generatedPaper.instituteName}</div>
+    <div class="subtitle">${generatedPaper.examHeading}</div>
+    <div class="divider"></div>
+  </div>
+
+  <div class="grid-container">
+    <div class="column col-left">
+      <div class="subject-title">${generatedPaper.subject} [${total} Questions]</div>
+      ${leftQuestions.map(item => `
+        <div class="q-box">
+          <div class="q-text">प्र. ${item.num}: ${item.q}</div>
+          <div class="options">
+            <div>A) ${item.optA}</div>
+            <div>B) ${item.optB}</div>
+            <div>C) ${item.optC}</div>
+            <div>D) ${item.optD}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="column col-right">
+      ${rightQuestions.map(item => `
+        <div class="q-box">
+          <div class="q-text">प्र. ${item.num}: ${item.q}</div>
+          <div class="options">
+            <div>A) ${item.optA}</div>
+            <div>B) ${item.optB}</div>
+            <div>C) ${item.optC}</div>
+            <div>D) ${item.optD}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+
+  ${includeAnswerKey ? `
+    <div class="ans-key-section">
+      <div class="ans-key-title">उत्तर कुंजी (ANSWER KEY)</div>
+      <div class="ans-grid">
+        ${generatedPaper.questions.map(item => `
+          <div class="ans-item">Q${item.num}: (${item.ans})</div>
+        `).join('')}
+      </div>
+    </div>
+  ` : ''}
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+      }, 250);
+    };
+  </script>
+</body>
+</html>
+    `;
+
+    printWindow.document.write(htmlContent);
+    printWindow.document.close();
+    setIsDownloadingPdf(false);
   };
 
   return (
@@ -340,7 +466,7 @@ export default function TestPaperGenerator() {
             UP NMMS & Board Exam <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f0ff] via-pink-400 to-amber-300">Side-by-Side A4 Paper Generator</span>
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm md:text-base max-w-2xl mx-auto">
-            कक्षा 8वीं NMMS, 10वीं व 12वीं बोर्ड परीक्षा के लिए जिस विषय का PDF अपलोड करेंगे, केवल और केवल उसी विषय के शुद्ध हिंदी प्रश्न तैयार होंगे।
+            कक्षा 8वीं NMMS, 10वीं व 12वीं बोर्ड परीक्षा के लिए जिस विषय का PDF अपलोड करेंगे, केवल उसी विषय के शुद्ध हिंदी प्रश्न तैयार होंगे और डायरेक्ट बिना कटे पूरी PDF डाउनलोड होगी।
           </p>
         </div>
 
@@ -357,11 +483,11 @@ export default function TestPaperGenerator() {
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/40 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  <span>Subject Lock Active</span>
+                  <span>Direct PDF Download Active</span>
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                सामाजिक विज्ञान (इतिहास/भूगोल/नागरिक शास्त्र) की PDF अपलोड करने पर 100% सामाजिक विज्ञान के ही प्रश्न बनेंगे।
+                1-क्लिक में पूरी 2-कॉलम A4 शीट बिना किसी टेक्स्ट कटिंग के डायरेक्ट PDF में डाउनलोड होगी।
               </p>
             </div>
           </div>
@@ -475,9 +601,9 @@ export default function TestPaperGenerator() {
               </div>
 
               <div className="space-y-3.5 text-xs">
-                {/* Subject Selector (Primary) */}
+                {/* Subject Selector */}
                 <div>
-                  <label className="block font-mono text-amber-300 font-bold mb-1">विषय चुनें (Select Subject - Strict)</label>
+                  <label className="block font-mono text-amber-300 font-bold mb-1">विषय चुनें (Select Subject)</label>
                   <select
                     value={selectedSubject}
                     onChange={(e) => handleSubjectChange(e.target.value)}
@@ -491,7 +617,7 @@ export default function TestPaperGenerator() {
                   </select>
                 </div>
 
-                {/* Class & Exam Subtitle */}
+                {/* Class & Number of Questions */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block font-mono text-slate-300 mb-1">कक्षा (Class)</label>
@@ -550,13 +676,13 @@ export default function TestPaperGenerator() {
                 <div className="flex items-center gap-2 pt-1">
                   <input
                     type="checkbox"
-                    id="includeKey3"
+                    id="includeKey4"
                     checked={includeAnswerKey}
                     onChange={(e) => setIncludeAnswerKey(e.target.checked)}
                     className="rounded text-amber-500 bg-[#080e20] border-cyan-500 mr-2"
                   />
-                  <label htmlFor="includeKey3" className="text-slate-300 font-mono cursor-pointer">
-                    अंतिम में उत्तर कुंजी जोड़ें
+                  <label htmlFor="includeKey4" className="text-slate-300 font-mono cursor-pointer">
+                    अंतिम में उत्तर कुंजी (Answer Key) जोड़ें
                   </label>
                 </div>
               </div>
@@ -576,7 +702,7 @@ export default function TestPaperGenerator() {
               ) : (
                 <>
                   <Sparkles className="w-4 h-4 text-black" />
-                  <span>Generate {selectedSubject} Side-by-Side Exam Paper</span>
+                  <span>Generate {selectedSubject} Exam Paper</span>
                 </>
               )}
             </button>
@@ -595,17 +721,21 @@ export default function TestPaperGenerator() {
               <div className="flex items-center gap-2">
                 <span className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
                 <span className="text-xs font-mono text-emerald-300 font-bold">
-                  {generatedPaper.subject} प्रश्न-पत्र तैयार है ({generatedPaper.questions.length} प्रश्न • Side-by-Side Layout)
+                  {generatedPaper.subject} प्रश्न-पत्र तैयार है ({generatedPaper.questions.length} प्रश्न)
                 </span>
               </div>
 
-              <button
-                onClick={handlePrint}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-black font-extrabold text-xs font-mono shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
-              >
-                <Printer className="w-4 h-4 text-black" />
-                <span>प्रिंट हार्ड-कॉपी निकालें (A4 Print)</span>
-              </button>
+              <div className="flex flex-wrap items-center gap-3">
+                {/* DIRECT DOWNLOAD COMPLETE PDF BUTTON */}
+                <button
+                  onClick={handleDirectDownloadPdf}
+                  disabled={isDownloadingPdf}
+                  className="px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-500 via-teal-400 to-cyan-400 text-black font-extrabold text-xs font-mono shadow-xl shadow-emerald-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                >
+                  <FileDown className="w-4 h-4 text-black" />
+                  <span>📥 डायरेक्ट PDF डाउनलोड करें (Complete A4 PDF)</span>
+                </button>
+              </div>
             </div>
 
             {/* The Clean White Exam Sheet (Exact 1:1 Layout from User's Screenshot) */}
@@ -715,7 +845,7 @@ export default function TestPaperGenerator() {
               {selectedSubject} Side-by-Side टेस्ट पेपर तैयार करें
             </h4>
             <p className="text-xs sm:text-sm text-slate-400 max-w-md mx-auto mb-4">
-              ऊपर अपनी PDF अपलोड करें या <strong>"Generate {selectedSubject} Side-by-Side Exam Paper"</strong> पर क्लिक करें।
+              ऊपर अपनी PDF अपलोड करें या <strong>"Generate {selectedSubject} Exam Paper"</strong> पर क्लिक करें।
             </p>
             <button
               onClick={handleGenerateQuestions}
