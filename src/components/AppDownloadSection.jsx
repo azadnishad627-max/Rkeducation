@@ -56,9 +56,10 @@ export default function AppDownloadSection() {
               </p>
 
               <div className="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
-                {/* Download Android APK */}
+                {/* Download Android APK (Direct Link with download attribute) */}
                 <a
                   href={institute.appDownloadUrl}
+                  download="rk-education.apk"
                   className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-sky-400 to-amber-400 text-black font-bold text-xs sm:text-sm shadow-xl shadow-cyan-600/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
                 >
                   <Download className="w-4 h-4 text-black" />

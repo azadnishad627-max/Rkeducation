@@ -7,7 +7,7 @@ export const rkEducationData = {
     email: "rkeducation.official@gmail.com",
     phone: "+91 9795206548",
     whatsapp: "https://wa.me/919795206548",
-    appDownloadUrl: "#download-app",
+    appDownloadUrl: "/rk-education.apk", // Place your .apk file inside the 'public/' folder named 'rk-education.apk'
     stats: [
       { label: "Active Students", value: "500+" },
       { label: "Board Exam Results", value: "98% Pass" },
@@ -24,7 +24,7 @@ export const rkEducationData = {
       qualification: "B.A., M.A. from Delhi University (DU)",
       designation: "Senior School Teacher & Master Educator",
       experience: "10+ Years of Academic Mentorship",
-      avatar: null, // Will use custom styled DU Educator Badge Avatar
+      avatar: null,
       specialization: "Educational Pedagogy, Board Exam Strategy & Concept Mastery",
       bio: "An esteemed educator holding Master of Arts (M.A.) and Bachelor of Arts (B.A.) degrees from the prestigious University of Delhi (DU). With extensive years of dedicated teaching experience in schools, RK Sir has guided hundreds of students to board exam excellence through deep conceptual clarity, disciplined study methodologies, and structured evaluation.",
       badges: ["Delhi University Alumnus", "Senior School Teacher", "Academic Mentor", "Board Exam Specialist"]
