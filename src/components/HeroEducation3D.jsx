@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import * as THREE from 'three';
-import { ArrowRight, BookOpen, GraduationCap, Sparkles, Printer, Download, Bot, ShieldCheck, Award, Phone, Atom, Layers } from 'lucide-react';
+import { ArrowRight, BookOpen, GraduationCap, Sparkles, Printer, Download, Bot, ShieldCheck, Award, Phone, Atom, Layers, Lock } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
 
-export default function HeroEducation3D() {
+export default function HeroEducation3D({ onOpenTeacherLogin }) {
   const containerRef = useRef(null);
   const [roleIndex, setRoleIndex] = useState(0);
   const [displayText, setDisplayText] = useState('');
@@ -12,10 +12,10 @@ export default function HeroEducation3D() {
 
   const roles = [
     'RK Sir (M.A. Delhi University) & Azad Nishad (AI Developer)',
-    'AI Chapter PDF Scanner & MCQ Test Printing Engine',
     'कक्षा 8वीं, 10वीं, 12वीं बोर्ड परीक्षा विशेष तैयारी',
-    'A4 Side-by-Side Dual-Column Exam Paper Generator',
-    'TensorFlow AI Proctoring & 3D Science Learning App'
+    'UP NMMS एवं छात्रवृत्ति परीक्षा विशेष मार्गदर्शन',
+    '3D Science Labs & TensorFlow AI Proctoring',
+    'Next-Gen Educational Mobile App for Students'
   ];
 
   // Dynamic Typewriter
@@ -76,13 +76,9 @@ export default function HeroEducation3D() {
     const atomGroup = new THREE.Group();
     scene.add(atomGroup);
 
-    // =========================================================================
-    // 1. CENTRAL NUCLEUS (Glowing Blue/Cyan Textured Energy Planet)
-    // =========================================================================
+    // 1. CENTRAL NUCLEUS
     const nucleusRadius = 0.72;
     const nucleusGeo = new THREE.SphereGeometry(nucleusRadius, isMobile ? 24 : 36, isMobile ? 24 : 36);
-    
-    // Core Material with bright cyan inner emissive
     const nucleusMat = new THREE.MeshStandardMaterial({
       color: 0x00f0ff,
       emissive: 0x0284c7,
@@ -93,15 +89,11 @@ export default function HeroEducation3D() {
     const nucleus = new THREE.Mesh(nucleusGeo, nucleusMat);
     atomGroup.add(nucleus);
 
-    // Inner bright core point
     const innerCoreGeo = new THREE.SphereGeometry(0.38, 16, 16);
-    const innerCoreMat = new THREE.MeshBasicMaterial({
-      color: 0xe0f2fe,
-    });
+    const innerCoreMat = new THREE.MeshBasicMaterial({ color: 0xe0f2fe });
     const innerCore = new THREE.Mesh(innerCoreGeo, innerCoreMat);
     atomGroup.add(innerCore);
 
-    // Outer Neon Glow Halo Shield
     const haloGeo = new THREE.SphereGeometry(nucleusRadius * 1.22, isMobile ? 16 : 24, isMobile ? 16 : 24);
     const haloMat = new THREE.MeshBasicMaterial({
       color: 0x00f0ff,
@@ -112,16 +104,14 @@ export default function HeroEducation3D() {
     const halo = new THREE.Mesh(haloGeo, haloMat);
     atomGroup.add(halo);
 
-    // =========================================================================
-    // 2. 3 INTERLACED NEON ELLIPTICAL ORBIT RINGS (Cyan & Pink/Magenta)
-    // =========================================================================
+    // 2. 3 INTERLACED NEON ELLIPTICAL ORBITS
     const baseRadius = 1.35;
     const scaleY = 1.82;
     const tubeRadius = 0.024;
     const tubularSegments = isMobile ? 64 : 100;
     const torusGeo = new THREE.TorusGeometry(baseRadius, tubeRadius, 12, tubularSegments);
 
-    // --- ORBIT 1: NEON ELECTRIC CYAN (Vertical / Tilted 15 deg) ---
+    // Orbit 1: Neon Cyan
     const orbit1Mat = new THREE.MeshStandardMaterial({
       color: 0x00f0ff,
       emissive: 0x00f0ff,
@@ -133,10 +123,10 @@ export default function HeroEducation3D() {
     const orbit1 = new THREE.Mesh(torusGeo, orbit1Mat);
     orbit1.scale.set(1.0, scaleY, 1.0);
     orbit1Group.add(orbit1);
-    orbit1Group.rotation.z = Math.PI / 12; // 15 deg
+    orbit1Group.rotation.z = Math.PI / 12;
     atomGroup.add(orbit1Group);
 
-    // --- ORBIT 2: NEON MAGENTA / HOT PINK (Tilted +60 deg) ---
+    // Orbit 2: Neon Pink (+60 deg)
     const orbit2Mat = new THREE.MeshStandardMaterial({
       color: 0xff007f,
       emissive: 0xff007f,
@@ -148,11 +138,11 @@ export default function HeroEducation3D() {
     const orbit2 = new THREE.Mesh(torusGeo, orbit2Mat);
     orbit2.scale.set(1.0, scaleY, 1.0);
     orbit2Group.add(orbit2);
-    orbit2Group.rotation.z = -Math.PI / 3; // -60 deg
+    orbit2Group.rotation.z = -Math.PI / 3;
     orbit2Group.rotation.x = Math.PI / 8;
     atomGroup.add(orbit2Group);
 
-    // --- ORBIT 3: NEON MAGENTA / ELECTRIC PINK (Tilted -60 deg) ---
+    // Orbit 3: Neon Pink (-60 deg)
     const orbit3Mat = new THREE.MeshStandardMaterial({
       color: 0xff007f,
       emissive: 0xff007f,
@@ -164,44 +154,32 @@ export default function HeroEducation3D() {
     const orbit3 = new THREE.Mesh(torusGeo, orbit3Mat);
     orbit3.scale.set(1.0, scaleY, 1.0);
     orbit3Group.add(orbit3);
-    orbit3Group.rotation.z = Math.PI / 3; // +60 deg
+    orbit3Group.rotation.z = Math.PI / 3;
     orbit3Group.rotation.y = -Math.PI / 8;
     atomGroup.add(orbit3Group);
 
-    // =========================================================================
-    // 3. ORBITING NEON ELECTRONS (With Outer Neon Glow Halos)
-    // =========================================================================
+    // 3. ORBITING ELECTRONS
     const electronRadius = 0.13;
     const electronGeo = new THREE.SphereGeometry(electronRadius, 16, 16);
     const electronGlowGeo = new THREE.SphereGeometry(electronRadius * 1.7, 12, 12);
 
-    // Electron 1: Cyan on Orbit 1
     const electron1 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow1 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 }));
-    electron1.add(glow1);
+    electron1.add(new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 })));
     atomGroup.add(electron1);
 
-    // Electron 2: Hot Pink on Orbit 2
     const electron2 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow2 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.6 }));
-    electron2.add(glow2);
+    electron2.add(new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.6 })));
     atomGroup.add(electron2);
 
-    // Electron 3: Hot Pink on Orbit 3
     const electron3 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow3 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.6 }));
-    electron3.add(glow3);
+    electron3.add(new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.6 })));
     atomGroup.add(electron3);
 
-    // Electron 4: Cyan Secondary Electron on Orbit 1 (Opposite Phase)
     const electron4 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow4 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 }));
-    electron4.add(glow4);
+    electron4.add(new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 })));
     atomGroup.add(electron4);
 
-    // =========================================================================
-    // 4. DEEP COSMIC BACKGROUND STARS & NEBULA PARTICLES
-    // =========================================================================
+    // 4. DEEP COSMIC STARS
     const starCount = isMobile ? 100 : 180;
     const starGeo = new THREE.BufferGeometry();
     const starPositions = new Float32Array(starCount * 3);
@@ -211,27 +189,22 @@ export default function HeroEducation3D() {
       const radius = 2.0 + Math.random() * 2.8;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.acos(Math.random() * 2 - 1);
-
       starPositions[i] = radius * Math.sin(phi) * Math.cos(theta);
       starPositions[i + 1] = radius * Math.sin(phi) * Math.sin(theta);
       starPositions[i + 2] = radius * Math.cos(phi);
 
       const colorDice = Math.random();
       if (colorDice > 0.6) {
-        // Cyan
         starColors[i] = 0.0; starColors[i + 1] = 0.94; starColors[i + 2] = 1.0;
       } else if (colorDice > 0.3) {
-        // Pink / Magenta
         starColors[i] = 1.0; starColors[i + 1] = 0.0; starColors[i + 2] = 0.5;
       } else {
-        // Soft White
         starColors[i] = 0.9; starColors[i + 1] = 0.95; starColors[i + 2] = 1.0;
       }
     }
 
     starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
     starGeo.setAttribute('color', new THREE.BufferAttribute(starColors, 3));
-
     const starMat = new THREE.PointsMaterial({
       size: isMobile ? 0.045 : 0.04,
       vertexColors: true,
@@ -241,21 +214,16 @@ export default function HeroEducation3D() {
     const stars = new THREE.Points(starGeo, starMat);
     atomGroup.add(stars);
 
-    // =========================================================================
-    // 5. LIGHTING & NEON POINT LIGHTS
-    // =========================================================================
+    // Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
-
     const cyanPointLight = new THREE.PointLight(0x00f0ff, 9, 15);
     cyanPointLight.position.set(2, 3, 3);
     scene.add(cyanPointLight);
-
     const pinkPointLight = new THREE.PointLight(0xff007f, 9, 15);
     pinkPointLight.position.set(-2, -3, 3);
     scene.add(pinkPointLight);
 
-    // Mouse / Touch Tilt Interaction
     let mouseX = 0;
     let mouseY = 0;
     let targetX = 0;
@@ -300,43 +268,35 @@ export default function HeroEducation3D() {
       animId = requestAnimationFrame(animate);
       const t = clock.getElapsedTime();
 
-      // Smooth mouse follow
       mouseX += (targetX - mouseX) * 0.05;
       mouseY += (targetY - mouseY) * 0.05;
 
-      // Gentle Atom Group Wobble & Rotation
       atomGroup.rotation.y = t * 0.25 + mouseX * 0.5;
       atomGroup.rotation.x = Math.sin(t * 0.15) * 0.08 + mouseY * 0.4;
 
-      // Pulsing Nucleus Energy Glow
       const corePulse = 1 + Math.sin(t * 3.5) * 0.05;
       nucleus.scale.set(corePulse, corePulse, corePulse);
       halo.rotation.y = t * 0.4;
       halo.rotation.z = -t * 0.3;
 
-      // Parametric Elliptical Electron Motion
       const rx = baseRadius;
       const ry = baseRadius * scaleY;
 
-      // Electron 1 (Orbit 1: Cyan)
       const theta1 = t * 2.2;
       const p1 = new THREE.Vector3(rx * Math.cos(theta1), ry * Math.sin(theta1), 0);
       p1.applyEuler(orbit1Group.rotation);
       electron1.position.copy(p1);
 
-      // Electron 4 (Orbit 1 Opposite Phase)
       const theta4 = t * 2.2 + Math.PI;
       const p4 = new THREE.Vector3(rx * Math.cos(theta4), ry * Math.sin(theta4), 0);
       p4.applyEuler(orbit1Group.rotation);
       electron4.position.copy(p4);
 
-      // Electron 2 (Orbit 2: Pink)
       const theta2 = -t * 2.0;
       const p2 = new THREE.Vector3(rx * Math.cos(theta2), ry * Math.sin(theta2), 0);
       p2.applyEuler(orbit2Group.rotation);
       electron2.position.copy(p2);
 
-      // Electron 3 (Orbit 3: Pink)
       const theta3 = t * 2.4 + Math.PI / 2;
       const p3 = new THREE.Vector3(rx * Math.cos(theta3), ry * Math.sin(theta3), 0);
       p3.applyEuler(orbit3Group.rotation);
@@ -366,7 +326,7 @@ export default function HeroEducation3D() {
       id="home"
       className="relative min-h-screen w-full flex items-center justify-center pt-28 pb-16 px-4 sm:px-6 md:px-8 overflow-hidden no-print"
     >
-      {/* Deep Neon Cosmic Glows matching the atom image */}
+      {/* Deep Neon Cosmic Glows */}
       <div className="absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-80 sm:w-96 h-80 sm:h-96 bg-[#00f0ff]/15 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-1/3 right-1/4 w-80 sm:w-96 h-80 sm:h-96 bg-[#ff007f]/15 rounded-full blur-3xl pointer-events-none" />
 
@@ -390,7 +350,7 @@ export default function HeroEducation3D() {
           {/* Headline */}
           <div className="space-y-2">
             <h2 className="text-slate-400 font-mono text-xs sm:text-sm tracking-wider uppercase">
-              Smart School & AI Examination Hub
+              Smart School & Digital Learning Hub
             </h2>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-display tracking-tight text-white leading-tight">
               Welcome to{' '}
@@ -410,27 +370,28 @@ export default function HeroEducation3D() {
 
           {/* Tagline / Mission */}
           <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed max-w-xl mx-auto lg:mx-0 font-normal">
-            Guided by <strong>RK Sir</strong> (B.A., M.A. from Delhi University) and powered by <strong>Azad Nishad's</strong> AI Educational App with real chapter PDF scanner and A4 side-by-side test generator.
+            Guided by <strong>RK Sir</strong> (B.A., M.A. from Delhi University) and powered by <strong>Azad Nishad's</strong> AI Educational App with interactive 3D science simulations and automated learning.
           </p>
 
-          {/* Action CTAs */}
+          {/* Action CTAs (Public) */}
           <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-1">
             <a
-              href="#test-generator"
-              className="group inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#00f0ff] via-pink-500 to-amber-400 text-black font-extrabold text-xs sm:text-sm shadow-xl shadow-cyan-500/30 hover:scale-105 active:scale-95 transition-all duration-200"
+              href="/RK_EDUCATION.apk"
+              download="RK_EDUCATION.apk"
+              className="group inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#00f0ff] via-pink-500 to-amber-400 text-black font-extrabold text-xs sm:text-sm shadow-xl shadow-cyan-500/30 hover:scale-105 active:scale-95 transition-all duration-200"
             >
-              <Printer className="w-4 h-4 text-black" />
-              <span>PDF स्कैन करें & टेस्ट पेपर निकालें</span>
+              <Download className="w-4 h-4 text-black" />
+              <span>Download Education App (.APK)</span>
               <ArrowRight className="w-4 h-4 text-black group-hover:translate-x-1 transition-transform" />
             </a>
 
-            <a
-              href="#app-download"
-              className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-[#0c142b]/80 hover:bg-[#132047] border border-pink-500/30 hover:border-pink-400 text-slate-200 font-semibold text-xs sm:text-sm backdrop-blur-lg hover:scale-105 active:scale-95 transition-all duration-200"
+            <button
+              onClick={onOpenTeacherLogin}
+              className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-[#0c142b]/80 hover:bg-[#132047] border border-amber-500/40 hover:border-amber-400 text-amber-300 font-semibold text-xs sm:text-sm backdrop-blur-lg hover:scale-105 active:scale-95 transition-all duration-200"
             >
-              <Download className="w-4 h-4 text-pink-400" />
-              <span>Download Education App (.APK)</span>
-            </a>
+              <Lock className="w-4 h-4 text-amber-400" />
+              <span>शिक्षक लॉगिन (Teacher Portal)</span>
+            </button>
           </div>
 
           {/* Stats Bar */}
@@ -446,7 +407,7 @@ export default function HeroEducation3D() {
           </div>
         </motion.div>
 
-        {/* Right Column: 3D Cosmic Neon Rutherford Atom (Matching Uploaded Image) */}
+        {/* Right Column: 3D Cosmic Neon Rutherford Atom */}
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           animate={{ opacity: 1, scale: 1 }}
