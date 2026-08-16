@@ -66,7 +66,7 @@ export default function HeroEducation3D() {
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, isMobile ? 1.5 : 2));
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.2;
+    renderer.toneMappingExposure = 1.3;
     renderer.domElement.style.width = '100%';
     renderer.domElement.style.height = '100%';
     renderer.domElement.style.display = 'block';
@@ -86,7 +86,7 @@ export default function HeroEducation3D() {
     const nucleusMat = new THREE.MeshStandardMaterial({
       color: 0x00f0ff,
       emissive: 0x0284c7,
-      emissiveIntensity: 0.95,
+      emissiveIntensity: 1.1,
       roughness: 0.15,
       metalness: 0.6,
     });
@@ -96,7 +96,7 @@ export default function HeroEducation3D() {
     // Inner bright core point
     const innerCoreGeo = new THREE.SphereGeometry(0.38, 16, 16);
     const innerCoreMat = new THREE.MeshBasicMaterial({
-      color: 0x67e8f9,
+      color: 0xe0f2fe,
     });
     const innerCore = new THREE.Mesh(innerCoreGeo, innerCoreMat);
     atomGroup.add(innerCore);
@@ -115,69 +115,58 @@ export default function HeroEducation3D() {
     // =========================================================================
     // 2. 3 INTERLACED NEON ELLIPTICAL ORBIT RINGS (Cyan & Pink/Magenta)
     // =========================================================================
+    const baseRadius = 1.35;
+    const scaleY = 1.82;
     const tubeRadius = 0.024;
-    const radialSegments = 12;
     const tubularSegments = isMobile ? 64 : 100;
-    const rx = 1.35;
-    const ry = 2.45;
-
-    // Helper: Create 3D Elliptical Tube Curve
-    function createEllipseGeometry(radiusX, radiusY) {
-      const curve = new THREE.EllipseCurve(
-        0, 0,
-        radiusX, radiusY,
-        0, 2 * Math.PI,
-        false,
-        0
-      );
-      const points = curve.getPoints(tubularSegments);
-      const curve3D = new THREE.CatmullRomCurve3D(
-        points.map(p => new THREE.Vector3(p.x, p.y, 0)),
-        true
-      );
-      return new THREE.TubeGeometry(curve3D, tubularSegments, tubeRadius, radialSegments, true);
-    }
+    const torusGeo = new THREE.TorusGeometry(baseRadius, tubeRadius, 12, tubularSegments);
 
     // --- ORBIT 1: NEON ELECTRIC CYAN (Vertical / Tilted 15 deg) ---
-    const orbit1Geo = createEllipseGeometry(rx, ry);
     const orbit1Mat = new THREE.MeshStandardMaterial({
       color: 0x00f0ff,
       emissive: 0x00f0ff,
-      emissiveIntensity: 2.2,
+      emissiveIntensity: 2.5,
       roughness: 0.1,
       metalness: 0.9,
     });
-    const orbit1 = new THREE.Mesh(orbit1Geo, orbit1Mat);
-    orbit1.rotation.z = Math.PI / 12; // 15 deg
-    atomGroup.add(orbit1);
+    const orbit1Group = new THREE.Group();
+    const orbit1 = new THREE.Mesh(torusGeo, orbit1Mat);
+    orbit1.scale.set(1.0, scaleY, 1.0);
+    orbit1Group.add(orbit1);
+    orbit1Group.rotation.z = Math.PI / 12; // 15 deg
+    atomGroup.add(orbit1Group);
 
     // --- ORBIT 2: NEON MAGENTA / HOT PINK (Tilted +60 deg) ---
-    const orbit2Geo = createEllipseGeometry(rx, ry);
     const orbit2Mat = new THREE.MeshStandardMaterial({
       color: 0xff007f,
       emissive: 0xff007f,
-      emissiveIntensity: 2.2,
+      emissiveIntensity: 2.5,
       roughness: 0.1,
       metalness: 0.9,
     });
-    const orbit2 = new THREE.Mesh(orbit2Geo, orbit2Mat);
-    orbit2.rotation.z = -Math.PI / 3; // -60 deg
-    orbit2.rotation.x = Math.PI / 8;
-    atomGroup.add(orbit2);
+    const orbit2Group = new THREE.Group();
+    const orbit2 = new THREE.Mesh(torusGeo, orbit2Mat);
+    orbit2.scale.set(1.0, scaleY, 1.0);
+    orbit2Group.add(orbit2);
+    orbit2Group.rotation.z = -Math.PI / 3; // -60 deg
+    orbit2Group.rotation.x = Math.PI / 8;
+    atomGroup.add(orbit2Group);
 
     // --- ORBIT 3: NEON MAGENTA / ELECTRIC PINK (Tilted -60 deg) ---
-    const orbit3Geo = createEllipseGeometry(rx, ry);
     const orbit3Mat = new THREE.MeshStandardMaterial({
       color: 0xff007f,
       emissive: 0xff007f,
-      emissiveIntensity: 2.2,
+      emissiveIntensity: 2.5,
       roughness: 0.1,
       metalness: 0.9,
     });
-    const orbit3 = new THREE.Mesh(orbit3Geo, orbit3Mat);
-    orbit3.rotation.z = Math.PI / 3; // +60 deg
-    orbit3.rotation.y = -Math.PI / 8;
-    atomGroup.add(orbit3);
+    const orbit3Group = new THREE.Group();
+    const orbit3 = new THREE.Mesh(torusGeo, orbit3Mat);
+    orbit3.scale.set(1.0, scaleY, 1.0);
+    orbit3Group.add(orbit3);
+    orbit3Group.rotation.z = Math.PI / 3; // +60 deg
+    orbit3Group.rotation.y = -Math.PI / 8;
+    atomGroup.add(orbit3Group);
 
     // =========================================================================
     // 3. ORBITING NEON ELECTRONS (With Outer Neon Glow Halos)
@@ -188,25 +177,25 @@ export default function HeroEducation3D() {
 
     // Electron 1: Cyan on Orbit 1
     const electron1 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow1 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.55 }));
+    const glow1 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 }));
     electron1.add(glow1);
     atomGroup.add(electron1);
 
     // Electron 2: Hot Pink on Orbit 2
     const electron2 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow2 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.55 }));
+    const glow2 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.6 }));
     electron2.add(glow2);
     atomGroup.add(electron2);
 
     // Electron 3: Hot Pink on Orbit 3
     const electron3 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow3 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.55 }));
+    const glow3 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0xff007f, transparent: true, opacity: 0.6 }));
     electron3.add(glow3);
     atomGroup.add(electron3);
 
     // Electron 4: Cyan Secondary Electron on Orbit 1 (Opposite Phase)
     const electron4 = new THREE.Mesh(electronGeo, new THREE.MeshBasicMaterial({ color: 0xffffff }));
-    const glow4 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.55 }));
+    const glow4 = new THREE.Mesh(electronGlowGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.6 }));
     electron4.add(glow4);
     atomGroup.add(electron4);
 
@@ -255,14 +244,14 @@ export default function HeroEducation3D() {
     // =========================================================================
     // 5. LIGHTING & NEON POINT LIGHTS
     // =========================================================================
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
     scene.add(ambientLight);
 
-    const cyanPointLight = new THREE.PointLight(0x00f0ff, 8, 15);
+    const cyanPointLight = new THREE.PointLight(0x00f0ff, 9, 15);
     cyanPointLight.position.set(2, 3, 3);
     scene.add(cyanPointLight);
 
-    const pinkPointLight = new THREE.PointLight(0xff007f, 8, 15);
+    const pinkPointLight = new THREE.PointLight(0xff007f, 9, 15);
     pinkPointLight.position.set(-2, -3, 3);
     scene.add(pinkPointLight);
 
@@ -326,28 +315,31 @@ export default function HeroEducation3D() {
       halo.rotation.z = -t * 0.3;
 
       // Parametric Elliptical Electron Motion
+      const rx = baseRadius;
+      const ry = baseRadius * scaleY;
+
       // Electron 1 (Orbit 1: Cyan)
       const theta1 = t * 2.2;
       const p1 = new THREE.Vector3(rx * Math.cos(theta1), ry * Math.sin(theta1), 0);
-      p1.applyEuler(orbit1.rotation);
+      p1.applyEuler(orbit1Group.rotation);
       electron1.position.copy(p1);
 
       // Electron 4 (Orbit 1 Opposite Phase)
       const theta4 = t * 2.2 + Math.PI;
       const p4 = new THREE.Vector3(rx * Math.cos(theta4), ry * Math.sin(theta4), 0);
-      p4.applyEuler(orbit1.rotation);
+      p4.applyEuler(orbit1Group.rotation);
       electron4.position.copy(p4);
 
       // Electron 2 (Orbit 2: Pink)
       const theta2 = -t * 2.0;
       const p2 = new THREE.Vector3(rx * Math.cos(theta2), ry * Math.sin(theta2), 0);
-      p2.applyEuler(orbit2.rotation);
+      p2.applyEuler(orbit2Group.rotation);
       electron2.position.copy(p2);
 
       // Electron 3 (Orbit 3: Pink)
       const theta3 = t * 2.4 + Math.PI / 2;
       const p3 = new THREE.Vector3(rx * Math.cos(theta3), ry * Math.sin(theta3), 0);
-      p3.applyEuler(orbit3.rotation);
+      p3.applyEuler(orbit3Group.rotation);
       electron3.position.copy(p3);
 
       stars.rotation.y = t * 0.05;
