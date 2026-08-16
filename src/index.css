@@ -64,15 +64,21 @@
 }
 
 /* =======================================================
-   PRINT STYLES FOR TEST QUESTION PAPER HARD-COPY EXPORT
+   A4 DUAL-COLUMN PRINT STYLES (SIDE-BY-SIDE MCQ EXAM SHEET)
    ======================================================= */
 @media print {
+  @page {
+    size: A4 portrait;
+    margin: 8mm 10mm;
+  }
+
   body {
     background: #ffffff !important;
     color: #000000 !important;
+    font-family: 'Times New Roman', 'Mangal', 'Kruti Dev 010', serif !important;
   }
 
-  /* Hide everything except the printable question paper */
+  /* Hide UI elements during printing */
   header, footer, nav, #home, #founders, #app-features, #courses, #contact, .no-print {
     display: none !important;
   }
@@ -84,7 +90,7 @@
     top: 0;
     width: 100% !important;
     margin: 0 !important;
-    padding: 20px !important;
+    padding: 0 !important;
     background: #ffffff !important;
     color: #000000 !important;
     box-shadow: none !important;
@@ -93,9 +99,25 @@
 
   .printable-paper-sheet {
     border: 2px solid #000000 !important;
-    padding: 25px !important;
+    padding: 12px 16px !important;
     background: #ffffff !important;
     color: #000000 !important;
+    width: 100% !important;
+    min-height: auto !important;
+  }
+
+  /* 2-Column Split for MCQs */
+  .a4-two-columns {
+    column-count: 2 !important;
+    column-gap: 20px !important;
+    column-rule: 1px solid #333333 !important;
+    width: 100% !important;
+  }
+
+  .question-block {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+    margin-bottom: 12px !important;
   }
 
   .print-black-text {
