@@ -14,7 +14,7 @@ import {
   EarthInteriorVisual, 
   ParliamentStructureVisual 
 } from './SmartBoardVisuals';
-import Interactive3DLab from './Interactive3DLab';
+import EdTechProScienceLab from './EdTechProScienceLab';
 
 export default function SmartBoardTeachingStudio() {
   const [selectedSubjectId, setSelectedSubjectId] = useState('sst-geo');
@@ -388,11 +388,11 @@ export default function SmartBoardTeachingStudio() {
       </div>
 
       {/* =========================================================================
-          INLINE 3D VISUAL LAB (EMBEDDED INSIDE SMART BOARD STUDIO)
+          INLINE 3D VISUAL LAB (EDTECHPRO 3D SCIENCE & ANATOMY STUDIO)
           ========================================================================= */}
       {show3DLabInline && (
-        <div className="p-4 sm:p-6 bg-[#040816] border-b-2 border-cyan-500/30">
-          <Interactive3DLab />
+        <div className="p-2 sm:p-4 bg-[#040816] border-b-2 border-cyan-500/30">
+          <EdTechProScienceLab />
         </div>
       )}
 

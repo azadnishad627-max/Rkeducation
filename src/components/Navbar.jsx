@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, GraduationCap, Printer, Download, Phone, BookOpen, Bot, Lock, LogOut, ShieldCheck, Box } from 'lucide-react';
+import { Menu, X, GraduationCap, Download, Lock, LogOut, ShieldCheck, Home, Beaker } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogout, onGoToDashboard, onGoToHome, currentView }) {
@@ -10,7 +10,8 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
 
   const navItems = [
     { name: 'Home', href: '#home' },
-    { name: '3D Virtual Lab', href: '#online-3d-lab' },
+    { name: '3D Science Lab', href: '#edtech-3d-lab' },
+    { name: 'PhET 3D Lab', href: '#online-3d-lab' },
     { name: 'Education App', href: '#app-download' },
     { name: 'Leadership', href: '#founders' },
     { name: 'Batches', href: '#courses' },
@@ -25,7 +26,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
         setScrolled(false);
       }
 
-      const sections = ['home', 'online-3d-lab', 'app-download', 'founders', 'courses', 'contact'];
+      const sections = ['home', 'edtech-3d-lab', 'online-3d-lab', 'app-download', 'founders', 'courses', 'contact'];
       for (const section of sections) {
         const el = document.getElementById(section);
         if (el) {
@@ -69,7 +70,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
         </div>
 
         {/* Desktop Links (Public Nav) */}
-        {currentView === 'home' && (
+        {currentView === 'home' ? (
           <div className="hidden lg:flex items-center gap-0.5 bg-[#070d1e]/80 p-1 rounded-full border border-cyan-500/20">
             {navItems.map((item) => {
               const isActive = activeSection === item.href.substring(1);
@@ -95,6 +96,14 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
               );
             })}
           </div>
+        ) : (
+          <button
+            onClick={onGoToHome}
+            className="hidden sm:flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-[#081024] hover:bg-white/10 text-cyan-300 border border-cyan-500/30 text-xs font-mono font-bold transition-all"
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>🏠 मुख्य होमपेज पर जाएं (View Home)</span>
+          </button>
         )}
 
         {/* Action Buttons */}
@@ -112,13 +121,23 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
           {/* Teacher Login / Admin Dashboard Button */}
           {isAdminLoggedIn ? (
             <div className="flex items-center gap-2">
-              <button
-                onClick={onGoToDashboard}
-                className="px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-mono font-bold hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1.5"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Teacher Dashboard</span>
-              </button>
+              {currentView === 'home' ? (
+                <button
+                  onClick={onGoToDashboard}
+                  className="px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-500/40 text-emerald-300 text-xs font-mono font-bold hover:bg-emerald-600 hover:text-white transition-all flex items-center gap-1.5"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Teacher Dashboard</span>
+                </button>
+              ) : (
+                <button
+                  onClick={onGoToHome}
+                  className="px-3 py-1.5 rounded-xl bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono font-bold hover:bg-cyan-600 hover:text-black transition-all flex items-center gap-1.5"
+                >
+                  <Home className="w-3.5 h-3.5" />
+                  <span>होमपेज (Home)</span>
+                </button>
+              )}
 
               <button
                 onClick={onLogout}
@@ -180,12 +199,16 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
                 <button
                   onClick={() => {
                     setIsOpen(false);
-                    onGoToDashboard();
+                    if (currentView === 'home') {
+                      onGoToDashboard();
+                    } else {
+                      onGoToHome();
+                    }
                   }}
                   className="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2"
                 >
                   <ShieldCheck className="w-4 h-4" />
-                  Teacher Dashboard (Smart Board Studio)
+                  {currentView === 'home' ? 'Teacher Dashboard (Smart Board Studio)' : '🏠 मुख्य होमपेज पर जाएं'}
                 </button>
               ) : (
                 <button
