@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight } from 'lucide-react';
+import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen } from 'lucide-react';
 import TestPaperGenerator from './TestPaperGenerator';
+import SmartBoardTeachingStudio from './SmartBoardTeachingStudio';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function AdminDashboard({ adminUser, onLogout }) {
-  const [activeTab, setActiveTab] = useState('exam-generator');
+  const [activeTab, setActiveTab] = useState('smart-board'); // Default: Smart Board Studio
 
   return (
     <div className="w-full min-h-screen bg-[#050a18] text-white pt-24 pb-16 px-4 sm:px-6 md:px-8 relative z-10">
@@ -22,14 +23,14 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl sm:text-2xl font-extrabold text-white font-display">
-                  {adminUser?.name || 'RK Sir / Admin'}
+                  {adminUser?.name || 'RK Sir / Azad Nishad'}
                 </h2>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/40">
-                  ✓ {adminUser?.role || 'Authorized Educator'}
+                  ✓ {adminUser?.role || 'Master Educator & Admin'}
                 </span>
               </div>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                RK EDUCATION • सुरक्षित शिक्षक नियंत्रण कक्ष (Teacher Control Portal)
+                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम व शिक्षक पोर्टल (Smart Board Hub)
               </p>
             </div>
           </div>
@@ -47,6 +48,21 @@ export default function AdminDashboard({ adminUser, onLogout }) {
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 rounded-2xl bg-[#080e20] border border-cyan-500/20 w-fit no-print">
+          
+          {/* TAB 1: Smart Board Teaching Studio */}
+          <button
+            onClick={() => setActiveTab('smart-board')}
+            className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
+              activeTab === 'smart-board'
+                ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-black shadow-lg shadow-orange-500/20'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Monitor className="w-4 h-4" />
+            <span>🖥️ स्मार्ट बोर्ड क्लासरूम (Digital Notes)</span>
+          </button>
+
+          {/* TAB 2: AI Question Paper Generator */}
           <button
             onClick={() => setActiveTab('exam-generator')}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
@@ -56,9 +72,10 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             }`}
           >
             <FileScan className="w-4 h-4" />
-            <span>AI प्रश्न-पत्र जनरेटर (Exam Engine)</span>
+            <span>📑 AI प्रश्न-पत्र जनरेटर (Exam Engine)</span>
           </button>
 
+          {/* TAB 3: App Manager */}
           <button
             onClick={() => setActiveTab('app-status')}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
@@ -68,11 +85,17 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             }`}
           >
             <Smartphone className="w-4 h-4" />
-            <span>मोबाइल ऐप (.APK) स्थिति</span>
+            <span>📱 मोबाइल ऐप (.APK) स्थिति</span>
           </button>
         </div>
 
         {/* Tab Content */}
+        {activeTab === 'smart-board' && (
+          <div className="w-full">
+            <SmartBoardTeachingStudio />
+          </div>
+        )}
+
         {activeTab === 'exam-generator' && (
           <div className="w-full">
             <TestPaperGenerator />
