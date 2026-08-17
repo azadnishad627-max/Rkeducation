@@ -4,7 +4,7 @@ import {
   Monitor, Maximize, Minimize, PenTool, Highlighter, Eraser, Trash2, 
   ZoomIn, ZoomOut, RotateCcw, BookOpen, Globe, FlaskConical, Calculator, 
   Sparkles, CheckCircle2, HelpCircle, ChevronRight, ChevronLeft, 
-  Layers, Lightbulb, Award, Eye, Palette, Scale, FileText, X, Image as ImageIcon
+  Layers, Lightbulb, Award, Eye, Palette, Scale, FileText, X, ArrowUp, ArrowDown
 } from 'lucide-react';
 import { class8StudyMaterial } from '../data/class8StudyMaterial';
 import { 
@@ -30,6 +30,7 @@ export default function SmartBoardTeachingStudio() {
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
+  const readerScrollRef = useRef(null);
 
   // Quiz reveal state
   const [revealedQuizIndex, setRevealedQuizIndex] = useState(null);
@@ -47,6 +48,17 @@ export default function SmartBoardTeachingStudio() {
       setIsFullscreen(false);
     }
   };
+
+  // Keyboard Escape listener for closing modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setIsReaderModalOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Canvas Drawing Handlers
   useEffect(() => {
@@ -145,7 +157,7 @@ export default function SmartBoardTeachingStudio() {
           : 'bg-white text-slate-900 border-slate-300 shadow-xl'
       }`}
     >
-      {/* Canvas Layer for Smart Board Interactive Pen */}
+      {/* Canvas Layer for Smart Board Interactive Pen - Zero Interference when Pen is OFF */}
       <canvas
         ref={canvasRef}
         onMouseDown={startDrawing}
@@ -155,7 +167,8 @@ export default function SmartBoardTeachingStudio() {
         onTouchStart={startDrawing}
         onTouchMove={draw}
         onTouchEnd={stopDrawing}
-        className={`absolute inset-0 w-full h-full z-30 pointer-events-${isPenActive ? 'auto' : 'none'}`}
+        style={{ pointerEvents: isPenActive ? 'auto' : 'none' }}
+        className="absolute inset-0 w-full h-full z-30"
       />
 
       {/* =========================================================================
@@ -182,7 +195,7 @@ export default function SmartBoardTeachingStudio() {
                 स्मार्ट बोर्ड डिजिटल क्लासरूम एवं विजुअल नोट्स
               </h3>
               <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-mono font-bold border border-red-300">
-                सचित्र विजुअल डायग्राम्स Active
+                सचिन एकेडमी व NCERT मानक
               </span>
             </div>
             <p className="text-[11px] text-slate-500 font-mono">
@@ -205,10 +218,10 @@ export default function SmartBoardTeachingStudio() {
                   ? 'bg-red-600 text-white shadow-md' 
                   : themeMode === 'dark' ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-black'
               }`}
-              title="Toggle Smart Board Pen"
+              title="Toggle Smart Board Pen (Turn off to scroll)"
             >
               <PenTool className="w-3.5 h-3.5" />
-              <span>{isPenActive ? 'पेन चालू (ON)' : 'स्मार्ट पेन'}</span>
+              <span>{isPenActive ? 'पेन चालू (Drawing Mode)' : 'स्मार्ट पेन'}</span>
             </button>
 
             {isPenActive && (
@@ -359,11 +372,11 @@ export default function SmartBoardTeachingStudio() {
       </div>
 
       {/* =========================================================================
-          MAIN SMART BOARD EXPLANATORY LECTURE CANVAS WITH DETAILED VISUALS
+          MAIN SMART BOARD EXPLANATORY LECTURE CANVAS (EXACT SACHIN ACADEMY CTET FORMAT)
           ========================================================================= */}
       <div 
-        className="p-6 sm:p-8 md:p-12 max-w-5xl mx-auto space-y-10 relative z-10 transition-transform origin-top font-sans"
-        style={{ transform: `scale(${zoomLevel})` }}
+        className="p-6 sm:p-8 md:p-12 max-w-5xl mx-auto space-y-10 relative z-10 font-sans"
+        style={{ transform: `scale(${zoomLevel})`, transformOrigin: 'top center' }}
       >
         
         {/* Main Chapter Title */}
@@ -602,77 +615,162 @@ export default function SmartBoardTeachingStudio() {
       </div>
 
       {/* =========================================================================
-          FULL READER MODE MODAL (SACHIN ACADEMY E-BOOK VIEWER WITH VISUALS)
+          FULL READER MODE MODAL (PROMINENT STICKY CLOSE BUTTON & SMOOTH SCROLLING)
           ========================================================================= */}
       <AnimatePresence>
         {isReaderModalOpen && (
-          <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 md:p-6 no-print">
+          <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg flex items-center justify-center p-2 sm:p-4 md:p-6 no-print overflow-hidden">
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="w-full max-w-4xl h-[92vh] bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col border-4 border-red-600"
+              className="w-full max-w-5xl h-[94vh] bg-white text-slate-900 rounded-3xl shadow-2xl overflow-hidden flex flex-col border-4 border-red-600 relative"
             >
-              {/* Modal Top Header */}
-              <div className="p-4 bg-slate-100 border-b flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 rounded-full bg-red-600 animate-pulse" />
-                  <span className="text-sm font-extrabold text-slate-900 font-display">
-                    📖 विजुअल ई-नोट्स रीडर — {currentChapter.title}
-                  </span>
+              {/* STICKY TOP HEADER WITH PROMINENT CLEAR CLOSE BUTTON */}
+              <div className="sticky top-0 z-50 p-4 bg-gradient-to-r from-slate-900 via-[#0a142c] to-slate-900 text-white border-b-2 border-red-500 flex items-center justify-between shadow-xl">
+                <div className="flex items-center gap-3">
+                  <span className="w-3 h-3 rounded-full bg-red-500 animate-ping" />
+                  <div>
+                    <h3 className="text-sm sm:text-base font-extrabold text-white font-display">
+                      📖 {currentChapter.title}
+                    </h3>
+                    <span className="text-[10px] text-cyan-300 font-mono">
+                      सचिन एकेडमी व NCERT क्लास 8th संपूर्ण विजुअल नोट्स
+                    </span>
+                  </div>
                 </div>
+
+                {/* Highly Visible Red Close Button */}
                 <button
                   onClick={() => setIsReaderModalOpen(false)}
-                  className="p-1.5 rounded-lg bg-slate-200 hover:bg-red-600 hover:text-white transition-colors"
+                  className="px-4 py-2 rounded-xl bg-red-600 hover:bg-red-700 active:scale-95 text-white font-extrabold text-xs font-mono transition-all flex items-center gap-1.5 shadow-lg shadow-red-600/50"
+                  title="Close Reader (or Press Escape)"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4 text-white" />
+                  <span>✕ बंद करें (Close Viewer)</span>
                 </button>
               </div>
 
-              {/* Scrollable Reader Body */}
-              <div className="flex-1 overflow-y-auto p-6 sm:p-10 space-y-8 leading-relaxed font-sans">
+              {/* Scroll Controls Floating Bar */}
+              <div className="absolute bottom-6 right-8 z-40 flex flex-col gap-2">
+                <button
+                  onClick={() => readerScrollRef.current?.scrollBy({ top: -350, behavior: 'smooth' })}
+                  className="p-3 rounded-2xl bg-black/80 hover:bg-red-600 text-white shadow-xl backdrop-blur-md border border-white/20 transition-all hover:scale-110"
+                  title="Scroll Up"
+                >
+                  <ArrowUp className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => readerScrollRef.current?.scrollBy({ top: 350, behavior: 'smooth' })}
+                  className="p-3 rounded-2xl bg-black/80 hover:bg-red-600 text-white shadow-xl backdrop-blur-md border border-white/20 transition-all hover:scale-110"
+                  title="Scroll Down"
+                >
+                  <ArrowDown className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* 100% SMOOTH SCROLLABLE READER BODY */}
+              <div 
+                ref={readerScrollRef}
+                tabIndex={0}
+                className="flex-1 overflow-y-auto overscroll-contain p-6 sm:p-10 md:p-14 space-y-10 leading-relaxed font-sans bg-white focus:outline-none"
+              >
                 
                 {/* Chapter Banner */}
-                <div className="text-center pb-4 border-b-2 border-slate-300">
-                  <div className="text-xs font-extrabold text-red-600 uppercase">
+                <div className="text-center pb-6 border-b-2 border-slate-300">
+                  <div className="inline-block px-3.5 py-1 rounded-full bg-red-100 border border-red-300 text-red-700 text-xs font-extrabold uppercase tracking-wider">
                     RK EDUCATION • {currentSubject.name}
                   </div>
-                  <h2 className="text-2xl sm:text-3xl font-extrabold text-[#1e3a8a] mt-1">
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1e3a8a] mt-2">
                     {currentChapter.title}
                   </h2>
-                  <p className="text-xs sm:text-sm text-slate-600 mt-1">
+                  <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-2xl mx-auto">
                     {currentChapter.summary}
                   </p>
                 </div>
 
-                {/* VISUAL DIAGRAM CARD INSIDE READER MODAL */}
+                {/* DETAILED VISUAL DIAGRAM CARD INSIDE READER */}
                 {renderChapterVisuals(currentChapter.id)}
 
-                {/* Sections */}
+                {/* Sections with Red Underlined Headings & Arrows */}
                 {currentChapter.sections && currentChapter.sections.map((sec, sIdx) => (
-                  <div key={sIdx} className="space-y-3">
+                  <div key={sIdx} className="space-y-4">
                     <div className="text-center">
-                      <h3 className="text-base sm:text-lg font-extrabold text-[#b91c1c] underline underline-offset-8 decoration-2 inline-block">
+                      <h3 className="text-lg sm:text-xl font-extrabold text-[#b91c1c] underline underline-offset-8 decoration-2 decoration-[#b91c1c] inline-block">
                         {sec.heading}
                       </h3>
                     </div>
 
-                    <div className="space-y-2 pt-2 text-xs sm:text-sm text-slate-800">
+                    <div className="space-y-3 pt-2 text-xs sm:text-sm text-slate-800 leading-relaxed">
                       {sec.points.map((pt, pIdx) => (
-                        <div key={pIdx} className="flex items-start gap-2">
-                          <span className="text-[#b91c1c] font-bold text-sm select-none shrink-0">➢</span>
-                          <p>{pt}</p>
+                        <div key={pIdx} className="flex items-start gap-2.5">
+                          <span className="text-[#b91c1c] font-bold text-base select-none shrink-0">➢</span>
+                          <p className="font-medium">{pt}</p>
                         </div>
                       ))}
                     </div>
 
                     {sec.booster && (
-                      <div className="p-3 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-xs font-bold text-amber-950 mt-2">
+                      <div className="p-3.5 rounded-xl bg-amber-50 border-l-4 border-amber-500 text-xs font-bold text-amber-950 mt-3 shadow-sm">
                         {sec.booster}
                       </div>
                     )}
                   </div>
                 ))}
+
+                {/* Mind Map */}
+                <div className="space-y-3 pt-4">
+                  <h4 className="text-base font-extrabold text-[#1e3a8a] border-b pb-1">
+                    माइंड मैप एवं वर्गीकरण
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    {currentChapter.mindMap.map((node, idx) => (
+                      <div key={idx} className="p-3.5 rounded-xl bg-slate-50 border border-slate-300 text-xs">
+                        <span className="font-bold text-red-600">0{idx + 1}. {node.label}</span>
+                        <div className="mt-1 pl-2 border-l-2 border-red-400 space-y-0.5 text-slate-700">
+                          {node.sub.map((s, si) => <div key={si}>• {s}</div>)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Key Definitions */}
+                <div className="space-y-3 pt-4">
+                  <h4 className="text-base font-extrabold text-[#1e3a8a] border-b pb-1">
+                    महत्वपूर्ण शब्दावली एवं परिभाषाएं
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    {currentChapter.keyHighlights.map((kh, idx) => (
+                      <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-300">
+                        <span className="font-bold text-blue-700">❖ {kh.term}</span>
+                        <p className="text-slate-700 mt-1">{kh.def}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Exam Booster Box */}
+                <div className="p-5 rounded-2xl bg-[#fffbeb] border-2 border-amber-400 space-y-2 shadow-sm">
+                  <h4 className="text-sm font-extrabold text-amber-900 uppercase">
+                    ⚡ परीक्षा में शत-प्रतिशत पूछे जाने वाले बिंदु (EXAM BOOSTER)
+                  </h4>
+                  <div className="space-y-1.5 text-xs sm:text-sm font-bold text-amber-950">
+                    {currentChapter.examBooster.map((item, idx) => (
+                      <p key={idx}>{item}</p>
+                    ))}
+                  </div>
+                </div>
+
+                {/* End of Reader */}
+                <div className="text-center pt-8 pb-4 border-t border-slate-200">
+                  <button
+                    onClick={() => setIsReaderModalOpen(false)}
+                    className="px-6 py-2.5 rounded-xl bg-red-600 text-white font-bold text-xs shadow-lg hover:scale-105 transition-transform"
+                  >
+                    ✕ बंद करें और क्लासरूम में वापस जाएं
+                  </button>
+                </div>
 
               </div>
             </motion.div>

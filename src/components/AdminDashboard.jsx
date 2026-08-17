@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen } from 'lucide-react';
+import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen, Box, Sparkles } from 'lucide-react';
 import TestPaperGenerator from './TestPaperGenerator';
 import SmartBoardTeachingStudio from './SmartBoardTeachingStudio';
+import Interactive3DLab from './Interactive3DLab';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function AdminDashboard({ adminUser, onLogout }) {
-  const [activeTab, setActiveTab] = useState('smart-board'); // Default: Smart Board Studio
+  const [activeTab, setActiveTab] = useState('smart-board');
 
   return (
     <div className="w-full min-h-screen bg-[#050a18] text-white pt-24 pb-16 px-4 sm:px-6 md:px-8 relative z-10">
@@ -30,7 +31,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
                 </span>
               </div>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम व शिक्षक पोर्टल (Smart Board Hub)
+                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम, 3D साइंस लैब व शिक्षक पोर्टल
               </p>
             </div>
           </div>
@@ -52,9 +53,9 @@ export default function AdminDashboard({ adminUser, onLogout }) {
           {/* TAB 1: Smart Board Teaching Studio */}
           <button
             onClick={() => setActiveTab('smart-board')}
-            className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
               activeTab === 'smart-board'
-                ? 'bg-gradient-to-r from-amber-400 via-orange-500 to-pink-500 text-black shadow-lg shadow-orange-500/20'
+                ? 'bg-gradient-to-r from-red-600 via-amber-500 to-pink-500 text-white shadow-lg'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -62,12 +63,25 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <span>🖥️ स्मार्ट बोर्ड क्लासरूम (Digital Notes)</span>
           </button>
 
-          {/* TAB 2: AI Question Paper Generator */}
+          {/* TAB 2: 3D Science & Geography Lab */}
+          <button
+            onClick={() => setActiveTab('3d-lab')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
+              activeTab === '3d-lab'
+                ? 'bg-gradient-to-r from-[#00f0ff] via-indigo-500 to-pink-500 text-black shadow-lg shadow-cyan-500/20'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Box className="w-4 h-4" />
+            <span>🔬 3D साइंस व जियोग्राफी लैब (3D Models)</span>
+          </button>
+
+          {/* TAB 3: AI Question Paper Generator */}
           <button
             onClick={() => setActiveTab('exam-generator')}
-            className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
               activeTab === 'exam-generator'
-                ? 'bg-gradient-to-r from-[#00f0ff] to-blue-600 text-black shadow-lg shadow-cyan-500/20'
+                ? 'bg-gradient-to-r from-emerald-500 to-cyan-500 text-black shadow-lg'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -75,10 +89,10 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <span>📑 AI प्रश्न-पत्र जनरेटर (Exam Engine)</span>
           </button>
 
-          {/* TAB 3: App Manager */}
+          {/* TAB 4: App Manager */}
           <button
             onClick={() => setActiveTab('app-status')}
-            className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
               activeTab === 'app-status'
                 ? 'bg-gradient-to-r from-pink-500 to-amber-400 text-black shadow-lg'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
@@ -93,6 +107,12 @@ export default function AdminDashboard({ adminUser, onLogout }) {
         {activeTab === 'smart-board' && (
           <div className="w-full">
             <SmartBoardTeachingStudio />
+          </div>
+        )}
+
+        {activeTab === '3d-lab' && (
+          <div className="w-full">
+            <Interactive3DLab />
           </div>
         )}
 
