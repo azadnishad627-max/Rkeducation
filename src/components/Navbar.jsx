@@ -10,7 +10,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
 
   const navItems = [
     { name: 'Home', href: '#home' },
-    { name: '3D Lab', href: '#3d-lab' },
+    { name: '3D Virtual Lab', href: '#online-3d-lab' },
     { name: 'Education App', href: '#app-download' },
     { name: 'Leadership', href: '#founders' },
     { name: 'Batches', href: '#courses' },
@@ -25,7 +25,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
         setScrolled(false);
       }
 
-      const sections = ['home', '3d-lab', 'app-download', 'founders', 'courses', 'contact'];
+      const sections = ['home', 'online-3d-lab', 'app-download', 'founders', 'courses', 'contact'];
       for (const section of sections) {
         const el = document.getElementById(section);
         if (el) {

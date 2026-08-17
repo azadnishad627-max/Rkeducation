@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen, Box, Sparkles } from 'lucide-react';
+import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen, Box, Sparkles, FlaskConical } from 'lucide-react';
 import TestPaperGenerator from './TestPaperGenerator';
 import SmartBoardTeachingStudio from './SmartBoardTeachingStudio';
+import Online3DVirtualLab from './Online3DVirtualLab';
 import Interactive3DLab from './Interactive3DLab';
 import { rkEducationData } from '../data/rkEducationData';
 
@@ -16,7 +17,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
         {/* Top Teacher Admin Banner */}
         <div className="mb-8 p-6 rounded-3xl bg-gradient-to-r from-[#0a132c] via-[#081024] to-[#140b28] border border-cyan-500/40 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 no-print">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00f0ff] to-pink-500 p-[2px] shadow-xl">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#00f0ff] to-pink-500 p-[1px] shadow-xl">
               <div className="w-full h-full bg-[#050a18] rounded-[14px] flex items-center justify-center">
                 <GraduationCap className="w-7 h-7 text-[#00f0ff]" />
               </div>
@@ -31,7 +32,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
                 </span>
               </div>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम, 3D साइंस लैब व शिक्षक पोर्टल
+                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम, ऑनलाइन 3D साइंस लैब व शिक्षक पोर्टल
               </p>
             </div>
           </div>
@@ -63,17 +64,17 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <span>🖥️ स्मार्ट बोर्ड क्लासरूम (Digital Notes)</span>
           </button>
 
-          {/* TAB 2: 3D Science & Geography Lab */}
+          {/* TAB 2: Online 3D Virtual STEM Lab (PhET / NASA) */}
           <button
-            onClick={() => setActiveTab('3d-lab')}
+            onClick={() => setActiveTab('online-3d-lab')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
-              activeTab === '3d-lab'
+              activeTab === 'online-3d-lab'
                 ? 'bg-gradient-to-r from-[#00f0ff] via-indigo-500 to-pink-500 text-black shadow-lg shadow-cyan-500/20'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
             <Box className="w-4 h-4" />
-            <span>🔬 3D साइंस व जियोग्राफी लैब (3D Models)</span>
+            <span>🔬 ऑनलाइन 3D वर्चुअल लैब (STEM Simulators)</span>
           </button>
 
           {/* TAB 3: AI Question Paper Generator */}
@@ -110,9 +111,9 @@ export default function AdminDashboard({ adminUser, onLogout }) {
           </div>
         )}
 
-        {activeTab === '3d-lab' && (
+        {activeTab === 'online-3d-lab' && (
           <div className="w-full">
-            <Interactive3DLab />
+            <Online3DVirtualLab />
           </div>
         )}
 
