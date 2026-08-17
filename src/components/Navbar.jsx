@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, GraduationCap, Printer, Download, Phone, BookOpen, Bot, Lock, LogOut, ShieldCheck } from 'lucide-react';
+import { Menu, X, GraduationCap, Printer, Download, Phone, BookOpen, Bot, Lock, LogOut, ShieldCheck, Box } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogout, onGoToDashboard, onGoToHome, currentView }) {
@@ -10,6 +10,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
 
   const navItems = [
     { name: 'Home', href: '#home' },
+    { name: '3D Lab', href: '#3d-lab' },
     { name: 'Education App', href: '#app-download' },
     { name: 'Leadership', href: '#founders' },
     { name: 'Batches', href: '#courses' },
@@ -24,7 +25,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
         setScrolled(false);
       }
 
-      const sections = ['home', 'app-download', 'founders', 'courses', 'contact'];
+      const sections = ['home', '3d-lab', 'app-download', 'founders', 'courses', 'contact'];
       for (const section of sections) {
         const el = document.getElementById(section);
         if (el) {
@@ -62,7 +63,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
               {rkEducationData.institute.name}
             </span>
             <span className="text-[9px] tracking-wider uppercase text-cyan-300 font-mono">
-              Smart School & AI Platform
+              Smart School & 3D Lab Platform
             </span>
           </div>
         </div>
@@ -184,7 +185,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
                   className="w-full py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2"
                 >
                   <ShieldCheck className="w-4 h-4" />
-                  Teacher Dashboard (Exam Generator)
+                  Teacher Dashboard (Smart Board Studio)
                 </button>
               ) : (
                 <button
