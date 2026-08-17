@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroEducation3D from './components/HeroEducation3D';
-import AppDownloadSection from './components/AppDownloadSection';
+import EdTechProScienceLab from './components/EdTechProScienceLab';
 import Online3DVirtualLab from './components/Online3DVirtualLab';
+import AppDownloadSection from './components/AppDownloadSection';
 import LeadershipSection from './components/LeadershipSection';
 import CourseBatches from './components/CourseBatches';
 import ContactSection from './components/ContactSection';
@@ -66,6 +67,7 @@ export default function App() {
         ) : (
           <>
             <HeroEducation3D onOpenTeacherLogin={() => setIsLoginModalOpen(true)} />
+            <EdTechProScienceLab />
             <Online3DVirtualLab />
             <AppDownloadSection />
             <LeadershipSection />

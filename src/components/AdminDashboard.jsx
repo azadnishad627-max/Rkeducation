@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen, Box, Sparkles, FlaskConical } from 'lucide-react';
+import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen, Box, Sparkles, FlaskConical, Beaker } from 'lucide-react';
 import TestPaperGenerator from './TestPaperGenerator';
 import SmartBoardTeachingStudio from './SmartBoardTeachingStudio';
+import EdTechProScienceLab from './EdTechProScienceLab';
 import Online3DVirtualLab from './Online3DVirtualLab';
-import Interactive3DLab from './Interactive3DLab';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function AdminDashboard({ adminUser, onLogout }) {
@@ -32,7 +32,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
                 </span>
               </div>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम, ऑनलाइन 3D साइंस लैब व शिक्षक पोर्टल
+                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम, 3D साइंस लैब व शिक्षक पोर्टल
               </p>
             </div>
           </div>
@@ -64,20 +64,33 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <span>🖥️ स्मार्ट बोर्ड क्लासरूम (Digital Notes)</span>
           </button>
 
-          {/* TAB 2: Online 3D Virtual STEM Lab (PhET / NASA) */}
+          {/* TAB 2: EdTechPro 3D Science & Anatomy Lab */}
           <button
-            onClick={() => setActiveTab('online-3d-lab')}
+            onClick={() => setActiveTab('edtech-3d-lab')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
-              activeTab === 'online-3d-lab'
+              activeTab === 'edtech-3d-lab'
                 ? 'bg-gradient-to-r from-[#00f0ff] via-indigo-500 to-pink-500 text-black shadow-lg shadow-cyan-500/20'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Box className="w-4 h-4" />
-            <span>🔬 ऑनलाइन 3D वर्चुअल लैब (STEM Simulators)</span>
+            <Beaker className="w-4 h-4" />
+            <span>🔬 3D साइंस व एनाटॉमी लैब (EdTechPro 3D)</span>
           </button>
 
-          {/* TAB 3: AI Question Paper Generator */}
+          {/* TAB 3: PhET / STEM Virtual Labs */}
+          <button
+            onClick={() => setActiveTab('online-3d-lab')}
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
+              activeTab === 'online-3d-lab'
+                ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-black shadow-lg'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <Box className="w-4 h-4" />
+            <span>⚡ PhET वर्चुअल सिमुलेटर</span>
+          </button>
+
+          {/* TAB 4: AI Question Paper Generator */}
           <button
             onClick={() => setActiveTab('exam-generator')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
@@ -90,7 +103,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <span>📑 AI प्रश्न-पत्र जनरेटर (Exam Engine)</span>
           </button>
 
-          {/* TAB 4: App Manager */}
+          {/* TAB 5: App Manager */}
           <button
             onClick={() => setActiveTab('app-status')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
@@ -108,6 +121,12 @@ export default function AdminDashboard({ adminUser, onLogout }) {
         {activeTab === 'smart-board' && (
           <div className="w-full">
             <SmartBoardTeachingStudio />
+          </div>
+        )}
+
+        {activeTab === 'edtech-3d-lab' && (
+          <div className="w-full">
+            <EdTechProScienceLab />
           </div>
         )}
 
