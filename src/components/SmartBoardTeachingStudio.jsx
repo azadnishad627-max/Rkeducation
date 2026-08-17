@@ -4,21 +4,28 @@ import {
   Monitor, Maximize, Minimize, PenTool, Highlighter, Eraser, Trash2, 
   ZoomIn, ZoomOut, RotateCcw, BookOpen, Globe, FlaskConical, Calculator, 
   Sparkles, CheckCircle2, HelpCircle, ChevronRight, ChevronLeft, 
-  Layers, Lightbulb, Award, Eye, Palette, Scale, FileText, X
+  Layers, Lightbulb, Award, Eye, Palette, Scale, FileText, X, Image as ImageIcon
 } from 'lucide-react';
 import { class8StudyMaterial } from '../data/class8StudyMaterial';
+import { 
+  SolarSystemVisual, 
+  GlobeHeatZonesVisual, 
+  AtmosphereLayersVisual, 
+  EarthInteriorVisual, 
+  ParliamentStructureVisual 
+} from './SmartBoardVisuals';
 
 export default function SmartBoardTeachingStudio() {
   const [selectedSubjectId, setSelectedSubjectId] = useState('sst-geo');
   const [selectedChapterIndex, setSelectedChapterIndex] = useState(0);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [zoomLevel, setZoomLevel] = useState(1); // 1, 1.15, 1.3
-  const [themeMode, setThemeMode] = useState('light'); // Default to Sachin Academy crisp white sheet style
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [themeMode, setThemeMode] = useState('light');
   const [isReaderModalOpen, setIsReaderModalOpen] = useState(false);
   
-  // Smart Board Pen / Drawing Tools
+  // Smart Board Pen Tools
   const [isPenActive, setIsPenActive] = useState(false);
-  const [penColor, setPenColor] = useState('#ef4444'); // Red default like teacher correction pen
+  const [penColor, setPenColor] = useState('#ef4444');
   const [penSize, setPenSize] = useState(3.5);
   const [isDrawing, setIsDrawing] = useState(false);
   const canvasRef = useRef(null);
@@ -97,6 +104,38 @@ export default function SmartBoardTeachingStudio() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
   };
 
+  // Helper to render matching visual diagrams based on active chapter
+  const renderChapterVisuals = (chapId) => {
+    if (chapId === 'geo-1') {
+      return (
+        <div className="space-y-6 my-6">
+          <SolarSystemVisual />
+          <GlobeHeatZonesVisual />
+        </div>
+      );
+    }
+    if (chapId === 'geo-2') {
+      return (
+        <div className="space-y-6 my-6">
+          <AtmosphereLayersVisual />
+          <EarthInteriorVisual />
+        </div>
+      );
+    }
+    if (chapId === 'civ-1') {
+      return (
+        <div className="space-y-6 my-6">
+          <ParliamentStructureVisual />
+        </div>
+      );
+    }
+    return (
+      <div className="space-y-6 my-6">
+        <AtmosphereLayersVisual />
+      </div>
+    );
+  };
+
   return (
     <div 
       ref={containerRef}
@@ -143,11 +182,11 @@ export default function SmartBoardTeachingStudio() {
                 स्मार्ट बोर्ड डिजिटल क्लासरूम एवं विजुअल नोट्स
               </h3>
               <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-mono font-bold border border-red-300">
-                सचिन एकेडमी व NCERT मानक
+                सचित्र विजुअल डायग्राम्स Active
               </span>
             </div>
             <p className="text-[11px] text-slate-500 font-mono">
-              कक्षा 8वीं SST, भूगोल, इतिहास, नागरिक शास्त्र • सचित्र व्याख्या, कीवर्ड्स व परीक्षा बूस्टर
+              कक्षा 8वीं SST • विस्तृत सचित्र व्याख्या, 3D सोलर सिस्टम, ग्लोब कटिबंध, वायुमंडल व संसद डायग्राम
             </p>
           </div>
         </div>
@@ -239,10 +278,10 @@ export default function SmartBoardTeachingStudio() {
           <button
             onClick={() => setIsReaderModalOpen(true)}
             className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-rose-700 text-white font-extrabold text-xs font-mono shadow-md shadow-red-600/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-1.5"
-            title="View Complete Explanatory Notes"
+            title="View Complete Explanatory Notes & Visuals"
           >
             <Eye className="w-3.5 h-3.5 text-white" />
-            <span>👁️ व्यू संपूर्ण नोट्स (Reader View)</span>
+            <span>👁️ व्यू संपूर्ण सचित्र नोट्स (Reader View)</span>
           </button>
 
           {/* Fullscreen Button */}
@@ -320,7 +359,7 @@ export default function SmartBoardTeachingStudio() {
       </div>
 
       {/* =========================================================================
-          MAIN SMART BOARD EXPLANATORY LECTURE CANVAS (SACHIN ACADEMY CTET FORMAT)
+          MAIN SMART BOARD EXPLANATORY LECTURE CANVAS WITH DETAILED VISUALS
           ========================================================================= */}
       <div 
         className="p-6 sm:p-8 md:p-12 max-w-5xl mx-auto space-y-10 relative z-10 transition-transform origin-top font-sans"
@@ -339,6 +378,9 @@ export default function SmartBoardTeachingStudio() {
             {currentChapter.summary}
           </p>
         </div>
+
+        {/* DETAILED VISUAL DIAGRAM CARD (EMBEDDED FOR THIS CHAPTER) */}
+        {renderChapterVisuals(currentChapter.id)}
 
         {/* Sections Breakdown with Red Underlined Headings & Blue Highlighted Keywords */}
         {currentChapter.sections && currentChapter.sections.map((sec, sIdx) => (
@@ -560,7 +602,7 @@ export default function SmartBoardTeachingStudio() {
       </div>
 
       {/* =========================================================================
-          FULL READER MODE MODAL (SACHIN ACADEMY E-BOOK VIEWER)
+          FULL READER MODE MODAL (SACHIN ACADEMY E-BOOK VIEWER WITH VISUALS)
           ========================================================================= */}
       <AnimatePresence>
         {isReaderModalOpen && (
@@ -602,6 +644,9 @@ export default function SmartBoardTeachingStudio() {
                     {currentChapter.summary}
                   </p>
                 </div>
+
+                {/* VISUAL DIAGRAM CARD INSIDE READER MODAL */}
+                {renderChapterVisuals(currentChapter.id)}
 
                 {/* Sections */}
                 {currentChapter.sections && currentChapter.sections.map((sec, sIdx) => (
