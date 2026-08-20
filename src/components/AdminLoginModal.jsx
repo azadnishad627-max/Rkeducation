@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, User, Key, X, ShieldCheck, AlertCircle, RefreshCw } from 'lucide-react';
+import { Lock, User, Key, X, ShieldCheck, AlertCircle, RefreshCw, CheckCircle2 } from 'lucide-react';
 
 export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  // Pre-filled credentials so user doesn't have to type every time
+  const [username, setUsername] = useState('azad3229011');
+  const [password, setPassword] = useState('Azad3229011#@#@');
+  const [rememberMe, setRememberMe] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,17 +22,27 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
       // Secure Teacher / Admin Credentials
       if (u === 'azad3229011' && p === 'Azad3229011#@#@') {
         setIsLoading(false);
-        onLoginSuccess({
+        const userData = {
           user: 'azad3229011',
-          name: 'RK EDUCATION Educator & Admin',
-          role: 'Authorized Teacher & Admin'
-        });
+          name: 'RK Sir / Azad Nishad',
+          role: 'Master Educator & Admin'
+        };
+
+        if (rememberMe) {
+          try {
+            localStorage.setItem('rk_saved_admin_u', u);
+            localStorage.setItem('rk_saved_admin_p', p);
+            localStorage.setItem('rk_is_admin_logged_in', 'true');
+          } catch (err) {}
+        }
+
+        onLoginSuccess(userData);
         onClose();
       } else {
         setIsLoading(false);
         setErrorMsg('गलत यूजरनेम या पासवर्ड! (Invalid Credentials)');
       }
-    }, 300);
+    }, 200);
   };
 
   if (!isOpen) return null;
@@ -63,13 +75,13 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
               शिक्षक / एडमिन लॉगिन
             </h3>
             <p className="text-xs text-slate-400 font-mono">
-              Teacher & Admin Portal
+              Teacher & Admin Portal (Auto-Saved)
             </p>
           </div>
         </div>
 
         <p className="text-xs text-slate-300 mb-5 leading-relaxed">
-          कृपया प्रश्न-पत्र जनरेटर एक्सेस करने के लिए अपना अधिकृत यूजरनेम और पासवर्ड दर्ज करें।
+          यूजरनेम और पासवर्ड पहले से सेव हैं। सीधे <strong>"लॉगिन करें"</strong> बटन दबाएं।
         </p>
 
         {errorMsg && (
@@ -90,7 +102,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="Username दर्ज करें"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400 font-bold"
               />
             </div>
           </div>
@@ -105,9 +117,21 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400 font-bold"
               />
             </div>
+          </div>
+
+          <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
+            <label className="flex items-center gap-2 cursor-pointer text-emerald-400 font-bold">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+                className="rounded accent-emerald-500"
+              />
+              <span>पासवर्ड हमेशा याद रखें (Save Login)</span>
+            </label>
           </div>
 
           <button

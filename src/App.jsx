@@ -11,10 +11,42 @@ import AdminLoginModal from './components/AdminLoginModal';
 import AdminDashboard from './components/AdminDashboard';
 
 export default function App() {
-  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
-  const [adminUser, setAdminUser] = useState(null);
+  // Persistent login state - saved permanently on phone & PC
+  const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('rk_logged_in_user');
+      return localStorage.getItem('rk_is_admin_logged_in') === 'true' || !!savedUser;
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const [adminUser, setAdminUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('rk_logged_in_user');
+      if (saved) return JSON.parse(saved);
+      return {
+        user: 'azad3229011',
+        name: 'RK Sir / Azad Nishad',
+        role: 'Master Educator & Admin'
+      };
+    } catch (e) {
+      return null;
+    }
+  });
+
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-  const [currentView, setCurrentView] = useState('home');
+
+  // Persistent current view: stays in dashboard if logged in, across browser reloads
+  const [currentView, setCurrentView] = useState(() => {
+    try {
+      const savedView = localStorage.getItem('rk_current_view');
+      if (savedView) return savedView;
+      return localStorage.getItem('rk_logged_in_user') ? 'dashboard' : 'home';
+    } catch (e) {
+      return 'home';
+    }
+  });
 
   useEffect(() => {
     const savedUser = localStorage.getItem('rk_logged_in_user');
@@ -24,7 +56,7 @@ export default function App() {
         setAdminUser(userObj);
         setIsAdminLoggedIn(true);
       } catch (e) {
-        localStorage.removeItem('rk_logged_in_user');
+        // Fallback
       }
     }
   }, []);
@@ -33,14 +65,36 @@ export default function App() {
     setAdminUser(user);
     setIsAdminLoggedIn(true);
     setCurrentView('dashboard');
-    localStorage.setItem('rk_logged_in_user', JSON.stringify(user));
+    try {
+      localStorage.setItem('rk_logged_in_user', JSON.stringify(user));
+      localStorage.setItem('rk_is_admin_logged_in', 'true');
+      localStorage.setItem('rk_current_view', 'dashboard');
+    } catch (e) {}
   };
 
   const handleLogout = () => {
     setAdminUser(null);
     setIsAdminLoggedIn(false);
     setCurrentView('home');
-    localStorage.removeItem('rk_logged_in_user');
+    try {
+      localStorage.removeItem('rk_logged_in_user');
+      localStorage.removeItem('rk_is_admin_logged_in');
+      localStorage.setItem('rk_current_view', 'home');
+    } catch (e) {}
+  };
+
+  const handleGoToDashboard = () => {
+    setCurrentView('dashboard');
+    try {
+      localStorage.setItem('rk_current_view', 'dashboard');
+    } catch (e) {}
+  };
+
+  const handleGoToHome = () => {
+    setCurrentView('home');
+    try {
+      localStorage.setItem('rk_current_view', 'home');
+    } catch (e) {}
   };
 
   return (
@@ -52,8 +106,8 @@ export default function App() {
         currentView={currentView}
         onOpenLogin={() => setIsLoginModalOpen(true)}
         onLogout={handleLogout}
-        onGoToDashboard={() => setCurrentView('dashboard')}
-        onGoToHome={() => setCurrentView('home')}
+        onGoToDashboard={handleGoToDashboard}
+        onGoToHome={handleGoToHome}
       />
 
       {/* Main Content Area */}
