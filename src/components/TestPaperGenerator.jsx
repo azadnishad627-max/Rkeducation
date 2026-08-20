@@ -4,7 +4,7 @@ import {
   Printer, Download, Sparkles, FileText, CheckCircle2, RefreshCw, 
   Layers, BookOpen, Clock, Award, HelpCircle, FileUp, AlertCircle, 
   Columns2, Edit3, Eye, FileScan, Key, ExternalLink, Bot, Zap, 
-  Cpu, Plus, Trash2, ClipboardList, PenTool, Hash, UserCheck
+  Cpu, Plus, Trash2, ClipboardList, PenTool, Hash, UserCheck, FileCheck
 } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
 
@@ -15,46 +15,46 @@ export default function TestPaperGenerator() {
   // 1. Header & Institute Configuration
   const [coachingName, setCoachingName] = useState('आर. के. एजुकेशन एवं कोचिंग संस्थान');
   const [coachingSubHeader, setCoachingSubHeader] = useState('RK EDUCATION & COACHING INSTITUTE • मूल्यांकन एवं टेस्ट सीरीज 2026-27');
-  const [examHeading, setExamHeading] = useState('अभ्यास एवं मूल्यांकन प्रश्न-पत्र (Model Test Paper)');
+  const [examHeading, setExamHeading] = useState('NMMS Class 8 Reasoning MCQ – 30 प्रश्न (सत्यापित)');
   const [selectedClass, setSelectedClass] = useState('कक्षा 8 (Class 8th)');
-  const [selectedSubject, setSelectedSubject] = useState('विज्ञान (Science)');
-  const [chapterName, setChapterName] = useState('कोशिका, बल एवं दाब, प्रकाश तथा रासायनिक अभिक्रियाएं');
+  const [selectedSubject, setSelectedSubject] = useState('तर्कशक्ति (Mental Ability / NMMS)');
+  const [chapterName, setChapterName] = useState('श्रृंखला, कूट भाषा, दिशा परीक्षण व वेन आरेख');
   const [timeAllowed, setTimeAllowed] = useState('60 मिनट (1 Hour)');
-  const [maxMarks, setMaxMarks] = useState('20 अंक');
+  const [maxMarks, setMaxMarks] = useState('30 अंक');
   const [generalInstructions, setGeneralInstructions] = useState('1. सभी प्रश्न अनिवार्य हैं। 2. प्रत्येक प्रश्न 1 अंक का है। 3. सही विकल्प का चयन करें।');
   const [includeAnswerKey, setIncludeAnswerKey] = useState(true);
 
-  // 2. Active Tab Mode: 'ai-gen' | 'custom-form' | 'raw-text'
-  const [activeCreationMode, setActiveCreationMode] = useState('ai-gen');
+  // 2. Active Tab Mode: 'raw-text' | 'custom-form' | 'ai-gen'
+  const [activeCreationMode, setActiveCreationMode] = useState('raw-text'); // Default: Bulk Text Paste
 
   // 3. Question List State
   const [questions, setQuestions] = useState([
     {
       id: 1,
-      q: "पादप कोशिका की सबसे बाहरी कठोर सुरक्षात्मक परत को क्या कहा जाता है?",
-      options: ["(A) कोशिका भित्ति (Cell Wall)", "(B) कोशिका झिल्ली", "(C) केंद्रक झिल्ली", "(D) राइबोसोम"],
-      ans: "(A) कोशिका भित्ति (Cell Wall)",
+      q: "एक निश्चित कूट भाषा में 'BOOK' को 'CPPL' लिखा जाता है, तो 'PEN' को क्या लिखा जाएगा?",
+      options: ["(A) QFO", "(B) QDO", "(C) RFO", "(D) QFP"],
+      ans: "(A) QFO",
       marks: 1
     },
     {
       id: 2,
-      q: "कोशिका का 'ऊर्जा घर' (Powerhouse of the Cell) किसे कहा जाता है?",
-      options: ["(A) केंद्रक (Nucleus)", "(B) माइटोकॉन्ड्रिया (Mitochondria)", "(C) लाइसोसोम", "(D) गॉल्जी काय"],
-      ans: "(B) माइटोकॉन्ड्रिया (Mitochondria)",
+      q: "यदि 'APPLE' को 'BQQMF' लिखा जाता है, तो 'MANGO' को क्या लिखा जाएगा?",
+      options: ["(A) NBOHP", "(B) NBPHP", "(C) NBOHP", "(D) NCOHP"],
+      ans: "(B) NBPHP",
       marks: 1
     },
     {
       id: 3,
-      q: "दाब का SI मात्रक निम्नलिखित में से क्या होता है?",
-      options: ["(A) न्यूटन (Newton)", "(B) पास्कल (Pascal - N/m²)", "(C) जूल (Joule)", "(D) वाट (Watt)"],
-      ans: "(B) पास्कल (Pascal - N/m²)",
+      q: "श्रृंखला को पूरा कीजिए: 1, 8, 27, 64, 125, ?",
+      options: ["(A) 156", "(B) 216", "(C) 200", "(D) 250"],
+      ans: "(B) 216",
       marks: 1
     },
     {
       id: 4,
-      q: "समतल दर्पण द्वारा बना प्रतिबिंब सदैव कैसा होता है?",
-      options: ["(A) आभासी एवं सीधा", "(B) वास्तविक एवं उल्टा", "(C) वास्तविक एवं सीधा", "(D) उल्टा व बड़ा"],
-      ans: "(A) आभासी एवं सीधा",
+      q: "अक्षर श्रृंखला: C, F, I, L, O, ?",
+      options: ["(A) P", "(B) Q", "(C) R", "(D) S"],
+      ans: "(C) R",
       marks: 1
     }
   ]);
@@ -78,7 +78,7 @@ export default function TestPaperGenerator() {
   const [scannedPageCount, setScannedPageCount] = useState(0);
   const [extractedPdfText, setExtractedPdfText] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
-  const [numQuestionsToGen, setNumQuestionsToGen] = useState(15);
+  const [numQuestionsToGen, setNumQuestionsToGen] = useState(20);
   const [aiStatusMessage, setAiStatusMessage] = useState('');
 
   // Supported Classes (Class 6th to 12th)
@@ -94,8 +94,9 @@ export default function TestPaperGenerator() {
 
   // Comprehensive Subject List
   const subjectList = [
-    { id: 'math', name: 'गणित (Mathematics)', defaultChap: 'समीकरण, प्रतिशत, लाभ-हानि, त्रिकोणमिति एवं ज्यामिति' },
+    { id: 'reason', name: 'तर्कशक्ति (Mental Ability / NMMS)', defaultChap: 'श्रृंखला परीक्षण, सादृश्यता, दिशा ज्ञान व कोडिंग-डिकोडिंग' },
     { id: 'sci', name: 'विज्ञान (General Science)', defaultChap: 'कोशिका, बल एवं दाब, प्रकाश, धातु-अधातु व रासायनिक अभिक्रियाएं' },
+    { id: 'math', name: 'गणित (Mathematics)', defaultChap: 'समीकरण, प्रतिशत, लाभ-हानि, त्रिकोणमिति एवं ज्यामिति' },
     { id: 'phy', name: 'भौतिक विज्ञान (Physics)', defaultChap: 'गति, बल, गुरुत्वाकर्षण, प्रकाशिकी, विद्युत धारा एवं चुंबकत्व' },
     { id: 'chem', name: 'रसायन विज्ञान (Chemistry)', defaultChap: 'परमाणु संरचना, रासायनिक आबंधन, अम्ल-क्षार व कार्बनिक यौगिक' },
     { id: 'bio', name: 'जीव विज्ञान (Biology)', defaultChap: 'जैव प्रक्रम, आनुवंशिकी, मानव शरीर क्रिया विज्ञान व कोशिका' },
@@ -108,7 +109,6 @@ export default function TestPaperGenerator() {
     { id: 'eng', name: 'अंग्रेजी (English Core/Grammar)', defaultChap: 'Tenses, Direct-Indirect, Voice, Comprehension Passage & Literature' },
     { id: 'sans', name: 'संस्कृत (Sanskrit)', defaultChap: 'संधि, शब्द रूप, धातु रूप, प्रत्यय, श्लोक व अनुवाद' },
     { id: 'cs', name: 'कंप्यूटर विज्ञान / IT', defaultChap: 'Computer Fundamentals, Python, Networking & Database SQL' },
-    { id: 'reason', name: 'तर्कशक्ति (Mental Ability / NMMS)', defaultChap: 'श्रृंखला परीक्षण, सादृश्यता, दिशा ज्ञान व कोडिंग-डिकोडिंग' },
     { id: 'comm', name: 'लेखाशास्त्र / वाणिज्य (Commerce)', defaultChap: 'जर्नल प्रविष्टि, तलपट, वित्तीय विवरण व व्यावसायिक संगठन' }
   ];
 
@@ -145,7 +145,9 @@ export default function TestPaperGenerator() {
       marks: Number(newMarks) || 1
     };
 
-    setQuestions([...questions, newQuestionObj]);
+    const updated = [...questions, newQuestionObj];
+    setQuestions(updated);
+    setMaxMarks(`${updated.length} अंक`);
     setNewQText('');
     setNewOptA('');
     setNewOptB('');
@@ -158,30 +160,75 @@ export default function TestPaperGenerator() {
   const handleDeleteQuestion = (id) => {
     const updated = questions.filter(q => q.id !== id).map((q, idx) => ({ ...q, id: idx + 1 }));
     setQuestions(updated);
+    setMaxMarks(`${updated.length} अंक`);
   };
 
-  // Intelligent Bulk Raw Text Parser
-  const handleParseRawText = () => {
-    if (!rawTextContent.trim()) {
+  // Intelligent Bulk Raw Text Parser (Handles exact format with questions + bottom Answer Key!)
+  const handleParseRawText = (customText = null) => {
+    const textToParse = typeof customText === 'string' ? customText : rawTextContent;
+    if (!textToParse || !textToParse.trim()) {
       alert("कृपया टेक्स्ट बॉक्स में प्रश्न पेस्ट करें!");
       return;
     }
 
-    const lines = rawTextContent.split('\n').map(l => l.trim()).filter(Boolean);
-    const parsed = [];
+    // Split into Questions Section and Answer Key Section
+    const parts = textToParse.split(/(?:उत्तरमाला|उत्तर कुंजी|Answer\s*Key|Answers)/i);
+    const questionsPart = parts[0];
+    const answersPart = parts.length > 1 ? parts[1] : '';
+
+    // 1. Extract Answer Key map (e.g. 1. A, 2. B, 30. B)
+    const answerMap = {};
+    if (answersPart) {
+      const ansMatches = answersPart.matchAll(/(?:^|\s)(\d{1,3})[\.\)\-\:\s]+[\(\[]?([A-Da-dक-घ१-४])/g);
+      for (const match of ansMatches) {
+        const qNum = parseInt(match[1], 10);
+        let letter = match[2].toUpperCase();
+        if (letter === 'क' || letter === '१') letter = 'A';
+        if (letter === 'ख' || letter === '२') letter = 'B';
+        if (letter === 'ग' || letter === '३') letter = 'C';
+        if (letter === 'घ' || letter === '४') letter = 'D';
+        answerMap[qNum] = letter;
+      }
+    }
+
+    // 2. Extract Title if any (# Title on first line)
+    const lines = questionsPart.split('\n').map(l => l.trim()).filter(Boolean);
+    let detectedTitle = '';
+    if (lines.length > 0 && lines[0].startsWith('#')) {
+      detectedTitle = lines[0].replace(/^#+\s*/, '').trim();
+      lines.shift();
+    } else if (lines.length > 0 && !lines[0].match(/^\d+[\.\)\-]/)) {
+      detectedTitle = lines[0].trim();
+      lines.shift();
+    }
+
+    if (detectedTitle) {
+      setExamHeading(detectedTitle);
+      if (detectedTitle.toLowerCase().includes('class 8') || detectedTitle.includes('कक्षा 8')) {
+        setSelectedClass('कक्षा 8 (Class 8th)');
+      }
+      if (detectedTitle.toLowerCase().includes('reasoning') || detectedTitle.includes('तर्क')) {
+        setSelectedSubject('तर्कशक्ति (Mental Ability / NMMS)');
+        setChapterName('श्रृंखला, कूट भाषा, दिशा परीक्षण व वेन आरेख');
+      }
+    }
+
+    // 3. Parse Questions
+    const parsedQuestions = [];
     let currentQ = null;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
-      // Question start detection: e.g. "1.", "Q1", "प्र. 1", "1)"
+      // Question start detection: e.g. "1.", "1)", "Q1."
       const qMatch = line.match(/^(?:Q\s*\d+|प्र\s*[\.\d]+|\d+[\.\)\-:])\s*(.+)/i);
       if (qMatch) {
         if (currentQ && currentQ.options.length >= 2) {
-          parsed.push(currentQ);
+          parsedQuestions.push(currentQ);
         }
+        const qNum = parsedQuestions.length + 1;
         currentQ = {
-          id: parsed.length + 1,
+          id: qNum,
           q: qMatch[1].trim(),
           options: [],
           ans: '',
@@ -190,24 +237,19 @@ export default function TestPaperGenerator() {
         continue;
       }
 
-      // Options detection: e.g. (A), (B), A), a.
+      // Options detection: (A), (B), (C), (D) or A) ...
       const optMatch = line.match(/^[\(\[]?([A-Da-dक-घ१-४])[\)\]\.\-:]\s*(.+)/);
       if (optMatch && currentQ) {
-        const letter = optMatch[1].toUpperCase();
-        const text = optMatch[2].trim();
-        currentQ.options.push(`(${letter}) ${text}`);
+        let letter = optMatch[1].toUpperCase();
+        if (letter === 'क' || letter === '१') letter = 'A';
+        if (letter === 'ख' || letter === '२') letter = 'B';
+        if (letter === 'ग' || letter === '३') letter = 'C';
+        if (letter === 'घ' || letter === '४') letter = 'D';
+        currentQ.options.push(`(${letter}) ${optMatch[2].trim()}`);
         continue;
       }
 
-      // Answer detection: e.g. "Ans: A", "उत्तर: B", "Answer: (C)"
-      const ansMatch = line.match(/^(?:Ans|Answer|उत्तर|सही उत्तर)\s*[-:]?\s*[\(\[]?([A-Da-dक-घ१-४])[\)\]\.]?\s*(.*)/i);
-      if (ansMatch && currentQ) {
-        const ansLetter = ansMatch[1].toUpperCase();
-        currentQ.ans = `(${ansLetter}) ${ansMatch[2] || 'सही उत्तर'}`;
-        continue;
-      }
-
-      // If line contains inline options like (A) ... (B) ... (C) ... (D) ...
+      // If options are inline: e.g. (A) Option 1 (B) Option 2 (C) Option 3 (D) Option 4
       if (currentQ && line.includes('(A)') && line.includes('(B)')) {
         const splitted = line.split(/(?=\([A-D]\))/g);
         splitted.forEach(s => {
@@ -216,30 +258,33 @@ export default function TestPaperGenerator() {
         continue;
       }
 
-      // If just continuing question text
+      // Question continuation lines
       if (currentQ && currentQ.options.length === 0) {
         currentQ.q += ' ' + line;
       }
     }
 
     if (currentQ && currentQ.options.length >= 2) {
-      parsed.push(currentQ);
+      parsedQuestions.push(currentQ);
     }
 
-    if (parsed.length > 0) {
-      setQuestions(parsed.map((q, idx) => ({ ...q, id: idx + 1 })));
-      alert(`बधाई! ${parsed.length} प्रश्न सफलतापूर्वक आयात (Import) हो गए हैं।`);
+    // Bind answers to option text from answerMap
+    parsedQuestions.forEach(q => {
+      const ansLetter = answerMap[q.id];
+      if (ansLetter) {
+        const matchingOpt = q.options.find(opt => opt.startsWith(`(${ansLetter})`));
+        q.ans = matchingOpt || `(${ansLetter})`;
+      } else if (!q.ans && q.options.length > 0) {
+        q.ans = q.options[0];
+      }
+    });
+
+    if (parsedQuestions.length > 0) {
+      setQuestions(parsedQuestions);
+      setMaxMarks(`${parsedQuestions.length} अंक`);
+      alert(`🎉 बधाई! ${parsedQuestions.length} प्रश्न और उत्तर तालिका सफलतापूर्वक 2-कॉलम A4 फॉर्मेट में सेट हो गए हैं।`);
     } else {
-      // Fallback simple line by line questions
-      const simpleQuestions = lines.map((l, idx) => ({
-        id: idx + 1,
-        q: l.replace(/^\d+[\.\)]\s*/, ''),
-        options: ["(A) विकल्प 1", "(B) विकल्प 2", "(C) विकल्प 3", "(D) विकल्प 4"],
-        ans: "(A) विकल्प 1",
-        marks: 1
-      }));
-      setQuestions(simpleQuestions);
-      alert(`${simpleQuestions.length} प्रश्न सूची में जोड़ दिए गए हैं।`);
+      alert("प्रश्न प्रारूप समझ नहीं आया। कृपया सुनिश्चित करें कि प्रश्न 1. 2. 3. और विकल्प (A), (B) से शुरू हों।");
     }
   };
 
@@ -336,6 +381,7 @@ Output strictly valid JSON in this exact structure without markdown:
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
         setQuestions(parsed.map((item, idx) => ({ ...item, id: idx + 1 })));
+        setMaxMarks(`${parsed.length} अंक`);
         setAiStatusMessage("✓ प्रश्न-पत्र सफलतापूर्वक तैयार हो गया!");
       }
     } catch (err) {
@@ -362,7 +408,7 @@ Output strictly valid JSON in this exact structure without markdown:
   <style>
     @page {
       size: A4 portrait;
-      margin: 10mm 10mm 12mm 10mm;
+      margin: 8mm 8mm 10mm 8mm;
     }
     * {
       box-sizing: border-box;
@@ -373,7 +419,7 @@ Output strictly valid JSON in this exact structure without markdown:
       font-family: 'Segoe UI', Arial, 'Devanagari Sangam MN', sans-serif;
       color: #000;
       background: #fff;
-      font-size: 11.5pt;
+      font-size: 10.5pt;
       line-height: 1.35;
       padding: 0;
     }
@@ -384,24 +430,24 @@ Output strictly valid JSON in this exact structure without markdown:
       border-radius: 6px;
       padding: 8px 12px;
       text-align: center;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       background: #fafafa;
     }
     .coaching-title {
-      font-size: 19pt;
+      font-size: 18pt;
       font-weight: 900;
       color: #b91c1c;
       letter-spacing: 0.5px;
       text-transform: uppercase;
     }
     .coaching-sub {
-      font-size: 9.5pt;
+      font-size: 9pt;
       font-weight: 600;
       color: #1e3a8a;
       margin-top: 1px;
     }
     .exam-title {
-      font-size: 12pt;
+      font-size: 11pt;
       font-weight: 800;
       color: #000;
       margin-top: 4px;
@@ -411,8 +457,8 @@ Output strictly valid JSON in this exact structure without markdown:
     /* EXAM META GRID */
     .meta-table {
       width: 100%;
-      margin-top: 6px;
-      font-size: 9.5pt;
+      margin-top: 4px;
+      font-size: 9pt;
       font-weight: bold;
       border-top: 1px solid #000;
       padding-top: 4px;
@@ -427,81 +473,81 @@ Output strictly valid JSON in this exact structure without markdown:
       border: 1px solid #000;
       border-radius: 4px;
       padding: 4px 8px;
-      margin-bottom: 10px;
-      font-size: 9pt;
+      margin-bottom: 6px;
+      font-size: 8.5pt;
       display: flex;
       justify-content: space-between;
     }
 
     /* INSTRUCTIONS */
     .instructions-bar {
-      font-size: 8.5pt;
+      font-size: 8pt;
       font-style: italic;
       border-bottom: 1.5px solid #000;
-      padding-bottom: 4px;
-      margin-bottom: 10px;
+      padding-bottom: 3px;
+      margin-bottom: 8px;
     }
 
-    /* 2-COLUMN SIDE-BY-SIDE NEWSPAPER LAYOUT */
+    /* 2-COLUMN SIDE-BY-SIDE NEWSPAPER / BOARD EXAM LAYOUT */
     .columns-container {
       column-count: 2;
-      column-gap: 24px;
-      column-rule: 1.5px solid #94a3b8;
+      column-gap: 20px;
+      column-rule: 1.5px solid #000;
       text-align: justify;
     }
 
     .question-card {
       break-inside: avoid;
       page-break-inside: avoid;
-      margin-bottom: 12px;
-      padding-bottom: 4px;
+      margin-bottom: 10px;
+      padding-bottom: 2px;
     }
     .q-text {
       font-weight: bold;
-      font-size: 10.5pt;
+      font-size: 9.5pt;
       color: #000;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
     }
     .q-marks {
       float: right;
-      font-size: 8.5pt;
+      font-size: 8pt;
       font-weight: bold;
       color: #475569;
     }
     .options-grid {
-      margin-left: 12px;
-      font-size: 9.5pt;
+      margin-left: 10px;
+      font-size: 8.5pt;
     }
     .opt-item {
-      margin-bottom: 2px;
+      margin-bottom: 1.5px;
     }
 
     /* ANSWER KEY SECTION */
     .ans-key-box {
-      margin-top: 18px;
+      margin-top: 14px;
       border-top: 2px dashed #000;
-      padding-top: 8px;
+      padding-top: 6px;
       break-inside: avoid;
     }
     .ans-key-title {
-      font-size: 11pt;
+      font-size: 10pt;
       font-weight: bold;
       color: #1e3a8a;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       text-align: center;
     }
     .ans-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 4px;
-      font-size: 8.5pt;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 3px;
+      font-size: 8pt;
       text-align: center;
     }
     .ans-cell {
-      border: 1px solid #cbd5e1;
-      padding: 3px;
+      border: 1px solid #94a3b8;
+      padding: 2px;
       background: #f8fafc;
-      border-radius: 3px;
+      border-radius: 2px;
     }
 
     @media print {
@@ -514,7 +560,7 @@ Output strictly valid JSON in this exact structure without markdown:
 </head>
 <body>
 
-  <!-- HEADER -->
+  <!-- HEADER WITH COACHING NAME -->
   <div class="header-box">
     <div class="coaching-title">${coachingName}</div>
     <div class="coaching-sub">${coachingSubHeader}</div>
@@ -545,7 +591,7 @@ Output strictly valid JSON in this exact structure without markdown:
     <strong>निर्देश (Instructions):</strong> ${generalInstructions}
   </div>
 
-  <!-- 2-COLUMN SIDE-BY-SIDE QUESTIONS -->
+  <!-- 2-COLUMN SIDE-BY-SIDE QUESTIONS WITH VERTICAL DIVIDER LINE -->
   <div class="columns-container">
     ${questions.map((q, idx) => `
       <div class="question-card">
@@ -603,22 +649,22 @@ Output strictly valid JSON in this exact structure without markdown:
             AI प्रश्न-पत्र जनरेटर, कस्टमाइज़र <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f0ff] via-pink-400 to-amber-300">& 2-कॉलम A4 प्रिंटर</span>
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto">
-            कक्षा 6वीं से 12वीं तक सभी विषयों के लिए AI द्वारा या खुद से प्रश्न जोड़ें, बल्क टेक्स्ट पेस्ट करें और साइड-बाय-साइड A4 शीट में प्रिंट/डाउनलोड करें।
+            कक्षा 6वीं से 12वीं तक सभी विषयों के लिए टेक्स्ट पेस्ट करें, खुद से प्रश्न जोड़ें या AI द्वारा बनाएं और साइड-बाय-साइड 2-कॉलम A4 शीट में प्रिंट/डाउनलोड करें।
           </p>
         </div>
 
         {/* 3 CREATION MODES TABS */}
         <div className="p-2 rounded-2xl bg-[#080e20] border border-cyan-500/25 flex flex-wrap items-center justify-center gap-2 shadow-xl">
           <button
-            onClick={() => setActiveCreationMode('ai-gen')}
+            onClick={() => setActiveCreationMode('raw-text')}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
-              activeCreationMode === 'ai-gen'
-                ? 'bg-gradient-to-r from-[#00f0ff] to-blue-600 text-black shadow-lg scale-105'
+              activeCreationMode === 'raw-text'
+                ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-black shadow-lg scale-105'
                 : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Bot className="w-4 h-4" />
-            <span>1. AI / PDF ऑटो जनरेटर</span>
+            <ClipboardList className="w-4 h-4" />
+            <span>📝 1. टेक्स्ट पेस्ट से प्रश्न बनाएं (Bulk Raw Text)</span>
           </button>
 
           <button
@@ -630,19 +676,19 @@ Output strictly valid JSON in this exact structure without markdown:
             }`}
           >
             <PenTool className="w-4 h-4" />
-            <span>2. खुद से प्रश्न जोड़ें (Custom Form)</span>
+            <span>✏️ 2. खुद से प्रश्न जोड़ें (Custom Form)</span>
           </button>
 
           <button
-            onClick={() => setActiveCreationMode('raw-text')}
+            onClick={() => setActiveCreationMode('ai-gen')}
             className={`px-5 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
-              activeCreationMode === 'raw-text'
-                ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-black shadow-lg scale-105'
+              activeCreationMode === 'ai-gen'
+                ? 'bg-gradient-to-r from-[#00f0ff] to-blue-600 text-black shadow-lg scale-105'
                 : 'text-slate-300 hover:text-white hover:bg-white/5'
             }`}
           >
-            <ClipboardList className="w-4 h-4" />
-            <span>3. टेक्स्ट पेस्ट से प्रश्न बनाएं (Bulk Text)</span>
+            <Bot className="w-4 h-4" />
+            <span>🤖 3. AI / PDF ऑटो जनरेटर</span>
           </button>
         </div>
 
@@ -659,7 +705,8 @@ Output strictly valid JSON in this exact structure without markdown:
                 type="text"
                 value={coachingName}
                 onChange={(e) => setCoachingName(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400"
+                placeholder="उदा. आर. के. एजुकेशन एवं कोचिंग संस्थान"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400 font-bold"
               />
             </div>
 
@@ -671,7 +718,8 @@ Output strictly valid JSON in this exact structure without markdown:
                 type="text"
                 value={examHeading}
                 onChange={(e) => setExamHeading(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400"
+                placeholder="उदा. NMMS Class 8 Reasoning MCQ – 30 प्रश्न"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400 font-bold"
               />
             </div>
           </div>
@@ -749,75 +797,41 @@ Output strictly valid JSON in this exact structure without markdown:
           </div>
 
           {/* =========================================================================
-              MODE 1: AI & PDF AUTO GENERATOR
+              MODE 1: BULK RAW TEXT PASTE PARSER (PRIMARY)
               ========================================================================= */}
-          {activeCreationMode === 'ai-gen' && (
-            <div className="p-5 rounded-2xl bg-[#050a18] border border-cyan-500/20 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-cyan-300 flex items-center gap-2">
-                  <Bot className="w-4 h-4 text-[#00f0ff]" />
-                  AI & NCERT इंजन से ऑटो प्रश्न तैयार करें
+          {activeCreationMode === 'raw-text' && (
+            <div className="p-5 rounded-2xl bg-[#050a18] border-2 border-amber-500/40 space-y-4 shadow-xl">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <span className="text-xs font-mono font-bold text-amber-400 flex items-center gap-1.5">
+                  <ClipboardList className="w-4 h-4 text-amber-400" />
+                  यहाँ अपने 30 या कितने भी प्रश्न + उत्तरमाला (Answer Key) पेस्ट करें:
                 </span>
-                <span className="text-[10px] text-slate-400 font-mono">
-                  Optional: PDF अपलोड करें या सीधे जनरेट करें
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-950/80 text-amber-300 text-[10px] font-mono border border-amber-500/30">
+                  Auto Title + Questions + Answers Parser
                 </span>
               </div>
 
-              {/* PDF Dropzone */}
-              <div className="relative border-2 border-dashed border-cyan-500/30 hover:border-amber-400 rounded-xl p-4 text-center bg-[#070e20] transition-colors cursor-pointer">
-                <input
-                  type="file"
-                  accept=".pdf,.txt,.doc,.docx"
-                  onChange={handlePdfUploadAndScan}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                {isScanningPdf ? (
-                  <div className="space-y-1 py-1">
-                    <RefreshCw className="w-6 h-6 text-amber-400 animate-spin mx-auto" />
-                    <p className="text-xs font-mono text-cyan-300">PDF स्कैन हो रही है ({scanProgress}%)...</p>
-                  </div>
-                ) : scannedPdfName ? (
-                  <div className="space-y-1 py-1">
-                    <CheckCircle2 className="w-7 h-7 text-emerald-400 mx-auto" />
-                    <p className="text-xs font-mono text-emerald-300 font-bold">✓ {scannedPdfName} स्कैन पूरी हुई</p>
-                  </div>
-                ) : (
-                  <div className="space-y-1 py-1">
-                    <FileUp className="w-7 h-7 text-cyan-400 mx-auto" />
-                    <p className="text-xs font-bold text-white">चैप्टर PDF अपलोड करें (वैकल्पिक / Optional)</p>
-                  </div>
-                )}
-              </div>
+              <textarea
+                rows={9}
+                value={rawTextContent}
+                onChange={(e) => setRawTextContent(e.target.value)}
+                placeholder={`# NMMS Class 8 Reasoning MCQ – 30 प्रश्न\n\n1. एक निश्चित कूट भाषा में 'BOOK' को 'CPPL' लिखा जाता है, तो 'PEN' को क्या लिखा जाएगा?\n(A) QFO\n(B) QDO\n(C) RFO\n(D) QFP\n\n2. यदि 'APPLE' को 'BQQMF' लिखा जाता है, तो 'MANGO' को क्या लिखा जाएगा?\n(A) NBOHP\n(B) NBPHP\n(C) NBOHP\n(D) NCOHP\n\nउत्तरमाला (Answer Key)\n1. A\n2. B`}
+                className="w-full p-4 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs font-mono focus:outline-none focus:border-amber-400 leading-relaxed"
+              />
 
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-slate-400">प्रश्नों की संख्या:</span>
-                  <select
-                    value={numQuestionsToGen}
-                    onChange={(e) => setNumQuestionsToGen(Number(e.target.value))}
-                    className="px-3 py-1 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs font-bold"
-                  >
-                    <option value={10}>10 प्रश्न</option>
-                    <option value={15}>15 प्रश्न</option>
-                    <option value={20}>20 प्रश्न</option>
-                    <option value={25}>25 प्रश्न</option>
-                    <option value={30}>30 प्रश्न</option>
-                  </select>
-                </div>
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+                <p className="text-[11px] text-slate-400">
+                  💡 <strong>टिप:</strong> प्रश्न 1. 2. 3., विकल्प (A) (B) और अंत में <strong>"उत्तरमाला: 1. A 2. B"</strong> को एक साथ पेस्ट करें।
+                </p>
 
                 <button
-                  onClick={handleGenerateQuestionsWithAI}
-                  disabled={isGenerating}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00f0ff] via-indigo-500 to-pink-500 text-black font-extrabold text-xs shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
+                  onClick={() => handleParseRawText()}
+                  className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-black font-black text-xs font-display shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
                 >
-                  {isGenerating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  <span>{isGenerating ? 'AI प्रश्न बना रहा है...' : '✨ AI द्वारा प्रश्न तैयार करें'}</span>
+                  <Sparkles className="w-4 h-4" />
+                  <span>⚡ 2-कॉलम A4 प्रश्नों में बदलें (Convert to Test Paper)</span>
                 </button>
               </div>
-
-              {aiStatusMessage && (
-                <p className="text-xs font-mono text-emerald-400 pt-1">{aiStatusMessage}</p>
-              )}
             </div>
           )}
 
@@ -929,45 +943,83 @@ Output strictly valid JSON in this exact structure without markdown:
           )}
 
           {/* =========================================================================
-              MODE 3: BULK RAW TEXT PASTE PARSER
+              MODE 3: AI & PDF AUTO GENERATOR
               ========================================================================= */}
-          {activeCreationMode === 'raw-text' && (
-            <div className="p-5 rounded-2xl bg-[#050a18] border border-amber-500/30 space-y-3">
+          {activeCreationMode === 'ai-gen' && (
+            <div className="p-5 rounded-2xl bg-[#050a18] border border-cyan-500/20 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-amber-400 flex items-center gap-1.5">
-                  <ClipboardList className="w-4 h-4 text-amber-400" />
-                  टेक्स्ट से प्रश्न आयात करें (Bulk Text Parser):
+                <span className="text-xs font-mono font-bold text-cyan-300 flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-[#00f0ff]" />
+                  AI & NCERT इंजन से ऑटो प्रश्न तैयार करें
                 </span>
                 <span className="text-[10px] text-slate-400 font-mono">
-                  नोट्स या क्वेश्चन बैंक कॉपी-पेस्ट करें
+                  Optional: PDF अपलोड करें या सीधे जनरेट करें
                 </span>
               </div>
 
-              <textarea
-                rows={6}
-                value={rawTextContent}
-                onChange={(e) => setRawTextContent(e.target.value)}
-                placeholder={`उदा. यहाँ प्रश्न पेस्ट करें:\n1. मानव मस्तिष्क का मुख्य सोचने वाला भाग कौन सा है?\n(A) सेरेब्रम (B) सेरेबेलम (C) मेंडुला (D) मेरुरज्जु\nउत्तर: A\n\n2. ध्वनि की चाल किस माध्यम में सबसे अधिक होती है?\n(A) ठोस (B) द्रव (C) गैस (D) निर्वात\nउत्तर: A`}
-                className="w-full p-3.5 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs font-mono focus:outline-none focus:border-amber-400 leading-relaxed"
-              />
+              {/* PDF Dropzone */}
+              <div className="relative border-2 border-dashed border-cyan-500/30 hover:border-amber-400 rounded-xl p-4 text-center bg-[#070e20] transition-colors cursor-pointer">
+                <input
+                  type="file"
+                  accept=".pdf,.txt,.doc,.docx"
+                  onChange={handlePdfUploadAndScan}
+                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                />
+                {isScanningPdf ? (
+                  <div className="space-y-1 py-1">
+                    <RefreshCw className="w-6 h-6 text-amber-400 animate-spin mx-auto" />
+                    <p className="text-xs font-mono text-cyan-300">PDF स्कैन हो रही है ({scanProgress}%)...</p>
+                  </div>
+                ) : scannedPdfName ? (
+                  <div className="space-y-1 py-1">
+                    <CheckCircle2 className="w-7 h-7 text-emerald-400 mx-auto" />
+                    <p className="text-xs font-mono text-emerald-300 font-bold">✓ {scannedPdfName} स्कैन पूरी हुई</p>
+                  </div>
+                ) : (
+                  <div className="space-y-1 py-1">
+                    <FileUp className="w-7 h-7 text-cyan-400 mx-auto" />
+                    <p className="text-xs font-bold text-white">चैप्टर PDF अपलोड करें (वैकल्पिक / Optional)</p>
+                  </div>
+                )}
+              </div>
 
-              <div className="flex justify-end">
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono text-slate-400">प्रश्नों की संख्या:</span>
+                  <select
+                    value={numQuestionsToGen}
+                    onChange={(e) => setNumQuestionsToGen(Number(e.target.value))}
+                    className="px-3 py-1 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs font-bold"
+                  >
+                    <option value={10}>10 प्रश्न</option>
+                    <option value={15}>15 प्रश्न</option>
+                    <option value={20}>20 प्रश्न</option>
+                    <option value={25}>25 प्रश्न</option>
+                    <option value={30}>30 प्रश्न</option>
+                  </select>
+                </div>
+
                 <button
-                  onClick={handleParseRawText}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-orange-500 text-black font-extrabold text-xs shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
+                  onClick={handleGenerateQuestionsWithAI}
+                  disabled={isGenerating}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00f0ff] via-indigo-500 to-pink-500 text-black font-extrabold text-xs shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
                 >
-                  <Sparkles className="w-4 h-4" />
-                  <span>⚡ टेक्स्ट को 2-कॉलम प्रश्नों में बदलें (Convert)</span>
+                  {isGenerating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                  <span>{isGenerating ? 'AI प्रश्न बना रहा है...' : '✨ AI द्वारा प्रश्न तैयार करें'}</span>
                 </button>
               </div>
+
+              {aiStatusMessage && (
+                <p className="text-xs font-mono text-emerald-400 pt-1">{aiStatusMessage}</p>
+              )}
             </div>
           )}
 
           {/* PRINT & DOWNLOAD ACTION BAR */}
           <div className="p-4 rounded-2xl bg-gradient-to-r from-[#0d1630] via-[#091228] to-[#1a0f2e] border-2 border-cyan-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
             <div className="flex items-center gap-3">
-              <span className="px-3 py-1 rounded-xl bg-cyan-950 text-cyan-300 text-xs font-mono font-bold border border-cyan-500/30">
-                कुल प्रश्न: {questions.length}
+              <span className="px-3.5 py-1 rounded-xl bg-cyan-950 text-cyan-300 text-xs font-mono font-bold border border-cyan-500/30">
+                कुल प्रश्न: {questions.length} | पूर्णांक: {maxMarks}
               </span>
               <label className="flex items-center gap-2 text-xs font-mono text-slate-300 cursor-pointer">
                 <input
@@ -976,7 +1028,7 @@ Output strictly valid JSON in this exact structure without markdown:
                   onChange={(e) => setIncludeAnswerKey(e.target.checked)}
                   className="rounded accent-cyan-400"
                 />
-                <span>उत्तर कुंजी (Answer Key) शामिल करें</span>
+                <span>उत्तरमाला (Answer Key) शामिल करें</span>
               </label>
             </div>
 
@@ -993,7 +1045,7 @@ Output strictly valid JSON in this exact structure without markdown:
         </div>
 
         {/* =========================================================================
-            LIVE QUESTION LIST & PREVIEW (WITH DELETE & EDIT)
+            LIVE 2-COLUMN QUESTION LIST & PREVIEW (WITH DELETE & EDIT)
             ========================================================================= */}
         <div className="p-6 sm:p-8 rounded-3xl bg-[#070e24] border border-cyan-500/30 text-white shadow-2xl space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
