@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen, Box, Sparkles, FlaskConical, Beaker } from 'lucide-react';
+import { ShieldCheck, LogOut, FileScan, Printer, Users, Smartphone, Key, Award, GraduationCap, CheckCircle2, ChevronRight, Monitor, BookOpen, Box, Sparkles } from 'lucide-react';
 import TestPaperGenerator from './TestPaperGenerator';
 import SmartBoardTeachingStudio from './SmartBoardTeachingStudio';
-import EdTechProScienceLab from './EdTechProScienceLab';
-import Online3DVirtualLab from './Online3DVirtualLab';
+import Sketchfab3DStudio from './Sketchfab3DStudio';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function AdminDashboard({ adminUser, onLogout }) {
-  const [activeTab, setActiveTab] = useState('smart-board');
+  const [activeTab, setActiveTab] = useState('smart-board'); // Default: Smart Board Classroom Studio
 
   return (
     <div className="w-full min-h-screen bg-[#050a18] text-white pt-24 pb-16 px-4 sm:px-6 md:px-8 relative z-10">
@@ -32,7 +31,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
                 </span>
               </div>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम, 3D साइंस लैब व शिक्षक पोर्टल
+                RK EDUCATION • स्मार्ट बोर्ड डिजिटल क्लासरूम, 3D मॉडल स्टूडियो व शिक्षक पोर्टल
               </p>
             </div>
           </div>
@@ -40,7 +39,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
           <div className="flex items-center gap-3 w-full md:w-auto justify-end">
             <button
               onClick={onLogout}
-              className="px-4 py-2.5 rounded-xl bg-rose-950/60 hover:bg-rose-600 hover:text-white border border-rose-500/40 text-rose-300 text-xs font-mono font-bold transition-all flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl bg-rose-950/60 hover:bg-rose-600 hover:text-white border border-rose-500/40 text-rose-300 text-xs font-mono font-bold transition-all flex items-center gap-2 shadow-md"
             >
               <LogOut className="w-4 h-4" />
               <span>सुरक्षित लॉगआउट (Logout)</span>
@@ -64,33 +63,20 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <span>🖥️ स्मार्ट बोर्ड क्लासरूम (Digital Notes)</span>
           </button>
 
-          {/* TAB 2: EdTechPro 3D Science & Anatomy Lab */}
+          {/* TAB 2: Sketchfab 3D Models Studio */}
           <button
-            onClick={() => setActiveTab('edtech-3d-lab')}
+            onClick={() => setActiveTab('3d-studio')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
-              activeTab === 'edtech-3d-lab'
+              activeTab === '3d-studio'
                 ? 'bg-gradient-to-r from-[#00f0ff] via-indigo-500 to-pink-500 text-black shadow-lg shadow-cyan-500/20'
                 : 'text-slate-400 hover:text-white hover:bg-white/5'
             }`}
           >
-            <Beaker className="w-4 h-4" />
-            <span>🔬 3D साइंस व एनाटॉमी लैब (EdTechPro 3D)</span>
-          </button>
-
-          {/* TAB 3: PhET / STEM Virtual Labs */}
-          <button
-            onClick={() => setActiveTab('online-3d-lab')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
-              activeTab === 'online-3d-lab'
-                ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-black shadow-lg'
-                : 'text-slate-400 hover:text-white hover:bg-white/5'
-            }`}
-          >
             <Box className="w-4 h-4" />
-            <span>⚡ PhET वर्चुअल सिमुलेटर</span>
+            <span>🔬 3D मॉडल स्टूडियो (Sketchfab 3D)</span>
           </button>
 
-          {/* TAB 4: AI Question Paper Generator */}
+          {/* TAB 3: AI Question Paper Generator */}
           <button
             onClick={() => setActiveTab('exam-generator')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
@@ -103,7 +89,7 @@ export default function AdminDashboard({ adminUser, onLogout }) {
             <span>📑 AI प्रश्न-पत्र जनरेटर (Exam Engine)</span>
           </button>
 
-          {/* TAB 5: App Manager */}
+          {/* TAB 4: Mobile App Status */}
           <button
             onClick={() => setActiveTab('app-status')}
             className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
@@ -124,15 +110,9 @@ export default function AdminDashboard({ adminUser, onLogout }) {
           </div>
         )}
 
-        {activeTab === 'edtech-3d-lab' && (
+        {activeTab === '3d-studio' && (
           <div className="w-full">
-            <EdTechProScienceLab />
-          </div>
-        )}
-
-        {activeTab === 'online-3d-lab' && (
-          <div className="w-full">
-            <Online3DVirtualLab />
+            <Sketchfab3DStudio />
           </div>
         )}
 

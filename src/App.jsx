@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroEducation3D from './components/HeroEducation3D';
-import EdTechProScienceLab from './components/EdTechProScienceLab';
-import Online3DVirtualLab from './components/Online3DVirtualLab';
+import Sketchfab3DStudio from './components/Sketchfab3DStudio';
 import AppDownloadSection from './components/AppDownloadSection';
 import LeadershipSection from './components/LeadershipSection';
 import CourseBatches from './components/CourseBatches';
@@ -46,7 +45,7 @@ export default function App() {
 
   return (
     <div className="relative min-h-screen w-full bg-[#050a18] text-slate-100 selection:bg-amber-500 selection:text-black font-sans">
-      {/* Navigation */}
+      {/* Top Navbar */}
       <Navbar
         isAdminLoggedIn={isAdminLoggedIn}
         adminUser={adminUser}
@@ -57,7 +56,7 @@ export default function App() {
         onGoToHome={() => setCurrentView('home')}
       />
 
-      {/* Main Content View */}
+      {/* Main Content Area */}
       <main className="relative z-10 w-full flex flex-col items-center">
         {currentView === 'dashboard' && isAdminLoggedIn ? (
           <AdminDashboard
@@ -67,8 +66,7 @@ export default function App() {
         ) : (
           <>
             <HeroEducation3D onOpenTeacherLogin={() => setIsLoginModalOpen(true)} />
-            <EdTechProScienceLab />
-            <Online3DVirtualLab />
+            <Sketchfab3DStudio />
             <AppDownloadSection />
             <LeadershipSection />
             <CourseBatches />

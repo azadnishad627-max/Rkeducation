@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, GraduationCap, Download, Lock, LogOut, ShieldCheck, Home, Beaker } from 'lucide-react';
+import { Menu, X, GraduationCap, Download, Lock, LogOut, ShieldCheck, Home, Box } from 'lucide-react';
 import { rkEducationData } from '../data/rkEducationData';
 
 export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogout, onGoToDashboard, onGoToHome, currentView }) {
@@ -10,8 +10,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
 
   const navItems = [
     { name: 'Home', href: '#home' },
-    { name: '3D Science Lab', href: '#edtech-3d-lab' },
-    { name: 'PhET 3D Lab', href: '#online-3d-lab' },
+    { name: '3D Studio', href: '#sketchfab-3d-studio' },
     { name: 'Education App', href: '#app-download' },
     { name: 'Leadership', href: '#founders' },
     { name: 'Batches', href: '#courses' },
@@ -26,7 +25,7 @@ export default function Navbar({ isAdminLoggedIn, adminUser, onOpenLogin, onLogo
         setScrolled(false);
       }
 
-      const sections = ['home', 'edtech-3d-lab', 'online-3d-lab', 'app-download', 'founders', 'courses', 'contact'];
+      const sections = ['home', 'sketchfab-3d-studio', 'app-download', 'founders', 'courses', 'contact'];
       for (const section of sections) {
         const el = document.getElementById(section);
         if (el) {

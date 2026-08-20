@@ -4,7 +4,7 @@ import {
   Monitor, Maximize, Minimize, PenTool, Highlighter, Eraser, Trash2, 
   ZoomIn, ZoomOut, RotateCcw, BookOpen, Globe, FlaskConical, Calculator, 
   Sparkles, CheckCircle2, HelpCircle, ChevronRight, ChevronLeft, 
-  Layers, Lightbulb, Award, Eye, Palette, Scale, FileText, X, ArrowUp, ArrowDown, Box
+  Layers, Lightbulb, Award, Eye, Palette, Scale, FileText, X, ArrowUp, ArrowDown
 } from 'lucide-react';
 import { class8StudyMaterial } from '../data/class8StudyMaterial';
 import { 
@@ -14,7 +14,6 @@ import {
   EarthInteriorVisual, 
   ParliamentStructureVisual 
 } from './SmartBoardVisuals';
-import EdTechProScienceLab from './EdTechProScienceLab';
 
 export default function SmartBoardTeachingStudio() {
   const [selectedSubjectId, setSelectedSubjectId] = useState('sst-geo');
@@ -23,7 +22,6 @@ export default function SmartBoardTeachingStudio() {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [themeMode, setThemeMode] = useState('light');
   const [isReaderModalOpen, setIsReaderModalOpen] = useState(false);
-  const [show3DLabInline, setShow3DLabInline] = useState(true); // Default show 3D lab
   
   // Smart Board Pen Tools
   const [isPenActive, setIsPenActive] = useState(false);
@@ -76,7 +74,7 @@ export default function SmartBoardTeachingStudio() {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
     return () => window.removeEventListener('resize', resizeCanvas);
-  }, [isPenActive, selectedChapterIndex, zoomLevel, show3DLabInline]);
+  }, [isPenActive, selectedChapterIndex, zoomLevel]);
 
   const startDrawing = (e) => {
     if (!isPenActive) return;
@@ -197,7 +195,7 @@ export default function SmartBoardTeachingStudio() {
                 स्मार्ट बोर्ड डिजिटल क्लासरूम एवं विजुअल नोट्स
               </h3>
               <span className="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-[10px] font-mono font-bold border border-red-300">
-                सचित्र विजुअल डायग्राम्स + 3D लैब Active
+                सचिन एकेडमी व NCERT मानक
               </span>
             </div>
             <p className="text-[11px] text-slate-500 font-mono">
@@ -209,20 +207,6 @@ export default function SmartBoardTeachingStudio() {
         {/* Right: Smart Board Tools */}
         <div className="flex flex-wrap items-center gap-2">
           
-          {/* 3D Lab Inline Toggle Button */}
-          <button
-            onClick={() => setShow3DLabInline(!show3DLabInline)}
-            className={`px-3.5 py-2 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 ${
-              show3DLabInline
-                ? 'bg-gradient-to-r from-[#00f0ff] to-blue-600 text-black shadow-md'
-                : 'bg-cyan-950 text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500 hover:text-black'
-            }`}
-            title="Toggle 3D Lab in Studio"
-          >
-            <Box className="w-3.5 h-3.5" />
-            <span>{show3DLabInline ? '🔬 3D लैब चालू (ON)' : '🔬 3D लैब खोलें'}</span>
-          </button>
-
           {/* Smart Pen Tool */}
           <div className={`flex items-center gap-1 p-1 rounded-xl border ${
             themeMode === 'dark' ? 'bg-[#050a18] border-cyan-500/30' : 'bg-white border-slate-300 shadow-sm'
@@ -386,15 +370,6 @@ export default function SmartBoardTeachingStudio() {
         </div>
 
       </div>
-
-      {/* =========================================================================
-          INLINE 3D VISUAL LAB (EDTECHPRO 3D SCIENCE & ANATOMY STUDIO)
-          ========================================================================= */}
-      {show3DLabInline && (
-        <div className="p-2 sm:p-4 bg-[#040816] border-b-2 border-cyan-500/30">
-          <EdTechProScienceLab />
-        </div>
-      )}
 
       {/* =========================================================================
           MAIN SMART BOARD EXPLANATORY LECTURE CANVAS (EXACT SACHIN ACADEMY CTET FORMAT)
