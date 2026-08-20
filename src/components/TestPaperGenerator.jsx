@@ -14,6 +14,7 @@ const DEFAULT_NVIDIA_API_KEY = "nvapi-YCYo0NN-OA4sxpgJQkoxkl8ZS-5gLKUp4r4yyfdK_S
 export default function TestPaperGenerator() {
   // 1. Header & Institute Configuration
   const [coachingName, setCoachingName] = useState('RK EDUCATION');
+  const [paperTitle, setPaperTitle] = useState('NMMS Class 8 Reasoning & Science Model Test Paper');
   const [includeAnswerKey, setIncludeAnswerKey] = useState(true);
 
   // 2. Active Tab Mode: 'raw-text' | 'custom-form' | 'ai-gen'
@@ -31,16 +32,6 @@ export default function TestPaperGenerator() {
   const [newOptD, setNewOptD] = useState('');
   const [newCorrectOpt, setNewCorrectOpt] = useState('A');
   const [newMarks, setNewMarks] = useState(1);
-
-  // 5. AI & PDF Scanner State
-  const [isScanningPdf, setIsScanningPdf] = useState(false);
-  const [scanProgress, setScanProgress] = useState(0);
-  const [scannedPdfName, setScannedPdfName] = useState('');
-  const [scannedPageCount, setScannedPageCount] = useState(0);
-  const [extractedPdfText, setExtractedPdfText] = useState('');
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [numQuestionsToGen, setNumQuestionsToGen] = useState(20);
-  const [aiStatusMessage, setAiStatusMessage] = useState('');
 
   // Dynamic calculated Time & Marks (jitna question, utna number, utna time!)
   const totalQuestionsCount = questions.length;
@@ -87,8 +78,12 @@ export default function TestPaperGenerator() {
     const parsedQuestions = [];
 
     for (let block of rawBlocks) {
-      // Skip markdown title-only blocks
+      // If block is a markdown title, extract it as Paper Title
       if (block.startsWith('#') && !block.match(/\n\s*[\(\[1-4A-Da-d]/)) {
+        const detectedHeading = block.replace(/^#+\s*/, '').trim();
+        if (detectedHeading) {
+          setPaperTitle(detectedHeading);
+        }
         continue;
       }
 
@@ -258,6 +253,7 @@ export default function TestPaperGenerator() {
       });
     }
     setQuestions(megaQuestions);
+    setPaperTitle('Mega Model Exam — 200 Questions Full Practice Booklet');
     alert("🎉 200 प्रश्नों का टेस्ट लोड हो गया है (200 अंक | 200 मिनट)! अब '2-कॉलम A4 प्रिंट' बटन दबाएं।");
   };
 
@@ -304,7 +300,7 @@ export default function TestPaperGenerator() {
   };
 
   // Direct 2-Column Side-by-Side Zero-Clipping Print & A4 Download
-  // Strictly: ONLY 'RK EDUCATION' in English on Top + Dynamic Questions Count, Marks & Time
+  // Top: 'RK EDUCATION' + Question Paper Name underneath + Auto Questions, Marks & Time
   const handlePrintOrDownloadA4 = () => {
     let activeQuestions = questions;
     if (rawTextContent.trim()) {
@@ -338,7 +334,7 @@ export default function TestPaperGenerator() {
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>RK EDUCATION - Test Paper (${totalQ} Questions)</title>
+  <title>RK EDUCATION - ${paperTitle || 'Test Paper'}</title>
   <style>
     @page {
       size: A4 portrait;
@@ -361,7 +357,7 @@ export default function TestPaperGenerator() {
       padding: 0;
     }
 
-    /* TOP HEADER: ONLY RK EDUCATION IN CLEAN ENGLISH */
+    /* TOP HEADER: RK EDUCATION + QUESTION PAPER NAME */
     .header-box {
       border: 2px solid #000;
       border-radius: 6px;
@@ -377,6 +373,14 @@ export default function TestPaperGenerator() {
       letter-spacing: 1.5px;
       text-transform: uppercase;
       font-family: Arial, 'Segoe UI', sans-serif;
+    }
+    .paper-title {
+      font-size: 11pt;
+      font-weight: 800;
+      color: #1e3a8a;
+      margin-top: 3px;
+      margin-bottom: 3px;
+      letter-spacing: 0.5px;
     }
     .meta-bar {
       margin-top: 5px;
@@ -480,9 +484,10 @@ export default function TestPaperGenerator() {
 </head>
 <body>
 
-  <!-- HEADER WITH ONLY 'RK EDUCATION' IN ENGLISH -->
+  <!-- HEADER WITH 'RK EDUCATION' + QUESTION PAPER NAME -->
   <div class="header-box">
     <div class="coaching-title">RK EDUCATION</div>
+    ${paperTitle ? `<div class="paper-title">${paperTitle}</div>` : ''}
     <div class="meta-bar">
       <span>📝 <strong>Total Questions:</strong> ${totalQ}</span>
       <span>⏱️ <strong>Time Allowed:</strong> ${timeDisplay}</span>
@@ -555,7 +560,7 @@ export default function TestPaperGenerator() {
             RK EDUCATION <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f0ff] via-pink-400 to-amber-300">2-कॉलम A4 टेस्ट पेपर प्रिंटर</span>
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto">
-            ऊपर केवल <strong>RK EDUCATION</strong> प्रिंट होगा। जितने प्रश्न (जैसे 152 प्रश्न), उतना ही पूर्णांक (152 अंक) और उतना ही समय (150 मिनट) ऑटोमैटिक सेट होगा।
+            ऊपर <strong>RK EDUCATION</strong> और उसके नीचे आपका <strong>प्रश्न-पत्र शीर्षक</strong> प्रिंट होगा। जितने प्रश्न (उदा. 152), उतना ही पूर्णांक (152) व समय (152 मिनट) ऑटोमैटिक रहेगा।
           </p>
         </div>
 
@@ -602,23 +607,37 @@ export default function TestPaperGenerator() {
         {/* CONFIGURATION & INPUT PANEL */}
         <div className="p-6 sm:p-8 rounded-3xl bg-[#070e24] border border-cyan-500/30 text-white shadow-2xl space-y-6">
           
-          {/* Header Info Display Banner */}
-          <div className="p-4 rounded-2xl bg-[#091124] border border-cyan-500/30 flex flex-wrap items-center justify-between gap-4">
+          {/* Header Info Display Banner + Paper Title Customizer */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-4 border-b border-slate-800">
             <div className="space-y-1">
-              <span className="text-[11px] font-mono text-slate-400">🏫 प्रिंट हेडर (Top Title):</span>
+              <span className="text-[11px] font-mono text-slate-400">🏫 मुख्य संस्थान शीर्षक (Top Fixed):</span>
               <div className="text-xl font-black text-rose-400 tracking-wider">RK EDUCATION</div>
             </div>
 
-            <div className="flex items-center gap-4 text-xs font-mono">
-              <div className="px-3 py-1.5 rounded-xl bg-cyan-950/80 border border-cyan-500/30 text-cyan-300">
-                📝 कुल प्रश्न: <strong>{totalQuestionsCount}</strong>
-              </div>
-              <div className="px-3 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500/30 text-amber-300">
-                🏆 पूर्णांक: <strong>{calculatedMaxMarks} अंक</strong>
-              </div>
-              <div className="px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-300">
-                ⏱️ समय: <strong>{calculatedTimeFormatted}</strong>
-              </div>
+            <div>
+              <label className="block text-xs font-mono font-bold text-amber-400 mb-1">
+                📝 प्रश्न-पत्र / विषय का नाम (Paper Title under RK EDUCATION):
+              </label>
+              <input
+                type="text"
+                value={paperTitle}
+                onChange={(e) => setPaperTitle(e.target.value)}
+                placeholder="उदा. Class 8th Science & Reasoning Test Paper"
+                className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-amber-400 font-bold"
+              />
+            </div>
+          </div>
+
+          {/* Real-time Status Counters */}
+          <div className="flex flex-wrap items-center justify-between gap-3 text-xs font-mono">
+            <div className="px-3.5 py-1.5 rounded-xl bg-cyan-950/80 border border-cyan-500/30 text-cyan-300 font-bold">
+              📝 कुल प्रश्न: <strong>{totalQuestionsCount}</strong>
+            </div>
+            <div className="px-3.5 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500/30 text-amber-300 font-bold">
+              🏆 पूर्णांक: <strong>{calculatedMaxMarks} अंक</strong>
+            </div>
+            <div className="px-3.5 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-300 font-bold">
+              ⏱️ समय: <strong>{calculatedTimeFormatted}</strong>
             </div>
           </div>
 
@@ -639,13 +658,13 @@ export default function TestPaperGenerator() {
                 rows={9}
                 value={rawTextContent}
                 onChange={handleRawTextChange}
-                placeholder={`प्र. 123. किशोरावस्था है:\n(1) बचपन से जवानी में परिवर्तन की अवस्था\n(2) जनन परिपक्वता के साथ समाप्त होती है\n(3) 13 से 19 वर्ष तक की आयु\n(4) शरीर में तीव्र बदलाव का समय\n\nप्र. 152. निम्न में से किस एक्ट द्वारा भारत में दासता प्रथा समाप्त हुई?\n(1) चार्टर एक्ट 1813\n(2) चार्टर एक्ट 1833\n(3) चार्टर एक्ट 1853\n(4) रौलट एक्ट`}
+                placeholder={`# NMMS Class 8 Reasoning MCQ – 30 प्रश्न\n\n1. एक निश्चित कूट भाषा में 'BOOK' को 'CPPL' लिखा जाता है, तो 'PEN' को क्या लिखा जाएगा?\n(A) QFO\n(B) QDO\n(C) RFO\n(D) QFP\n\n2. यदि 'APPLE' को 'BQQMF' लिखा जाता है, तो 'MANGO' को क्या लिखा जाएगा?\n(A) NBOHP\n(B) NBPHP\n(C) NBOHP\n(D) NCOHP`}
                 className="w-full p-4 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs font-mono focus:outline-none focus:border-amber-400 leading-relaxed"
               />
 
               <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
                 <p className="text-[11px] text-slate-400">
-                  💡 <strong>ऑटो-कैलकुलेशन:</strong> जितने प्रश्न लोड होंगे, उतना ही समय और उतने ही अंक ऑटोमैटिक सेट होंगे।
+                  💡 <strong>टिप:</strong> पहली लाइन पर <code className="text-amber-400"># पेपर का नाम</code> लिख सकते हैं या ऊपर बॉक्स से कभी भी बदल सकते हैं।
                 </p>
 
                 <button
