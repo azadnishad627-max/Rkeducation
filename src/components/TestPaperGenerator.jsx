@@ -15,10 +15,10 @@ export default function TestPaperGenerator() {
   // 1. Header & Institute Configuration
   const [coachingName, setCoachingName] = useState('आर. के. एजुकेशन एवं कोचिंग संस्थान');
   const [coachingSubHeader, setCoachingSubHeader] = useState('RK EDUCATION & COACHING INSTITUTE • मूल्यांकन एवं टेस्ट सीरीज 2026-27');
-  const [examHeading, setExamHeading] = useState('NMMS Class 8 Reasoning MCQ – 30 प्रश्न (सत्यापित)');
+  const [examHeading, setExamHeading] = useState('अभ्यास एवं मूल्यांकन प्रश्न-पत्र (Model Test Paper)');
   const [selectedClass, setSelectedClass] = useState('कक्षा 8 (Class 8th)');
-  const [selectedSubject, setSelectedSubject] = useState('तर्कशक्ति (Mental Ability / NMMS)');
-  const [chapterName, setChapterName] = useState('श्रृंखला, कूट भाषा, दिशा परीक्षण व वेन आरेख');
+  const [selectedSubject, setSelectedSubject] = useState('सामाजिक विज्ञान (Social Science)');
+  const [chapterName, setChapterName] = useState('संसाधन एवं विकास, 1857 की क्रांति, भारतीय संविधान व इतिहास');
   const [timeAllowed, setTimeAllowed] = useState('60 मिनट (1 Hour)');
   const [maxMarks, setMaxMarks] = useState('30 अंक');
   const [generalInstructions, setGeneralInstructions] = useState('1. सभी प्रश्न अनिवार्य हैं। 2. प्रत्येक प्रश्न 1 अंक का है। 3. सही विकल्प का चयन करें।');
@@ -27,7 +27,7 @@ export default function TestPaperGenerator() {
   // 2. Active Tab Mode: 'raw-text' | 'custom-form' | 'ai-gen'
   const [activeCreationMode, setActiveCreationMode] = useState('raw-text'); // Default: Bulk Text Paste
 
-  // 3. Question List State (Default 30 NMMS Questions)
+  // 3. Question List State
   const [questions, setQuestions] = useState([]);
   const [rawTextContent, setRawTextContent] = useState('');
 
@@ -50,229 +50,6 @@ export default function TestPaperGenerator() {
   const [numQuestionsToGen, setNumQuestionsToGen] = useState(20);
   const [aiStatusMessage, setAiStatusMessage] = useState('');
 
-  // Sample 30 NMMS reasoning text preloaded
-  const sample30ReasoningText = `# NMMS Class 8 Reasoning MCQ – 30 प्रश्न (नए प्रकार) – सत्यापित
-
-1. एक निश्चित कूट भाषा में 'BOOK' को 'CPPL' लिखा जाता है, तो 'PEN' को क्या लिखा जाएगा?
-(A) QFO
-(B) QDO
-(C) RFO
-(D) QFP
-
-2. यदि 'APPLE' को 'BQQMF' लिखा जाता है, तो 'MANGO' को क्या लिखा जाएगा?
-(A) NBOHP
-(B) NBPHP
-(C) NBOHP
-(D) NCOHP
-
-3. श्रृंखला को पूरा कीजिए: 1, 8, 27, 64, 125, ?
-(A) 156
-(B) 216
-(C) 200
-(D) 250
-
-4. अक्षर श्रृंखला: C, F, I, L, O, ?
-(A) P
-(B) Q
-(C) R
-(D) S
-
-5. विषम शब्द ज्ञात कीजिए: कुर्सी, मेज, आलमारी, पानी
-(A) कुर्सी
-(B) मेज
-(C) आलमारी
-(D) पानी
-
-6. यदि Z = 26, Y = 25 हो, तो X का मान क्या होगा?
-(A) 22
-(B) 23
-(C) 24
-(D) 25
-
-7. घड़ी में 6:30 बजे घंटे तथा मिनट की सुई के बीच कितना कोण होगा?
-(A) 0°
-(B) 15°
-(C) 30°
-(D) 45°
-
-8. एक व्यक्ति पूर्व की ओर 5 किमी चलता है, फिर बाएँ मुड़कर 5 किमी चलता है, फिर बाएँ मुड़कर 5 किमी चलता है। वह प्रारंभिक बिंदु से किस दिशा में है?
-(A) पूर्व
-(B) उत्तर
-(C) दक्षिण
-(D) पश्चिम
-
-9. कथन: सभी गाय दूध देती हैं। कुछ गाय सफेद हैं।
-निष्कर्ष:
-I. कुछ सफेद दूध देती हैं।
-II. सभी दूध देने वाली गाय सफेद हैं।
-(A) केवल निष्कर्ष I निकलता है
-(B) केवल निष्कर्ष II निकलता है
-(C) दोनों निष्कर्ष निकलते हैं
-(D) कोई निष्कर्ष नहीं निकलता
-
-10. यदि '+' का अर्थ '-', '-' का अर्थ '×', '×' का अर्थ '÷', '÷' का अर्थ '+' हो, तो 12 - 2 + 6 × 3 ÷ 4 का मान क्या होगा?
-(A) 24
-(B) 26
-(C) 28
-(D) 30
-
-11. एक पासे के ऊपर 4 अंक हैं। पासे के नीचे कितने अंक होंगे?
-(A) 1
-(B) 2
-(C) 3
-(D) 4
-
-12. शीशे में समय 3:15 दिखाई दे रहा है। वास्तविक समय क्या होगा?
-(A) 8:45
-(B) 9:45
-(C) 8:15
-(D) 9:15
-
-13. यदि 'RED' को 'TFH' लिखा जाता है, तो 'BLUE' को क्या लिखा जाएगा?
-(A) DNWG
-(B) DNXH
-(C) DMWG
-(D) DNWF
-
-14. अगला पद ज्ञात कीजिए: 4, 9, 19, 39, 79, ?
-(A) 139
-(B) 149
-(C) 159
-(D) 169
-
-15. विषम संख्या ज्ञात कीजिए: 15, 25, 35, 45, 55
-(A) 15
-(B) 25
-(C) 45
-(D) कोई नहीं
-
-16. एक पंक्ति में 40 छात्र हैं। राम बाएँ से 25वें स्थान पर है। दाएँ से उसका स्थान क्या होगा?
-(A) 14
-(B) 15
-(C) 16
-(D) 17
-
-17. समान संबंध ज्ञात कीजिए: डॉक्टर : अस्पताल :: शिक्षक : ?
-(A) पुस्तक
-(B) छात्र
-(C) विद्यालय
-(D) ज्ञान
-
-18. यदि 8 × 2 = 20 और 6 × 3 = 18 हो, तो 7 × 4 = ?
-(A) 22
-(B) 24
-(C) 26
-(D) 28
-
-19. अक्षर श्रृंखला: Z, X, V, T, R, ?
-(A) P
-(B) Q
-(C) O
-(D) N
-
-20. रानी दक्षिण की ओर 6 किमी चली, फिर दाएँ मुड़कर 8 किमी चली। वह प्रारंभिक बिंदु से कितनी दूरी पर है?
-(A) 8 किमी
-(B) 10 किमी
-(C) 12 किमी
-(D) 14 किमी
-
-21. कथन: सभी कलम नीली हैं। कुछ नीली पेंसिल हैं।
-निष्कर्ष:
-I. कुछ कलम पेंसिल हैं।
-II. सभी पेंसिल कलम हैं।
-(A) केवल निष्कर्ष I निकलता है
-(B) केवल निष्कर्ष II निकलता है
-(C) दोनों निष्कर्ष निकलते हैं
-(D) कोई निष्कर्ष नहीं निकलता
-
-22. यदि 5 × 4 = 25 और 3 × 6 = 21 हो, तो 8 × 2 = ?
-(A) 18
-(B) 20
-(C) 22
-(D) 24
-
-23. A, B की बहन है। B, C का भाई है। C, A का क्या है?
-(A) भाई
-(B) बहन
-(C) पिता
-(D) माता
-
-24. घड़ी में 8:15 बजे घंटे तथा मिनट की सुई के बीच कितना कोण होगा?
-(A) 150°
-(B) 157.5°
-(C) 160°
-(D) 165°
-
-25. यदि 'MIRROR' को 'NJSQQT' लिखा जाता है, तो 'GLASS' को क्या लिखा जाएगा?
-(A) HMBTT
-(B) HMBTS
-(C) HMATT
-(D) HMBTU
-
-26. अगली संख्या ज्ञात कीजिए: 2, 5, 10, 17, 26, ?
-(A) 35
-(B) 36
-(C) 37
-(D) 38
-
-27. विषम शब्द ज्ञात कीजिए: आम, सेब, केला, गाजर
-(A) आम
-(B) सेब
-(C) केला
-(D) गाजर
-
-28. एक व्यक्ति उत्तर की ओर 7 किमी चलता है, फिर दाएँ मुड़कर 7 किमी चलता है, फिर दाएँ मुड़कर 7 किमी चलता है। वह प्रारंभिक बिंदु से किस दिशा में है?
-(A) उत्तर
-(B) दक्षिण
-(C) पूर्व
-(D) पश्चिम
-
-29. यदि 'DOOR' को 'EPPS' लिखा जाता है, तो 'WINDOW' को क्या लिखा जाएगा?
-(A) XJOEPX
-(B) XJOEOX
-(C) XJOEQX
-(D) XJOFPX
-
-30. यदि 12 × 3 = 18 और 10 × 2 = 14 हो, तो 8 × 5 = ?
-(A) 16
-(B) 18
-(C) 20
-(D) 22
-
-
-उत्तरमाला (Answer Key)
-
-1. A
-2. B
-3. B
-4. C
-5. D
-6. C
-7. B
-8. B
-9. A
-10. B
-11. C
-12. A
-13. A
-14. C
-15. D
-16. C
-17. C
-18. A
-19. A
-20. B
-21. D
-22. C
-23. B
-24. B
-25. A
-26. C
-27. D
-28. C
-29. A
-30. B`;
-
   // Supported Classes (Class 6th to 12th)
   const classList = [
     'कक्षा 6 (Class 6th)',
@@ -286,16 +63,16 @@ II. सभी पेंसिल कलम हैं।
 
   // Comprehensive Subject List
   const subjectList = [
-    { id: 'reason', name: 'तर्कशक्ति (Mental Ability / NMMS)', defaultChap: 'श्रृंखला परीक्षण, सादृश्यता, दिशा ज्ञान व कोडिंग-डिकोडिंग' },
+    { id: 'sst', name: 'सामाजिक विज्ञान (Social Science)', defaultChap: 'संसाधन एवं विकास, 1857 की क्रांति, भारतीय संविधान व न्यायपालिका' },
+    { id: 'hist', name: 'इतिहास (History)', defaultChap: 'हड़प्पा सभ्यता, मौर्य साम्राज्य, मुगल काल व भारतीय राष्ट्रीय आंदोलन' },
+    { id: 'geo', name: 'भूगोल (Geography)', defaultChap: 'सौरमंडल, पृथ्वी की आंतरिक संरचना, भारत का भौतिक स्वरूप व जलवायु' },
+    { id: 'civ', name: 'नागरिक शास्त्र / राजनीति (Civics/Pol Sci)', defaultChap: 'लोकतंत्र, भारतीय संविधान, मौलिक अधिकार व संसद' },
     { id: 'sci', name: 'विज्ञान (General Science)', defaultChap: 'कोशिका, बल एवं दाब, प्रकाश, धातु-अधातु व रासायनिक अभिक्रियाएं' },
     { id: 'math', name: 'गणित (Mathematics)', defaultChap: 'समीकरण, प्रतिशत, लाभ-हानि, त्रिकोणमिति एवं ज्यामिति' },
     { id: 'phy', name: 'भौतिक विज्ञान (Physics)', defaultChap: 'गति, बल, गुरुत्वाकर्षण, प्रकाशिकी, विद्युत धारा एवं चुंबकत्व' },
     { id: 'chem', name: 'रसायन विज्ञान (Chemistry)', defaultChap: 'परमाणु संरचना, रासायनिक आबंधन, अम्ल-क्षार व कार्बनिक यौगिक' },
     { id: 'bio', name: 'जीव विज्ञान (Biology)', defaultChap: 'जैव प्रक्रम, आनुवंशिकी, मानव शरीर क्रिया विज्ञान व कोशिका' },
-    { id: 'sst', name: 'सामाजिक विज्ञान (Social Science)', defaultChap: 'संसाधन एवं विकास, 1857 की क्रांति, भारतीय संविधान व न्यायपालिका' },
-    { id: 'hist', name: 'इतिहास (History)', defaultChap: 'हड़प्पा सभ्यता, मौर्य साम्राज्य, मुगल काल व भारतीय राष्ट्रीय आंदोलन' },
-    { id: 'geo', name: 'भूगोल (Geography)', defaultChap: 'सौरमंडल, पृथ्वी की आंतरिक संरचना, भारत का भौतिक स्वरूप व जलवायु' },
-    { id: 'civ', name: 'नागरिक शास्त्र / राजनीति (Civics/Pol Sci)', defaultChap: 'लोकतंत्र, भारतीय संविधान, मौलिक अधिकार व संसद' },
+    { id: 'reason', name: 'तर्कशक्ति (Mental Ability / NMMS)', defaultChap: 'श्रृंखला परीक्षण, सादृश्यता, दिशा ज्ञान व कोडिंग-डिकोडिंग' },
     { id: 'eco', name: 'अर्थशास्त्र (Economics)', defaultChap: 'मुद्रा और साख, भारतीय अर्थव्यवस्था के क्षेत्रक व वैश्वीकरण' },
     { id: 'hindi', name: 'हिंदी (Hindi Core/व्याकरण)', defaultChap: 'संधि, समास, रस-छंद-अलंकार, मुहावरे, गद्यांश व पद्यांश' },
     { id: 'eng', name: 'अंग्रेजी (English Core/Grammar)', defaultChap: 'Tenses, Direct-Indirect, Voice, Comprehension Passage & Literature' },
@@ -304,141 +81,196 @@ II. सभी पेंसिल कलम हैं।
     { id: 'comm', name: 'लेखाशास्त्र / वाणिज्य (Commerce)', defaultChap: 'जर्नल प्रविष्टि, तलपट, वित्तीय विवरण व व्यावसायिक संगठन' }
   ];
 
-  // Core Parsing Engine (Can parse 10, 30, 50, 100 or 200+ questions seamlessly)
-  const parseBulkExamText = (textToParse) => {
-    if (!textToParse || !textToParse.trim()) return [];
+  // UNIVERSAL EXAM PARSER (Handles (1)(2)(3)(4), (A)(B)(C)(D), 1) 2), प्र. 123, प्र. 152 and 200+ questions seamlessly)
+  const universalExamParser = (rawText) => {
+    if (!rawText || !rawText.trim()) return [];
 
-    // Split into Questions Section and Answer Key Section
-    const parts = textToParse.split(/(?:उत्तरमाला|उत्तर कुंजी|Answer\s*Key|Answers)/i);
+    // Split into Questions Section and Answer Key Section if present
+    const parts = rawText.split(/(?:उत्तरमाला|उत्तर कुंजी|Answer\s*Key|Answers)/i);
     const questionsPart = parts[0];
     const answersPart = parts.length > 1 ? parts[1] : '';
 
-    // 1. Extract Answer Key map
+    // 1. Extract Answer Key map (supports 1. A, 1. (1), 123. 2, 152-B)
     const answerMap = {};
     if (answersPart) {
-      const ansMatches = answersPart.matchAll(/(?:^|\n|\s)(\d{1,3})[\.\)\-\:\s]+[\(\[]?([A-Da-dक-घ१-४])/g);
+      const ansMatches = answersPart.matchAll(/(?:^|\n|\s)(\d{1,4})[\.\)\-\:\s]+[\(\[]?([A-Da-d1-4क-घ१-४])/g);
       for (const match of ansMatches) {
         const qNum = parseInt(match[1], 10);
-        let letter = match[2].toUpperCase();
-        if (letter === 'क' || letter === '१') letter = 'A';
-        if (letter === 'ख' || letter === '२') letter = 'B';
-        if (letter === 'ग' || letter === '३') letter = 'C';
-        if (letter === 'घ' || letter === '४') letter = 'D';
-        answerMap[qNum] = letter;
+        let val = match[2].toUpperCase();
+        if (val === '1' || val === 'क' || val === '१') val = 'A';
+        if (val === '2' || val === 'ख' || val === '२') val = 'B';
+        if (val === '3' || val === 'ग' || val === '३') val = 'C';
+        if (val === '4' || val === 'घ' || val === '४') val = 'D';
+        answerMap[qNum] = val;
       }
     }
 
-    // 2. Extract Title if any
+    // 2. Extract lines
     const lines = questionsPart.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
-    let detectedTitle = '';
-    if (lines.length > 0 && lines[0].startsWith('#')) {
-      detectedTitle = lines[0].replace(/^#+\s*/, '').trim();
-      lines.shift();
-    } else if (lines.length > 0 && !lines[0].match(/^\d+[\.\)\-]/)) {
-      detectedTitle = lines[0].trim();
-      lines.shift();
-    }
-
-    if (detectedTitle) {
-      setExamHeading(detectedTitle);
-      if (detectedTitle.toLowerCase().includes('class 8') || detectedTitle.includes('कक्षा 8')) {
-        setSelectedClass('कक्षा 8 (Class 8th)');
-      }
-      if (detectedTitle.toLowerCase().includes('reasoning') || detectedTitle.includes('तर्क')) {
-        setSelectedSubject('तर्कशक्ति (Mental Ability / NMMS)');
-        setChapterName('श्रृंखला, कूट भाषा, दिशा परीक्षण व वेन आरेख');
-      }
-    }
-
-    // 3. Parse Questions
     const parsedQuestions = [];
     let currentQ = null;
+
+    const qStartRegex = /^(?:प्र(?:श्न)?[\.\s]*\d+|Q[\.\s]*\d+|\d+)[\.\)\-\:\s]+(.+)/i;
+    const qNumExtractRegex = /^(?:प्र(?:श्न)?[\.\s]*|Q[\.\s]*|)(\d+)/i;
+    const optRegex = /^[\(\[]?([A-Da-d1-4क-घ१-४ivxIVX]+)[\)\]\.\-:]\s*(.+)/;
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
-      // Question start detection
-      const qMatch = line.match(/^(?:Q\s*\d+|प्र\s*[\.\d]+|\d+[\.\)\-:])\s*(.+)/i);
-      if (qMatch) {
-        if (currentQ && currentQ.options.length >= 2) {
+      // Check if line is inline answer e.g. "उत्तर: (2)", "Ans: B"
+      const inlineAnsMatch = line.match(/^(?:उत्तर|Ans|Answer|सही उत्तर)[\s\-\:]+[\(\[]?([A-Da-d1-4क-घ१-४])/i);
+      if (inlineAnsMatch && currentQ) {
+        let val = inlineAnsMatch[1].toUpperCase();
+        if (val === '1' || val === 'क' || val === '१') val = 'A';
+        if (val === '2' || val === 'ख' || val === '२') val = 'B';
+        if (val === '3' || val === 'ग' || val === '३') val = 'C';
+        if (val === '4' || val === 'घ' || val === '४') val = 'D';
+        currentQ.ansLetter = val;
+        continue;
+      }
+
+      // Check if line is a new Question
+      const isQLine = qStartRegex.test(line) && !line.match(/^[\(\[]?[1-4A-Da-dक-घ][\)\]\.\-:]\s*[\u0900-\u097F\w]/);
+      const isExplicitQ = /^(?:प्र(?:श्न)?[\.\s]*\d+|Q[\.\s]*\d+)/i.test(line);
+
+      if (isExplicitQ || (isQLine && (!currentQ || currentQ.options.length >= 2))) {
+        if (currentQ) {
           parsedQuestions.push(currentQ);
         }
-        const qNum = parsedQuestions.length + 1;
+        const rawNumMatch = line.match(qNumExtractRegex);
+        const rawNum = rawNumMatch ? parseInt(rawNumMatch[1], 10) : parsedQuestions.length + 1;
+        const cleanQText = line.replace(/^(?:प्र(?:श्न)?[\.\s]*\d+|Q[\.\s]*\d+|\d+)[\.\)\-\:\s]+/, '').trim();
+
         currentQ = {
-          id: qNum,
-          q: qMatch[1].trim(),
+          rawNum: rawNum,
+          id: parsedQuestions.length + 1,
+          q: cleanQText,
           options: [],
           ans: '',
+          ansLetter: answerMap[rawNum] || '',
           marks: 1
         };
         continue;
       }
 
-      // Options detection: (A), (B), (C), (D) or A) ...
-      const optMatch = line.match(/^[\(\[]?([A-Da-dक-घ१-४])[\)\]\.\-:]\s*(.+)/);
-      if (optMatch && currentQ) {
-        let letter = optMatch[1].toUpperCase();
-        if (letter === 'क' || letter === '१') letter = 'A';
-        if (letter === 'ख' || letter === '२') letter = 'B';
-        if (letter === 'ग' || letter === '३') letter = 'C';
-        if (letter === 'घ' || letter === '४') letter = 'D';
-        currentQ.options.push(`(${letter}) ${optMatch[2].trim()}`);
-        continue;
-      }
-
-      // Inline options e.g. (A) ... (B) ... (C) ... (D) ...
-      if (currentQ && line.includes('(A)') && line.includes('(B)')) {
-        const splitted = line.split(/(?=\([A-D]\))/g);
+      // Check if line contains inline multiple options e.g. (1) ... (2) ... (3) ... (4) ...
+      if (currentQ && (line.includes('(1)') || line.includes('(A)')) && (line.includes('(2)') || line.includes('(B)'))) {
+        const splitted = line.split(/(?=\([\dA-Za-zक-घ]\))/g);
         splitted.forEach(s => {
-          if (s.trim()) currentQ.options.push(s.trim());
+          if (s.trim()) {
+            const optM = s.trim().match(optRegex);
+            if (optM) {
+              let label = optM[1].toUpperCase();
+              if (label === '1' || label === 'क') label = 'A';
+              if (label === '2' || label === 'ख') label = 'B';
+              if (label === '3' || label === 'ग') label = 'C';
+              if (label === '4' || label === 'घ') label = 'D';
+              currentQ.options.push(`(${label}) ${optM[2].trim()}`);
+            }
+          }
         });
         continue;
       }
 
-      // Continuation lines
+      // Check if line is a single Option
+      const optMatch = line.match(optRegex);
+      if (optMatch && currentQ) {
+        let label = optMatch[1].toUpperCase();
+        if (label === '1' || label === 'क' || label === '१') label = 'A';
+        if (label === '2' || label === 'ख' || label === '२') label = 'B';
+        if (label === '3' || label === 'ग' || label === '३') label = 'C';
+        if (label === '4' || label === 'घ' || label === '४') label = 'D';
+
+        currentQ.options.push(`(${label}) ${optMatch[2].trim()}`);
+        continue;
+      }
+
+      // If continuation text of question
       if (currentQ && currentQ.options.length === 0) {
         currentQ.q += ' ' + line;
       }
     }
 
-    if (currentQ && currentQ.options.length >= 2) {
+    if (currentQ) {
       parsedQuestions.push(currentQ);
     }
 
-    // Bind answers from answerMap
-    parsedQuestions.forEach(q => {
-      const ansLetter = answerMap[q.id];
-      if (ansLetter) {
-        const matchingOpt = q.options.find(opt => opt.startsWith(`(${ansLetter})`));
-        q.ans = matchingOpt || `(${ansLetter})`;
-      } else if (!q.ans && q.options.length > 0) {
-        q.ans = q.options[0];
+    // Ensure 4 options per question & map correct answers
+    parsedQuestions.forEach((q, idx) => {
+      q.id = idx + 1; // Sequential ID (1, 2, 3... 152... 200)
+      
+      if (q.options.length === 0) {
+        q.options = ['(A) विकल्प 1', '(B) विकल्प 2', '(C) विकल्प 3', '(D) विकल्प 4'];
+      }
+
+      // Bind Answer
+      const effectiveAnsLetter = q.ansLetter || answerMap[q.rawNum] || answerMap[q.id];
+      if (effectiveAnsLetter) {
+        const matchOpt = q.options.find(o => o.startsWith(`(${effectiveAnsLetter})`));
+        q.ans = matchOpt || `(${effectiveAnsLetter})`;
+      } else {
+        q.ans = q.options[0] || '(A)';
       }
     });
 
     return parsedQuestions;
   };
 
-  // Initial load: parse the 30 NMMS reasoning questions
+  // Pre-load default questions on initial mount
   useEffect(() => {
-    setRawTextContent(sample30ReasoningText);
-    const initialParsed = parseBulkExamText(sample30ReasoningText);
-    if (initialParsed.length > 0) {
-      setQuestions(initialParsed);
-      setMaxMarks(`${initialParsed.length} अंक`);
-    }
+    const defaultSample = `प्र. 1. किशोरावस्था है:
+(1) बचपन से जवानी में परिवर्तन की अवस्था
+(2) जनन परिपक्वता के साथ समाप्त होती है
+(3) 13 से 19 वर्ष तक की आयु
+(4) शरीर में तीव्र बदलाव का समय
+
+प्र. 2. नर जनन हार्मोन कौन सा है?
+(1) एस्ट्रोजन
+(2) टेस्टोस्टेरोन
+(3) इंसुलिन
+(4) थायरॉक्सिन
+
+प्र. 3. निम्न में से किस एक्ट द्वारा भारत में दासता प्रथा समाप्त हुई?
+(1) चार्टर एक्ट 1813
+(2) चार्टर एक्ट 1833
+(3) चार्टर एक्ट 1853
+(4) रौलट एक्ट`;
+
+    setRawTextContent(defaultSample);
+    const parsed = universalExamParser(defaultSample);
+    setQuestions(parsed);
+    setMaxMarks(`${parsed.length} अंक`);
   }, []);
 
-  // Handle Manual Bulk Text parse button
-  const handleParseRawText = (customText = null) => {
-    const textToParse = typeof customText === 'string' ? customText : rawTextContent;
-    const parsed = parseBulkExamText(textToParse);
+  // Handle Real-time Text Area Change with Auto-Parse
+  const handleRawTextChange = (e) => {
+    const text = e.target.value;
+    setRawTextContent(text);
+    if (text.trim()) {
+      const parsed = universalExamParser(text);
+      if (parsed.length > 0) {
+        setQuestions(parsed);
+        setMaxMarks(`${parsed.length} अंक`);
+      }
+    } else {
+      setQuestions([]);
+      setMaxMarks('0 अंक');
+    }
+  };
+
+  // Handle Manual Parse Click
+  const handleManualParseClick = () => {
+    if (!rawTextContent.trim()) {
+      alert("कृपया टेक्स्ट बॉक्स में प्रश्न पेस्ट करें!");
+      return;
+    }
+    const parsed = universalExamParser(rawTextContent);
     if (parsed.length > 0) {
       setQuestions(parsed);
       setMaxMarks(`${parsed.length} अंक`);
-      alert(`🎉 बधाई! ${parsed.length} प्रश्न और उत्तर तालिका सफलतापूर्वक 2-कॉलम A4 फॉर्मेट में सेट हो गए हैं।`);
+      alert(`🎉 बधाई! ${parsed.length} प्रश्न सफलतापूर्वक लोड हो गए हैं। अब '2-कॉलम A4 प्रिंट' बटन दबाएं।`);
     } else {
-      alert("कृपया सुनिश्चित करें कि प्रश्न 1. 2. 3. और विकल्प (A), (B) से शुरू हों।");
+      alert("प्रश्न प्रारूप समझ नहीं आया। कृपया सुनिश्चित करें कि प्रश्न 'प्र. 1.' या '1.' और विकल्प (1), (2) या (A), (B) से शुरू हों।");
     }
   };
 
@@ -449,14 +281,15 @@ II. सभी पेंसिल कलम हैं।
       const ansChar = ['A', 'B', 'C', 'D'][i % 4];
       megaQuestions.push({
         id: i,
-        q: `[प्रश्न ${i}] भारतीय संविधान एवं विज्ञान अभ्यास प्रश्न — निम्नलिखित में से सही विकल्प का चयन कीजिए?`,
+        rawNum: i,
+        q: `[प्रश्न ${i}] भारतीय संविधान एवं सामाजिक विज्ञान अभ्यास प्रश्न — निम्नलिखित में से सही विकल्प का चयन कीजिए?`,
         options: [
-          `(A) विकल्प A (${i})`,
-          `(B) विकल्प B (${i})`,
-          `(C) विकल्प C (${i})`,
-          `(D) विकल्प D (${i})`
+          `(A) चार्टर एक्ट 1813 (${i})`,
+          `(B) चार्टर एक्ट 1833 (${i})`,
+          `(C) चार्टर एक्ट 1853 (${i})`,
+          `(D) रौलट एक्ट (${i})`
         ],
-        ans: `(${ansChar}) विकल्प ${ansChar} (${i})`,
+        ans: `(${ansChar}) चार्टर एक्ट (${i})`,
         marks: 1
       });
     }
@@ -464,7 +297,7 @@ II. सभी पेंसिल कलम हैं।
     setExamHeading('मेगा अभ्यास टेस्ट सीरीज — 200 बहुविकल्पीय प्रश्न (Full 200 MCQs Sheet)');
     setMaxMarks('200 अंक');
     setTimeAllowed('180 मिनट (3 Hours)');
-    alert("🎉 200 प्रश्नों का संपूर्ण मेगा टेस्ट पेपर तैयार हो गया है! अब '2-कॉलम A4 प्रिंट' बटन दबाएं।");
+    alert("🎉 200 प्रश्नों का संपूर्ण टेस्ट पेपर तैयार हो गया है! अब '2-कॉलम A4 प्रिंट' बटन दबाएं।");
   };
 
   // Subject change
@@ -490,6 +323,7 @@ II. सभी पेंसिल कलम हैं।
 
     const newQuestionObj = {
       id: questions.length + 1,
+      rawNum: questions.length + 1,
       q: newQText.trim(),
       options: [
         `(A) ${newOptA.trim()}`,
@@ -514,7 +348,7 @@ II. सभी पेंसिल कलम हैं।
 
   // Delete Question
   const handleDeleteQuestion = (id) => {
-    const updated = questions.filter(q => q.id !== id).map((q, idx) => ({ ...q, id: idx + 1 }));
+    const updated = questions.filter(q => q.id !== id).map((q, idx) => ({ ...q, id: idx + 1, rawNum: idx + 1 }));
     setQuestions(updated);
     setMaxMarks(`${updated.length} अंक`);
   };
@@ -611,7 +445,7 @@ Output strictly valid JSON in this exact structure without markdown:
       const jsonMatch = rawOutput.match(/\[[\s\S]*\]/);
       if (jsonMatch) {
         const parsed = JSON.parse(jsonMatch[0]);
-        setQuestions(parsed.map((item, idx) => ({ ...item, id: idx + 1 })));
+        setQuestions(parsed.map((item, idx) => ({ ...item, id: idx + 1, rawNum: idx + 1 })));
         setMaxMarks(`${parsed.length} अंक`);
         setAiStatusMessage("✓ प्रश्न-पत्र सफलतापूर्वक तैयार हो गया!");
       }
@@ -624,11 +458,14 @@ Output strictly valid JSON in this exact structure without markdown:
 
   // Direct 2-Column Side-by-Side Zero-Clipping Print & A4 Download (Guaranteed 200+ Questions Multi-Page Flow)
   const handlePrintOrDownloadA4 = () => {
-    // If questions list is empty but raw text has content, parse it first
+    // If questions list has fewer items than raw text, auto parse raw text
     let activeQuestions = questions;
-    if (activeQuestions.length === 0 && rawTextContent.trim()) {
-      activeQuestions = parseBulkExamText(rawTextContent);
-      setQuestions(activeQuestions);
+    if (rawTextContent.trim()) {
+      const parsed = universalExamParser(rawTextContent);
+      if (parsed.length > activeQuestions.length) {
+        activeQuestions = parsed;
+        setQuestions(parsed);
+      }
     }
 
     if (activeQuestions.length === 0) {
@@ -954,7 +791,7 @@ Output strictly valid JSON in this exact structure without markdown:
             title="Load 200 Questions Mega Test"
           >
             <Sparkles className="w-3.5 h-3.5 text-purple-400" />
-            <span>📋 200 प्रश्न मेगा टेस्ट लोड करें</span>
+            <span>📋 200 प्रश्न टेस्ट लोड करें</span>
           </button>
         </div>
 
@@ -984,7 +821,7 @@ Output strictly valid JSON in this exact structure without markdown:
                 type="text"
                 value={examHeading}
                 onChange={(e) => setExamHeading(e.target.value)}
-                placeholder="उदा. NMMS Class 8 Reasoning MCQ – 30 प्रश्न"
+                placeholder="उदा. सामाजिक विज्ञान अभ्यास प्रश्न-पत्र"
                 className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400 font-bold"
               />
             </div>
@@ -1063,48 +900,39 @@ Output strictly valid JSON in this exact structure without markdown:
           </div>
 
           {/* =========================================================================
-              MODE 1: BULK RAW TEXT PASTE PARSER (UP TO 200+ MCQS)
+              MODE 1: BULK RAW TEXT PASTE PARSER (SUPPORTS (1)(2)(3)(4), (A)(B)(C)(D) & 200+ MCQS)
               ========================================================================= */}
           {activeCreationMode === 'raw-text' && (
             <div className="p-5 rounded-2xl bg-[#050a18] border-2 border-amber-500/40 space-y-4 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <span className="text-xs font-mono font-bold text-amber-400 flex items-center gap-1.5">
                   <ClipboardList className="w-4 h-4 text-amber-400" />
-                  यहाँ अपने 10, 30, 50, 100 या 200 प्रश्न + उत्तरमाला (Answer Key) पेस्ट करें:
+                  यहाँ अपने 10, 30, 50, 150 या 200 प्रश्न पेस्ट करें:
                 </span>
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-mono border border-emerald-500/40">
-                  ✓ {questions.length} प्रश्न लोड हैं
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/40">
+                  ✓ {questions.length} प्रश्न ऑटो-डिटेक्ट होकर लोड हैं
                 </span>
               </div>
 
               <textarea
                 rows={9}
                 value={rawTextContent}
-                onChange={(e) => setRawTextContent(e.target.value)}
-                placeholder={`# NMMS Class 8 Reasoning MCQ – 30 प्रश्न\n\n1. एक निश्चित कूट भाषा में 'BOOK' को 'CPPL' लिखा जाता है, तो 'PEN' को क्या लिखा जाएगा?\n(A) QFO\n(B) QDO\n(C) RFO\n(D) QFP\n\n2. यदि 'APPLE' को 'BQQMF' लिखा जाता है, तो 'MANGO' को क्या लिखा जाएगा?\n(A) NBOHP\n(B) NBPHP\n(C) NBOHP\n(D) NCOHP\n\nउत्तरमाला (Answer Key)\n1. A\n2. B`}
+                onChange={handleRawTextChange}
+                placeholder={`प्र. 123. किशोरावस्था है:\n(1) बचपन से जवानी में परिवर्तन की अवस्था\n(2) जनन परिपक्वता के साथ समाप्त होती है\n(3) 13 से 19 वर्ष तक की आयु\n(4) शरीर में तीव्र बदलाव का समय\n\nप्र. 152. निम्न में से किस एक्ट द्वारा भारत में दासता प्रथा समाप्त हुई?\n(1) चार्टर एक्ट 1813\n(2) चार्टर एक्ट 1833\n(3) चार्टर एक्ट 1853\n(4) रौलट एक्ट`}
                 className="w-full p-4 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs font-mono focus:outline-none focus:border-amber-400 leading-relaxed"
               />
 
               <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => {
-                      setRawTextContent(sample30ReasoningText);
-                      handleParseRawText(sample30ReasoningText);
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-[#091124] hover:bg-cyan-500 hover:text-black border border-cyan-500/30 text-cyan-300 text-[11px] font-mono transition-all flex items-center gap-1"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                    <span>NMMS 30 प्रश्न सैंपल लोड करें</span>
-                  </button>
-                </div>
+                <p className="text-[11px] text-slate-400">
+                  💡 <strong>ऑटो-डिटेक्शन चालू है:</strong> जैसे ही आप टेक्स्ट पेस्ट करेंगे, सभी {questions.length} प्रश्न ऑटोमैटिक लोड हो जाएंगे।
+                </p>
 
                 <button
-                  onClick={() => handleParseRawText()}
+                  onClick={handleManualParseClick}
                   className="px-8 py-3 rounded-xl bg-gradient-to-r from-amber-400 via-orange-500 to-amber-500 text-black font-black text-xs font-display shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>⚡ 2-कॉलम A4 प्रश्नों में बदलें ({questions.length} प्रश्न Active)</span>
+                  <span>⚡ 2-कॉलम प्रश्नों में बदलें ({questions.length} प्रश्न Active)</span>
                 </button>
               </div>
             </div>
@@ -1137,7 +965,7 @@ Output strictly valid JSON in this exact structure without markdown:
               {/* 4 Options Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (A):</label>
+                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (A / 1):</label>
                   <input
                     type="text"
                     value={newOptA}
@@ -1147,7 +975,7 @@ Output strictly valid JSON in this exact structure without markdown:
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (B):</label>
+                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (B / 2):</label>
                   <input
                     type="text"
                     value={newOptB}
@@ -1157,7 +985,7 @@ Output strictly valid JSON in this exact structure without markdown:
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (C):</label>
+                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (C / 3):</label>
                   <input
                     type="text"
                     value={newOptC}
@@ -1167,7 +995,7 @@ Output strictly valid JSON in this exact structure without markdown:
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (D):</label>
+                  <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (D / 4):</label>
                   <input
                     type="text"
                     value={newOptD}
@@ -1188,10 +1016,10 @@ Output strictly valid JSON in this exact structure without markdown:
                       onChange={(e) => setNewCorrectOpt(e.target.value)}
                       className="px-3 py-1 rounded-xl bg-[#091124] border border-emerald-500/40 text-emerald-400 text-xs font-bold"
                     >
-                      <option value="A">विकल्प (A)</option>
-                      <option value="B">विकल्प (B)</option>
-                      <option value="C">विकल्प (C)</option>
-                      <option value="D">विकल्प (D)</option>
+                      <option value="A">विकल्प (A / 1)</option>
+                      <option value="B">विकल्प (B / 2)</option>
+                      <option value="C">विकल्प (C / 3)</option>
+                      <option value="D">विकल्प (D / 4)</option>
                     </select>
                   </div>
 
@@ -1320,7 +1148,7 @@ Output strictly valid JSON in this exact structure without markdown:
         </div>
 
         {/* =========================================================================
-            LIVE 2-COLUMN QUESTION LIST & PREVIEW (WITH DELETE & EDIT)
+            LIVE 2-COLUMN QUESTION LIST & PREVIEW (ALL QUESTIONS SCROLLABLE)
             ========================================================================= */}
         <div className="p-6 sm:p-8 rounded-3xl bg-[#070e24] border border-cyan-500/30 text-white shadow-2xl space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
@@ -1328,14 +1156,14 @@ Output strictly valid JSON in this exact structure without markdown:
               <Columns2 className="w-5 h-5 text-cyan-400" /> प्रश्न-पत्र लाइव पूर्वावलोकन ({questions.length} प्रश्न लोड हैं):
             </h3>
             <button
-              onClick={() => setQuestions([])}
+              onClick={() => { setQuestions([]); setRawTextContent(''); }}
               className="text-xs text-rose-400 font-mono hover:underline"
             >
               सभी प्रश्न हटाएं (Clear All)
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[600px] overflow-y-auto p-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[650px] overflow-y-auto p-1">
             {questions.map((q, idx) => (
               <div
                 key={q.id}
