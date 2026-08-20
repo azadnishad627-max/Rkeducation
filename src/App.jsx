@@ -11,11 +11,10 @@ import AdminLoginModal from './components/AdminLoginModal';
 import AdminDashboard from './components/AdminDashboard';
 
 export default function App() {
-  // Persistent login state - saved permanently on phone & PC
+  // Persistent login state - active only if previously logged in and not logged out
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(() => {
     try {
-      const savedUser = localStorage.getItem('rk_logged_in_user');
-      return localStorage.getItem('rk_is_admin_logged_in') === 'true' || !!savedUser;
+      return localStorage.getItem('rk_is_admin_logged_in') === 'true' && !!localStorage.getItem('rk_logged_in_user');
     } catch (e) {
       return false;
     }
@@ -25,11 +24,7 @@ export default function App() {
     try {
       const saved = localStorage.getItem('rk_logged_in_user');
       if (saved) return JSON.parse(saved);
-      return {
-        user: 'azad3229011',
-        name: 'RK Sir / Azad Nishad',
-        role: 'Master Educator & Admin'
-      };
+      return null;
     } catch (e) {
       return null;
     }
@@ -41,26 +36,34 @@ export default function App() {
   const [currentView, setCurrentView] = useState(() => {
     try {
       const savedView = localStorage.getItem('rk_current_view');
-      if (savedView) return savedView;
-      return localStorage.getItem('rk_logged_in_user') ? 'dashboard' : 'home';
+      const isLoggedIn = localStorage.getItem('rk_is_admin_logged_in') === 'true' && !!localStorage.getItem('rk_logged_in_user');
+      if (isLoggedIn && savedView) return savedView;
+      if (isLoggedIn) return 'dashboard';
+      return 'home';
     } catch (e) {
       return 'home';
     }
   });
 
   useEffect(() => {
-    const savedUser = localStorage.getItem('rk_logged_in_user');
-    if (savedUser) {
-      try {
+    try {
+      const savedUser = localStorage.getItem('rk_logged_in_user');
+      const isLoggedIn = localStorage.getItem('rk_is_admin_logged_in') === 'true';
+      if (savedUser && isLoggedIn) {
         const userObj = JSON.parse(savedUser);
         setAdminUser(userObj);
         setIsAdminLoggedIn(true);
-      } catch (e) {
-        // Fallback
+      } else {
+        setIsAdminLoggedIn(false);
+        setAdminUser(null);
       }
+    } catch (e) {
+      setIsAdminLoggedIn(false);
+      setAdminUser(null);
     }
   }, []);
 
+  // Successful login: save in localStorage so user never has to re-login until they click logout
   const handleLoginSuccess = (user) => {
     setAdminUser(user);
     setIsAdminLoggedIn(true);
@@ -72,6 +75,7 @@ export default function App() {
     } catch (e) {}
   };
 
+  // Explicit Logout: clear all session credentials so next time user must type username & password
   const handleLogout = () => {
     setAdminUser(null);
     setIsAdminLoggedIn(false);
@@ -79,7 +83,7 @@ export default function App() {
     try {
       localStorage.removeItem('rk_logged_in_user');
       localStorage.removeItem('rk_is_admin_logged_in');
-      localStorage.setItem('rk_current_view', 'home');
+      localStorage.removeItem('rk_current_view');
     } catch (e) {}
   };
 

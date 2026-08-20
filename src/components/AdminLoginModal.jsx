@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, User, Key, X, ShieldCheck, AlertCircle, RefreshCw, CheckCircle2 } from 'lucide-react';
+import { Lock, User, Key, X, ShieldCheck, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
-  // Pre-filled credentials so user doesn't have to type every time
-  const [username, setUsername] = useState('azad3229011');
-  const [password, setPassword] = useState('Azad3229011#@#@');
-  const [rememberMe, setRememberMe] = useState(true);
+  // Empty inputs by default - user must enter credentials on first login or after logout
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  // Clear fields when modal is opened
+  useEffect(() => {
+    if (isOpen) {
+      setUsername('');
+      setPassword('');
+      setErrorMsg('');
+    }
+  }, [isOpen]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -28,21 +36,13 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
           role: 'Master Educator & Admin'
         };
 
-        if (rememberMe) {
-          try {
-            localStorage.setItem('rk_saved_admin_u', u);
-            localStorage.setItem('rk_saved_admin_p', p);
-            localStorage.setItem('rk_is_admin_logged_in', 'true');
-          } catch (err) {}
-        }
-
         onLoginSuccess(userData);
         onClose();
       } else {
         setIsLoading(false);
         setErrorMsg('गलत यूजरनेम या पासवर्ड! (Invalid Credentials)');
       }
-    }, 200);
+    }, 250);
   };
 
   if (!isOpen) return null;
@@ -75,13 +75,13 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
               शिक्षक / एडमिन लॉगिन
             </h3>
             <p className="text-xs text-slate-400 font-mono">
-              Teacher & Admin Portal (Auto-Saved)
+              Teacher & Admin Portal
             </p>
           </div>
         </div>
 
         <p className="text-xs text-slate-300 mb-5 leading-relaxed">
-          यूजरनेम और पासवर्ड पहले से सेव हैं। सीधे <strong>"लॉगिन करें"</strong> बटन दबाएं।
+          कृपया अपना अधिकृत यूजरनेम और पासवर्ड दर्ज करें। एक बार लॉगिन करने के बाद सत्र आपके डिवाइस में सुरक्षित सेव रहेगा।
         </p>
 
         {errorMsg && (
@@ -101,8 +101,8 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username दर्ज करें"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400 font-bold"
+                placeholder="Username दर्ज करें (उदा. azad3229011)"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400"
               />
             </div>
           </div>
@@ -116,22 +116,10 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••••••"
-                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400 font-bold"
+                placeholder="Password दर्ज करें"
+                className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400"
               />
             </div>
-          </div>
-
-          <div className="flex items-center justify-between text-xs text-slate-400 pt-1">
-            <label className="flex items-center gap-2 cursor-pointer text-emerald-400 font-bold">
-              <input
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="rounded accent-emerald-500"
-              />
-              <span>पासवर्ड हमेशा याद रखें (Save Login)</span>
-            </label>
           </div>
 
           <button
@@ -147,7 +135,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
             ) : (
               <>
                 <ShieldCheck className="w-4 h-4 text-black" />
-                <span>लॉगिन करें (Login Portal)</span>
+                <span>लॉगिन करें (Login)</span>
               </>
             )}
           </button>
