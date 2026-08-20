@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Lock, User, Key, X, ShieldCheck, AlertCircle, RefreshCw } from 'lucide-react';
 
 export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
-  // Empty inputs by default - user must enter credentials on first login or after logout
+  // Empty inputs by default
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -81,7 +81,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
         </div>
 
         <p className="text-xs text-slate-300 mb-5 leading-relaxed">
-          कृपया अपना अधिकृत यूजरनेम और पासवर्ड दर्ज करें। एक बार लॉगिन करने के बाद सत्र आपके डिवाइस में सुरक्षित सेव रहेगा।
+          कृपया अपना अधिकृत यूजरनेम और पासवर्ड दर्ज करें।
         </p>
 
         {errorMsg && (
@@ -101,7 +101,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
                 required
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Username दर्ज करें (उदा. azad3229011)"
+                placeholder="Username दर्ज करें"
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400"
               />
             </div>
@@ -116,7 +116,7 @@ export default function AdminLoginModal({ isOpen, onClose, onLoginSuccess }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password दर्ज करें"
+                placeholder="••••••••••••"
                 className="w-full pl-10 pr-4 py-3 rounded-xl bg-[#060b18] border border-cyan-500/30 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400"
               />
             </div>
