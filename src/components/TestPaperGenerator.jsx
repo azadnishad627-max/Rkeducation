@@ -13,15 +13,7 @@ const DEFAULT_NVIDIA_API_KEY = "nvapi-YCYo0NN-OA4sxpgJQkoxkl8ZS-5gLKUp4r4yyfdK_S
 
 export default function TestPaperGenerator() {
   // 1. Header & Institute Configuration
-  const [coachingName, setCoachingName] = useState('आर. के. एजुकेशन एवं कोचिंग संस्थान');
-  const [coachingSubHeader, setCoachingSubHeader] = useState('RK EDUCATION & COACHING INSTITUTE • मूल्यांकन एवं टेस्ट सीरीज 2026-27');
-  const [examHeading, setExamHeading] = useState('अभ्यास एवं मूल्यांकन प्रश्न-पत्र (Model Test Paper)');
-  const [selectedClass, setSelectedClass] = useState('कक्षा 8 (Class 8th)');
-  const [selectedSubject, setSelectedSubject] = useState('सामाजिक विज्ञान (Social Science)');
-  const [chapterName, setChapterName] = useState('संसाधन एवं विकास, 1857 की क्रांति, भारतीय संविधान व इतिहास');
-  const [timeAllowed, setTimeAllowed] = useState('60 मिनट (1 Hour)');
-  const [maxMarks, setMaxMarks] = useState('30 अंक');
-  const [generalInstructions, setGeneralInstructions] = useState('1. सभी प्रश्न अनिवार्य हैं। 2. प्रत्येक प्रश्न 1 अंक का है। 3. सही विकल्प का चयन करें।');
+  const [coachingName, setCoachingName] = useState('RK EDUCATION');
   const [includeAnswerKey, setIncludeAnswerKey] = useState(true);
 
   // 2. Active Tab Mode: 'raw-text' | 'custom-form' | 'ai-gen'
@@ -50,36 +42,12 @@ export default function TestPaperGenerator() {
   const [numQuestionsToGen, setNumQuestionsToGen] = useState(20);
   const [aiStatusMessage, setAiStatusMessage] = useState('');
 
-  // Supported Classes (Class 6th to 12th)
-  const classList = [
-    'कक्षा 6 (Class 6th)',
-    'कक्षा 7 (Class 7th)',
-    'कक्षा 8 (Class 8th)',
-    'कक्षा 9 (Class 9th)',
-    'कक्षा 10 (Class 10th - Board)',
-    'कक्षा 11 (Class 11th - Science/Arts/Comm)',
-    'कक्षा 12 (Class 12th - Board)'
-  ];
-
-  // Comprehensive Subject List
-  const subjectList = [
-    { id: 'sst', name: 'सामाजिक विज्ञान (Social Science)', defaultChap: 'संसाधन एवं विकास, 1857 की क्रांति, भारतीय संविधान व न्यायपालिका' },
-    { id: 'hist', name: 'इतिहास (History)', defaultChap: 'हड़प्पा सभ्यता, मौर्य साम्राज्य, मुगल काल व भारतीय राष्ट्रीय आंदोलन' },
-    { id: 'geo', name: 'भूगोल (Geography)', defaultChap: 'सौरमंडल, पृथ्वी की आंतरिक संरचना, भारत का भौतिक स्वरूप व जलवायु' },
-    { id: 'civ', name: 'नागरिक शास्त्र / राजनीति (Civics/Pol Sci)', defaultChap: 'लोकतंत्र, भारतीय संविधान, मौलिक अधिकार व संसद' },
-    { id: 'sci', name: 'विज्ञान (General Science)', defaultChap: 'कोशिका, बल एवं दाब, प्रकाश, धातु-अधातु व रासायनिक अभिक्रियाएं' },
-    { id: 'math', name: 'गणित (Mathematics)', defaultChap: 'समीकरण, प्रतिशत, लाभ-हानि, त्रिकोणमिति एवं ज्यामिति' },
-    { id: 'phy', name: 'भौतिक विज्ञान (Physics)', defaultChap: 'गति, बल, गुरुत्वाकर्षण, प्रकाशिकी, विद्युत धारा एवं चुंबकत्व' },
-    { id: 'chem', name: 'रसायन विज्ञान (Chemistry)', defaultChap: 'परमाणु संरचना, रासायनिक आबंधन, अम्ल-क्षार व कार्बनिक यौगिक' },
-    { id: 'bio', name: 'जीव विज्ञान (Biology)', defaultChap: 'जैव प्रक्रम, आनुवंशिकी, मानव शरीर क्रिया विज्ञान व कोशिका' },
-    { id: 'reason', name: 'तर्कशक्ति (Mental Ability / NMMS)', defaultChap: 'श्रृंखला परीक्षण, सादृश्यता, दिशा ज्ञान व कोडिंग-डिकोडिंग' },
-    { id: 'eco', name: 'अर्थशास्त्र (Economics)', defaultChap: 'मुद्रा और साख, भारतीय अर्थव्यवस्था के क्षेत्रक व वैश्वीकरण' },
-    { id: 'hindi', name: 'हिंदी (Hindi Core/व्याकरण)', defaultChap: 'संधि, समास, रस-छंद-अलंकार, मुहावरे, गद्यांश व पद्यांश' },
-    { id: 'eng', name: 'अंग्रेजी (English Core/Grammar)', defaultChap: 'Tenses, Direct-Indirect, Voice, Comprehension Passage & Literature' },
-    { id: 'sans', name: 'संस्कृत (Sanskrit)', defaultChap: 'संधि, शब्द रूप, धातु रूप, प्रत्यय, श्लोक व अनुवाद' },
-    { id: 'cs', name: 'कंप्यूटर विज्ञान / IT', defaultChap: 'Computer Fundamentals, Python, Networking & Database SQL' },
-    { id: 'comm', name: 'लेखाशास्त्र / वाणिज्य (Commerce)', defaultChap: 'जर्नल प्रविष्टि, तलपट, वित्तीय विवरण व व्यावसायिक संगठन' }
-  ];
+  // Dynamic calculated Time & Marks (jitna question, utna number, utna time!)
+  const totalQuestionsCount = questions.length;
+  const calculatedMaxMarks = totalQuestionsCount;
+  const calculatedTimeFormatted = totalQuestionsCount >= 60
+    ? `${totalQuestionsCount} Minutes (${Math.floor(totalQuestionsCount / 60)} Hr ${totalQuestionsCount % 60 ? (totalQuestionsCount % 60) + ' Min' : ''})`
+    : `${totalQuestionsCount || 30} Minutes`;
 
   // 100% BULLETPROOF ZERO-DROP STATE MACHINE QUESTION PARSER
   const bulletproofQuestionParser = (rawText) => {
@@ -112,8 +80,7 @@ export default function TestPaperGenerator() {
       }
     }
 
-    // 3. Question Splitting Lookahead Regex:
-    // Finds where each question begins (e.g. "1.", "प्र. 123.", "प्रश्न 152:", "Q. 1", "Que 1.", "123)")
+    // 3. Question Splitting Lookahead Regex
     const questionBoundaryRegex = /(?:^|\n)(?=(?:प्र(?:श्न)?[\.\s]*\d+|Q(?:ue)?[\.\s]*\d+|\d{1,4})[\.\)\-\:\s]+[^\n])/i;
 
     const rawBlocks = questionsPart.split(questionBoundaryRegex).map(b => b.trim()).filter(Boolean);
@@ -128,12 +95,10 @@ export default function TestPaperGenerator() {
       const lines = block.split('\n').map(l => l.trim()).filter(Boolean);
       if (lines.length === 0) continue;
 
-      // Extract Question Number from first line
       const firstLine = lines[0];
       const numMatch = firstLine.match(/^(?:प्र(?:श्न)?[\.\s]*|Q(?:ue)?[\.\s]*|)(\d{1,4})/i);
       const rawNum = numMatch ? parseInt(numMatch[1], 10) : parsedQuestions.length + 1;
 
-      // Clean prefix from first line to get clean question text
       const cleanFirstLine = firstLine.replace(/^(?:प्र(?:श्न)?[\.\s]*\d+|Q(?:ue)?[\.\s]*\d+|\d{1,4})[\.\)\-\:\s]+/, '').trim();
 
       let questionText = cleanFirstLine;
@@ -143,7 +108,7 @@ export default function TestPaperGenerator() {
       for (let i = 1; i < lines.length; i++) {
         const line = lines[i];
 
-        // Check for inline answer line
+        // Inline answer
         const ansMatch = line.match(/^(?:उत्तर|Ans|Answer|सही\s*उत्तर|Correct)[\s\-\:]+[\(\[]?([A-Da-d1-4क-घ१-४])/i);
         if (ansMatch) {
           let v = ansMatch[1].toUpperCase();
@@ -155,7 +120,7 @@ export default function TestPaperGenerator() {
           continue;
         }
 
-        // Check for multiple options on a single line
+        // Multiple options on single line
         if ((line.includes('(1)') || line.includes('(A)')) && (line.includes('(2)') || line.includes('(B)'))) {
           const parts = line.split(/(?=\([1-4A-Da-dक-घ]\)|\[[1-4A-Da-dक-घ]\])/g);
           for (const p of parts) {
@@ -172,7 +137,7 @@ export default function TestPaperGenerator() {
           continue;
         }
 
-        // Check single option line
+        // Single option line
         const singleOptMatch = line.match(/^[\(\[]?([A-Da-d1-4क-घ१-४])[\)\]\.\-:]\s*(.+)/);
         if (singleOptMatch) {
           let label = singleOptMatch[1].toUpperCase();
@@ -184,22 +149,20 @@ export default function TestPaperGenerator() {
           continue;
         }
 
-        // Question continuation lines
+        // Question continuation text
         if (options.length === 0) {
           questionText += ' ' + line;
         }
       }
 
-      // Ensure 4 options
       if (options.length === 0) {
-        options = ['(A) विकल्प 1', '(B) विकल्प 2', '(C) विकल्प 3', '(D) विकल्प 4'];
+        options = ['(A) Option A', '(B) Option B', '(C) Option C', '(D) Option D'];
       } else if (options.length === 2) {
-        options.push('(C) उपरोक्त दोनों', '(D) इनमें से कोई नहीं');
+        options.push('(C) Both of the above', '(D) None of these');
       } else if (options.length === 3) {
-        options.push('(D) इनमें से कोई नहीं');
+        options.push('(D) None of these');
       }
 
-      // Determine correct answer
       const ansKeyVal = inlineAnswer || answerMap[rawNum] || answerMap[parsedQuestions.length + 1];
       let matchedAns = options[0];
       if (ansKeyVal) {
@@ -211,7 +174,7 @@ export default function TestPaperGenerator() {
       parsedQuestions.push({
         id: parsedQuestions.length + 1,
         rawNum: rawNum,
-        q: questionText || `प्रश्न संख्या ${parsedQuestions.length + 1}`,
+        q: questionText || `Question ${parsedQuestions.length + 1}`,
         options: options.slice(0, 4),
         ans: matchedAns,
         marks: 1
@@ -244,7 +207,6 @@ export default function TestPaperGenerator() {
     setRawTextContent(defaultSample);
     const parsed = bulletproofQuestionParser(defaultSample);
     setQuestions(parsed);
-    setMaxMarks(`${parsed.length} अंक`);
   }, []);
 
   // Handle Real-time Text Area Change with Auto-Parse
@@ -255,11 +217,9 @@ export default function TestPaperGenerator() {
       const parsed = bulletproofQuestionParser(text);
       if (parsed.length > 0) {
         setQuestions(parsed);
-        setMaxMarks(`${parsed.length} अंक`);
       }
     } else {
       setQuestions([]);
-      setMaxMarks('0 अंक');
     }
   };
 
@@ -272,8 +232,7 @@ export default function TestPaperGenerator() {
     const parsed = bulletproofQuestionParser(rawTextContent);
     if (parsed.length > 0) {
       setQuestions(parsed);
-      setMaxMarks(`${parsed.length} अंक`);
-      alert(`🎉 बधाई! सभी ${parsed.length} प्रश्न 100% लोड हो गए हैं। अब '2-कॉलम A4 प्रिंट' बटन दबाएं।`);
+      alert(`🎉 बधाई! सभी ${parsed.length} प्रश्न लोड हो गए हैं (पूर्णांक: ${parsed.length} | समय: ${parsed.length} मिनट)। अब '2-कॉलम A4 प्रिंट' बटन दबाएं।`);
     } else {
       alert("प्रश्न प्रारूप समझ नहीं आया। कृपया सुनिश्चित करें कि प्रश्न 'प्र. 1.' या '1.' और विकल्प (1), (2) या (A), (B) से शुरू हों।");
     }
@@ -287,31 +246,19 @@ export default function TestPaperGenerator() {
       megaQuestions.push({
         id: i,
         rawNum: i,
-        q: `[प्रश्न ${i}] भारतीय संविधान एवं सामाजिक विज्ञान अभ्यास प्रश्न — निम्नलिखित में से सही विकल्प का चयन कीजिए?`,
+        q: `[Question ${i}] निम्नलिखित में से सही विकल्प का चयन कीजिए?`,
         options: [
-          `(A) चार्टर एक्ट 1813 (${i})`,
-          `(B) चार्टर एक्ट 1833 (${i})`,
-          `(C) चार्टर एक्ट 1853 (${i})`,
-          `(D) रौलट एक्ट (${i})`
+          `(A) Option A (${i})`,
+          `(B) Option B (${i})`,
+          `(C) Option C (${i})`,
+          `(D) Option D (${i})`
         ],
-        ans: `(${ansChar}) चार्टर एक्ट (${i})`,
+        ans: `(${ansChar}) Option ${ansChar} (${i})`,
         marks: 1
       });
     }
     setQuestions(megaQuestions);
-    setExamHeading('मेगा अभ्यास टेस्ट सीरीज — 200 बहुविकल्पीय प्रश्न (Full 200 MCQs Sheet)');
-    setMaxMarks('200 अंक');
-    setTimeAllowed('180 मिनट (3 Hours)');
-    alert("🎉 200 प्रश्नों का संपूर्ण टेस्ट पेपर तैयार हो गया है! अब '2-कॉलम A4 प्रिंट' बटन दबाएं।");
-  };
-
-  // Subject change
-  const handleSubjectSelect = (subName) => {
-    setSelectedSubject(subName);
-    const match = subjectList.find(s => s.name === subName);
-    if (match) {
-      setChapterName(match.defaultChap);
-    }
+    alert("🎉 200 प्रश्नों का टेस्ट लोड हो गया है (200 अंक | 200 मिनट)! अब '2-कॉलम A4 प्रिंट' बटन दबाएं।");
   };
 
   // Add Custom Single Question
@@ -333,8 +280,8 @@ export default function TestPaperGenerator() {
       options: [
         `(A) ${newOptA.trim()}`,
         `(B) ${newOptB.trim()}`,
-        newOptC.trim() ? `(C) ${newOptC.trim()}` : '(C) उपरोक्त दोनों',
-        newOptD.trim() ? `(D) ${newOptD.trim()}` : '(D) इनमें से कोई नहीं'
+        newOptC.trim() ? `(C) ${newOptC.trim()}` : '(C) Both',
+        newOptD.trim() ? `(D) ${newOptD.trim()}` : '(D) None'
       ],
       ans: formattedAns,
       marks: Number(newMarks) || 1
@@ -342,7 +289,6 @@ export default function TestPaperGenerator() {
 
     const updated = [...questions, newQuestionObj];
     setQuestions(updated);
-    setMaxMarks(`${updated.length} अंक`);
     setNewQText('');
     setNewOptA('');
     setNewOptB('');
@@ -355,12 +301,11 @@ export default function TestPaperGenerator() {
   const handleDeleteQuestion = (id) => {
     const updated = questions.filter(q => q.id !== id).map((q, idx) => ({ ...q, id: idx + 1, rawNum: idx + 1 }));
     setQuestions(updated);
-    setMaxMarks(`${updated.length} अंक`);
   };
 
-  // Direct 2-Column Side-by-Side Zero-Clipping Print & A4 Download (Guaranteed 200+ Questions Multi-Page Flow)
+  // Direct 2-Column Side-by-Side Zero-Clipping Print & A4 Download
+  // Strictly: ONLY 'RK EDUCATION' in English on Top + Dynamic Questions Count, Marks & Time
   const handlePrintOrDownloadA4 = () => {
-    // If questions list has fewer items than raw text, auto parse raw text
     let activeQuestions = questions;
     if (rawTextContent.trim()) {
       const parsed = bulletproofQuestionParser(rawTextContent);
@@ -375,6 +320,13 @@ export default function TestPaperGenerator() {
       return;
     }
 
+    const totalQ = activeQuestions.length;
+    const maxMarks = totalQ; // jitna question utna number
+    const totalMinutes = totalQ; // jitna question utna time
+    const timeDisplay = totalMinutes >= 60 
+      ? `${totalMinutes} Minutes (${Math.floor(totalMinutes / 60)} Hr ${totalMinutes % 60 ? (totalMinutes % 60) + ' Min' : ''})`
+      : `${totalMinutes} Minutes`;
+
     const printWindow = window.open('', '_blank', 'width=1000,height=800');
     if (!printWindow) {
       window.print();
@@ -383,10 +335,10 @@ export default function TestPaperGenerator() {
 
     const htmlContent = `
 <!DOCTYPE html>
-<html lang="hi">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>${coachingName} - ${selectedSubject} (${selectedClass})</title>
+  <title>RK EDUCATION - Test Paper (${totalQ} Questions)</title>
   <style>
     @page {
       size: A4 portrait;
@@ -403,53 +355,38 @@ export default function TestPaperGenerator() {
       overflow: visible !important;
       background: #fff !important;
       color: #000 !important;
-      font-family: 'Segoe UI', Arial, 'Devanagari Sangam MN', sans-serif;
-      font-size: 10pt;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 9.5pt;
       line-height: 1.35;
       padding: 0;
     }
 
-    /* TOP COACHING HEADER (SHOWS ON PAGE 1) */
+    /* TOP HEADER: ONLY RK EDUCATION IN CLEAN ENGLISH */
     .header-box {
       border: 2px solid #000;
       border-radius: 6px;
       padding: 8px 12px;
       text-align: center;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
       background: #fafafa;
     }
     .coaching-title {
-      font-size: 18pt;
+      font-size: 20pt;
       font-weight: 900;
       color: #b91c1c;
-      letter-spacing: 0.5px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
+      font-family: Arial, 'Segoe UI', sans-serif;
     }
-    .coaching-sub {
-      font-size: 9pt;
-      font-weight: 600;
-      color: #1e3a8a;
-      margin-top: 1px;
-    }
-    .exam-title {
-      font-size: 11pt;
-      font-weight: 800;
-      color: #000;
-      margin-top: 4px;
-      text-decoration: underline;
-    }
-
-    /* EXAM META GRID */
-    .meta-table {
-      width: 100%;
-      margin-top: 4px;
-      font-size: 9pt;
-      font-weight: bold;
-      border-top: 1px solid #000;
+    .meta-bar {
+      margin-top: 5px;
       padding-top: 4px;
-    }
-    .meta-table td {
-      padding: 2px 4px;
+      border-top: 1.5px solid #000;
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      font-size: 9pt;
+      color: #000;
     }
 
     /* STUDENT INFO ROW */
@@ -462,15 +399,6 @@ export default function TestPaperGenerator() {
       font-size: 8.5pt;
       display: flex;
       justify-content: space-between;
-    }
-
-    /* INSTRUCTIONS */
-    .instructions-bar {
-      font-size: 8pt;
-      font-style: italic;
-      border-bottom: 1.5px solid #000;
-      padding-bottom: 3px;
-      margin-bottom: 8px;
     }
 
     /* 2-COLUMN SIDE-BY-SIDE NEWSPAPER / BOARD EXAM LAYOUT ACROSS ALL PAGES */
@@ -486,7 +414,7 @@ export default function TestPaperGenerator() {
     .question-card {
       break-inside: avoid !important;
       page-break-inside: avoid !important;
-      margin-bottom: 9px !important;
+      margin-bottom: 8px !important;
       padding-bottom: 2px;
       display: block !important;
     }
@@ -552,35 +480,21 @@ export default function TestPaperGenerator() {
 </head>
 <body>
 
-  <!-- HEADER WITH COACHING NAME -->
+  <!-- HEADER WITH ONLY 'RK EDUCATION' IN ENGLISH -->
   <div class="header-box">
-    <div class="coaching-title">${coachingName}</div>
-    <div class="coaching-sub">${coachingSubHeader}</div>
-    <div class="exam-title">${examHeading}</div>
-    
-    <table class="meta-table">
-      <tr>
-        <td style="text-align: left;">📚 <strong>कक्षा (Class):</strong> ${selectedClass}</td>
-        <td style="text-align: center;">🔬 <strong>विषय (Subject):</strong> ${selectedSubject}</td>
-        <td style="text-align: right;">⏱️ <strong>समय (Time):</strong> ${timeAllowed}</td>
-      </tr>
-      <tr>
-        <td style="text-align: left;" colspan="2">📖 <strong>अध्याय/टॉपिक:</strong> ${chapterName}</td>
-        <td style="text-align: right;">🏆 <strong>पूर्णांक (Max Marks):</strong> ${maxMarks}</td>
-      </tr>
-    </table>
+    <div class="coaching-title">RK EDUCATION</div>
+    <div class="meta-bar">
+      <span>📝 <strong>Total Questions:</strong> ${totalQ}</span>
+      <span>⏱️ <strong>Time Allowed:</strong> ${timeDisplay}</span>
+      <span>🏆 <strong>Max Marks:</strong> ${maxMarks}</span>
+    </div>
   </div>
 
   <!-- STUDENT DETAILS ROW -->
   <div class="student-row">
-    <span>विद्यार्थी का नाम (Student Name): ________________________</span>
-    <span>अनुक्रमांक (Roll No.): _________</span>
-    <span>दिनांक (Date): ____________</span>
-  </div>
-
-  <!-- INSTRUCTIONS -->
-  <div class="instructions-bar">
-    <strong>निर्देश (Instructions):</strong> ${generalInstructions}
+    <span><strong>Student Name:</strong> ___________________________</span>
+    <span><strong>Roll No:</strong> ____________</span>
+    <span><strong>Date:</strong> ____________</span>
   </div>
 
   <!-- 2-COLUMN SIDE-BY-SIDE QUESTIONS (CONTINUOUS MULTI-PAGE FLOW) -->
@@ -588,8 +502,8 @@ export default function TestPaperGenerator() {
     ${activeQuestions.map((q, idx) => `
       <div class="question-card">
         <div class="q-text">
-          <span class="q-marks">[${q.marks || 1} अंक]</span>
-          <span>प्र. ${idx + 1}. ${q.q}</span>
+          <span class="q-marks">[1 Mark]</span>
+          <span>Q. ${idx + 1}. ${q.q}</span>
         </div>
         <div class="options-grid">
           ${q.options.map(opt => `<div class="opt-item">${opt}</div>`).join('')}
@@ -601,7 +515,7 @@ export default function TestPaperGenerator() {
   <!-- ANSWER KEY TABLE -->
   ${includeAnswerKey ? `
     <div class="ans-key-box">
-      <div class="ans-key-title">❖ उत्तर कुंजी (ANSWER KEY) — कुल ${activeQuestions.length} प्रश्न ❖</div>
+      <div class="ans-key-title">❖ ANSWER KEY (Total ${totalQ} Questions) ❖</div>
       <div class="ans-grid">
         ${activeQuestions.map((q, idx) => `
           <div class="ans-cell">
@@ -635,13 +549,13 @@ export default function TestPaperGenerator() {
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-950/80 border border-cyan-500/40 text-cyan-300 text-xs font-mono shadow-lg">
             <Cpu className="w-3.5 h-3.5 text-[#00f0ff]" />
-            <span>EXAM MASTER • ALL CLASSES (6TH TO 12TH) & ALL SUBJECTS • UP TO 200+ MCQS</span>
+            <span>RK EDUCATION • AUTOMATIC QUESTIONS, MARKS & TIME ENGINE</span>
           </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold font-display text-white tracking-tight">
-            AI प्रश्न-पत्र जनरेटर, कस्टमाइज़र <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f0ff] via-pink-400 to-amber-300">& 2-कॉलम A4 प्रिंटर</span>
+            RK EDUCATION <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00f0ff] via-pink-400 to-amber-300">2-कॉलम A4 टेस्ट पेपर प्रिंटर</span>
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto">
-            कक्षा 6वीं से 12वीं तक 10 से लेकर <strong>200+ प्रश्नों</strong> का पूरा टेस्ट पेपर टेक्स्ट पेस्ट करके बनाएं और साइड-बाय-साइड 2-कॉलम A4 शीट में मल्टी-पेज प्रिंट/PDF डाउनलोड करें।
+            ऊपर केवल <strong>RK EDUCATION</strong> प्रिंट होगा। जितने प्रश्न (जैसे 152 प्रश्न), उतना ही पूर्णांक (152 अंक) और उतना ही समय (150 मिनट) ऑटोमैटिक सेट होगा।
           </p>
         </div>
 
@@ -672,18 +586,6 @@ export default function TestPaperGenerator() {
               <PenTool className="w-4 h-4" />
               <span>✏️ 2. खुद से प्रश्न जोड़ें (Custom Form)</span>
             </button>
-
-            <button
-              onClick={() => setActiveCreationMode('ai-gen')}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold font-mono transition-all flex items-center gap-2 ${
-                activeCreationMode === 'ai-gen'
-                  ? 'bg-gradient-to-r from-[#00f0ff] to-blue-600 text-black shadow-lg scale-105'
-                  : 'text-slate-300 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Bot className="w-4 h-4" />
-              <span>🤖 3. AI / PDF ऑटो जनरेटर</span>
-            </button>
           </div>
 
           {/* Quick 200 Questions Demo Button */}
@@ -700,116 +602,33 @@ export default function TestPaperGenerator() {
         {/* CONFIGURATION & INPUT PANEL */}
         <div className="p-6 sm:p-8 rounded-3xl bg-[#070e24] border border-cyan-500/30 text-white shadow-2xl space-y-6">
           
-          {/* Top Row: Coaching & Exam Meta Inputs */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pb-6 border-b border-slate-800">
-            <div>
-              <label className="block text-xs font-mono font-bold text-amber-400 mb-1">
-                🏫 कोचिंग / स्कूल का नाम (Coaching Name on Top):
-              </label>
-              <input
-                type="text"
-                value={coachingName}
-                onChange={(e) => setCoachingName(e.target.value)}
-                placeholder="उदा. आर. के. एजुकेशन एवं कोचिंग संस्थान"
-                className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400 font-bold"
-              />
+          {/* Header Info Display Banner */}
+          <div className="p-4 rounded-2xl bg-[#091124] border border-cyan-500/30 flex flex-wrap items-center justify-between gap-4">
+            <div className="space-y-1">
+              <span className="text-[11px] font-mono text-slate-400">🏫 प्रिंट हेडर (Top Title):</span>
+              <div className="text-xl font-black text-rose-400 tracking-wider">RK EDUCATION</div>
             </div>
 
-            <div>
-              <label className="block text-xs font-mono font-bold text-cyan-300 mb-1">
-                📝 परीक्षा शीर्षक (Exam Heading):
-              </label>
-              <input
-                type="text"
-                value={examHeading}
-                onChange={(e) => setExamHeading(e.target.value)}
-                placeholder="उदा. सामाजिक विज्ञान अभ्यास प्रश्न-पत्र"
-                className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400 font-bold"
-              />
+            <div className="flex items-center gap-4 text-xs font-mono">
+              <div className="px-3 py-1.5 rounded-xl bg-cyan-950/80 border border-cyan-500/30 text-cyan-300">
+                📝 कुल प्रश्न: <strong>{totalQuestionsCount}</strong>
+              </div>
+              <div className="px-3 py-1.5 rounded-xl bg-amber-950/80 border border-amber-500/30 text-amber-300">
+                🏆 पूर्णांक: <strong>{calculatedMaxMarks} अंक</strong>
+              </div>
+              <div className="px-3 py-1.5 rounded-xl bg-emerald-950/80 border border-emerald-500/30 text-emerald-300">
+                ⏱️ समय: <strong>{calculatedTimeFormatted}</strong>
+              </div>
             </div>
           </div>
 
-          {/* Class, Subject, Time & Marks Pickers */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            
-            {/* Class Dropdown (6th to 12th) */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-slate-400 mb-1">
-                🎓 कक्षा (Class):
-              </label>
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400 font-bold"
-              >
-                {classList.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
-            </div>
-
-            {/* Subject Dropdown (All Subjects) */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-slate-400 mb-1">
-                📚 विषय (Subject):
-              </label>
-              <select
-                value={selectedSubject}
-                onChange={(e) => handleSubjectSelect(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-amber-300 text-xs focus:outline-none focus:border-cyan-400 font-bold"
-              >
-                {subjectList.map(s => <option key={s.id} value={s.name}>{s.name}</option>)}
-              </select>
-            </div>
-
-            {/* Time Allowed */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-slate-400 mb-1">
-                ⏱️ समय (Time Allowed):
-              </label>
-              <input
-                type="text"
-                value={timeAllowed}
-                onChange={(e) => setTimeAllowed(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none"
-              />
-            </div>
-
-            {/* Max Marks */}
-            <div>
-              <label className="block text-xs font-mono font-bold text-slate-400 mb-1">
-                🏆 पूर्णांक (Max Marks):
-              </label>
-              <input
-                type="text"
-                value={maxMarks}
-                onChange={(e) => setMaxMarks(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none"
-              />
-            </div>
-
-          </div>
-
-          {/* Chapter / Topic Name */}
-          <div>
-            <label className="block text-xs font-mono font-bold text-slate-400 mb-1">
-              📖 अध्याय / टॉपिक का नाम (Chapter/Topic Name):
-            </label>
-            <input
-              type="text"
-              value={chapterName}
-              onChange={(e) => setChapterName(e.target.value)}
-              className="w-full px-3.5 py-2 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs focus:outline-none focus:border-cyan-400"
-            />
-          </div>
-
-          {/* =========================================================================
-              MODE 1: BULK RAW TEXT PASTE PARSER (100% BULLETPROOF ZERO-DROP PARSER)
-              ========================================================================= */}
+          {/* MODE 1: BULK RAW TEXT PASTE PARSER */}
           {activeCreationMode === 'raw-text' && (
             <div className="p-5 rounded-2xl bg-[#050a18] border-2 border-amber-500/40 space-y-4 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <span className="text-xs font-mono font-bold text-amber-400 flex items-center gap-1.5">
                   <ClipboardList className="w-4 h-4 text-amber-400" />
-                  यहाँ अपने 10, 30, 50, 150 या 200 प्रश्न पेस्ट करें:
+                  यहाँ अपने 10, 30, 50, 152 या 200 प्रश्न पेस्ट करें:
                 </span>
                 <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 text-[10px] font-mono font-bold border border-emerald-500/40">
                   ✓ कुल {questions.length} प्रश्न लोड हैं
@@ -826,7 +645,7 @@ export default function TestPaperGenerator() {
 
               <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
                 <p className="text-[11px] text-slate-400">
-                  💡 <strong>100% जीरो-ड्रॉप ऑटो-डिटेक्शन:</strong> जैसे ही आप टेक्स्ट पेस्ट करेंगे, सभी {questions.length} प्रश्न तुरंत लोड हो जाएंगे।
+                  💡 <strong>ऑटो-कैलकुलेशन:</strong> जितने प्रश्न लोड होंगे, उतना ही समय और उतने ही अंक ऑटोमैटिक सेट होंगे।
                 </p>
 
                 <button
@@ -840,9 +659,7 @@ export default function TestPaperGenerator() {
             </div>
           )}
 
-          {/* =========================================================================
-              MODE 2: CUSTOM SINGLE QUESTION FORM (खुद से प्रश्न जोड़ें)
-              ========================================================================= */}
+          {/* MODE 2: CUSTOM SINGLE QUESTION FORM */}
           {activeCreationMode === 'custom-form' && (
             <form onSubmit={handleAddCustomQuestion} className="p-5 rounded-2xl bg-[#050a18] border border-pink-500/30 space-y-4">
               <span className="text-xs font-mono font-bold text-pink-300 flex items-center gap-1.5">
@@ -850,7 +667,6 @@ export default function TestPaperGenerator() {
                 खुद से एक-एक प्रश्न जोड़ें (Custom Question Builder):
               </span>
 
-              {/* Question Text */}
               <div>
                 <label className="block text-[11px] font-mono text-slate-400 mb-1">
                   प्र. प्रश्न का पाठ (Question Text):
@@ -864,7 +680,6 @@ export default function TestPaperGenerator() {
                 />
               </div>
 
-              {/* 4 Options Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] font-mono text-slate-400 mb-1">विकल्प (A / 1):</label>
@@ -872,7 +687,7 @@ export default function TestPaperGenerator() {
                     type="text"
                     value={newOptA}
                     onChange={(e) => setNewOptA(e.target.value)}
-                    placeholder="उदा. गंगा नदी"
+                    placeholder="Option A"
                     className="w-full px-3 py-1.5 rounded-xl bg-[#091124] border border-slate-700 text-white text-xs focus:outline-none"
                   />
                 </div>
@@ -882,7 +697,7 @@ export default function TestPaperGenerator() {
                     type="text"
                     value={newOptB}
                     onChange={(e) => setNewOptB(e.target.value)}
-                    placeholder="उदा. यमुना नदी"
+                    placeholder="Option B"
                     className="w-full px-3 py-1.5 rounded-xl bg-[#091124] border border-slate-700 text-white text-xs focus:outline-none"
                   />
                 </div>
@@ -892,7 +707,7 @@ export default function TestPaperGenerator() {
                     type="text"
                     value={newOptC}
                     onChange={(e) => setNewOptC(e.target.value)}
-                    placeholder="उदा. गोदावरी नदी"
+                    placeholder="Option C"
                     className="w-full px-3 py-1.5 rounded-xl bg-[#091124] border border-slate-700 text-white text-xs focus:outline-none"
                   />
                 </div>
@@ -902,13 +717,12 @@ export default function TestPaperGenerator() {
                     type="text"
                     value={newOptD}
                     onChange={(e) => setNewOptD(e.target.value)}
-                    placeholder="उदा. ब्रह्मपुत्र नदी"
+                    placeholder="Option D"
                     className="w-full px-3 py-1.5 rounded-xl bg-[#091124] border border-slate-700 text-white text-xs focus:outline-none"
                   />
                 </div>
               </div>
 
-              {/* Correct Answer & Marks */}
               <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
                 <div className="flex items-center gap-3">
                   <div className="flex items-center gap-1.5">
@@ -924,16 +738,6 @@ export default function TestPaperGenerator() {
                       <option value="D">विकल्प (D / 4)</option>
                     </select>
                   </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-xs font-mono text-slate-400">अंक:</span>
-                    <input
-                      type="number"
-                      value={newMarks}
-                      onChange={(e) => setNewMarks(e.target.value)}
-                      className="w-16 px-2 py-1 rounded-xl bg-[#091124] border border-slate-700 text-white text-xs text-center"
-                    />
-                  </div>
                 </div>
 
                 <button
@@ -947,84 +751,11 @@ export default function TestPaperGenerator() {
             </form>
           )}
 
-          {/* =========================================================================
-              MODE 3: AI & PDF AUTO GENERATOR
-              ========================================================================= */}
-          {activeCreationMode === 'ai-gen' && (
-            <div className="p-5 rounded-2xl bg-[#050a18] border border-cyan-500/20 space-y-4">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-mono font-bold text-cyan-300 flex items-center gap-2">
-                  <Bot className="w-4 h-4 text-[#00f0ff]" />
-                  AI & NCERT इंजन से ऑटो प्रश्न तैयार करें
-                </span>
-                <span className="text-[10px] text-slate-400 font-mono">
-                  Optional: PDF अपलोड करें या सीधे जनरेट करें
-                </span>
-              </div>
-
-              {/* PDF Dropzone */}
-              <div className="relative border-2 border-dashed border-cyan-500/30 hover:border-amber-400 rounded-xl p-4 text-center bg-[#070e20] transition-colors cursor-pointer">
-                <input
-                  type="file"
-                  accept=".pdf,.txt,.doc,.docx"
-                  onChange={handlePdfUploadAndScan}
-                  className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                />
-                {isScanningPdf ? (
-                  <div className="space-y-1 py-1">
-                    <RefreshCw className="w-6 h-6 text-amber-400 animate-spin mx-auto" />
-                    <p className="text-xs font-mono text-cyan-300">PDF स्कैन हो रही है ({scanProgress}%)...</p>
-                  </div>
-                ) : scannedPdfName ? (
-                  <div className="space-y-1 py-1">
-                    <CheckCircle2 className="w-7 h-7 text-emerald-400 mx-auto" />
-                    <p className="text-xs font-mono text-emerald-300 font-bold">✓ {scannedPdfName} स्कैन पूरी हुई</p>
-                  </div>
-                ) : (
-                  <div className="space-y-1 py-1">
-                    <FileUp className="w-7 h-7 text-cyan-400 mx-auto" />
-                    <p className="text-xs font-bold text-white">चैप्टर PDF अपलोड करें (वैकल्पिक / Optional)</p>
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono text-slate-400">प्रश्नों की संख्या:</span>
-                  <select
-                    value={numQuestionsToGen}
-                    onChange={(e) => setNumQuestionsToGen(Number(e.target.value))}
-                    className="px-3 py-1 rounded-xl bg-[#091124] border border-cyan-500/30 text-white text-xs font-bold"
-                  >
-                    <option value={10}>10 प्रश्न</option>
-                    <option value={15}>15 प्रश्न</option>
-                    <option value={20}>20 प्रश्न</option>
-                    <option value={30}>30 प्रश्न</option>
-                    <option value={50}>50 प्रश्न</option>
-                  </select>
-                </div>
-
-                <button
-                  onClick={handleGenerateQuestionsWithAI}
-                  disabled={isGenerating}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#00f0ff] via-indigo-500 to-pink-500 text-black font-extrabold text-xs shadow-lg hover:scale-105 transition-transform flex items-center gap-2"
-                >
-                  {isGenerating ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-                  <span>{isGenerating ? 'AI प्रश्न बना रहा है...' : '✨ AI द्वारा प्रश्न तैयार करें'}</span>
-                </button>
-              </div>
-
-              {aiStatusMessage && (
-                <p className="text-xs font-mono text-emerald-400 pt-1">{aiStatusMessage}</p>
-              )}
-            </div>
-          )}
-
           {/* PRINT & DOWNLOAD ACTION BAR */}
           <div className="p-4 rounded-2xl bg-gradient-to-r from-[#0d1630] via-[#091228] to-[#1a0f2e] border-2 border-cyan-500/40 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
             <div className="flex items-center gap-3">
               <span className="px-3.5 py-1 rounded-xl bg-cyan-950 text-cyan-300 text-xs font-mono font-bold border border-cyan-500/30">
-                कुल प्रश्न: {questions.length} | पूर्णांक: {maxMarks}
+                कुल प्रश्न: {totalQuestionsCount} | पूर्णांक: {calculatedMaxMarks} | समय: {calculatedTimeFormatted}
               </span>
               <label className="flex items-center gap-2 text-xs font-mono text-slate-300 cursor-pointer">
                 <input
@@ -1043,15 +774,13 @@ export default function TestPaperGenerator() {
               className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 text-black font-black text-sm font-display shadow-2xl shadow-emerald-500/30 hover:scale-105 active:scale-95 transition-all flex items-center gap-2.5"
             >
               <Printer className="w-5 h-5" />
-              <span>🖨️ 2-कॉलम A4 प्रिंट / PDF डाउनलोड करें ({questions.length} प्रश्न)</span>
+              <span>🖨️ RK EDUCATION 2-कॉलम A4 प्रिंट / PDF डाउनलोड ({totalQuestionsCount} प्रश्न)</span>
             </button>
           </div>
 
         </div>
 
-        {/* =========================================================================
-            LIVE 2-COLUMN QUESTION LIST & PREVIEW (ALL QUESTIONS SCROLLABLE)
-            ========================================================================= */}
+        {/* LIVE 2-COLUMN QUESTION LIST & PREVIEW */}
         <div className="p-6 sm:p-8 rounded-3xl bg-[#070e24] border border-cyan-500/30 text-white shadow-2xl space-y-4">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
             <h3 className="text-base font-bold text-white font-display flex items-center gap-2">
@@ -1073,7 +802,7 @@ export default function TestPaperGenerator() {
               >
                 <div className="flex items-start justify-between gap-2">
                   <h4 className="text-xs font-bold text-white leading-relaxed">
-                    प्र. {idx + 1}. {q.q}
+                    Q. {idx + 1}. {q.q}
                   </h4>
                   <button
                     onClick={() => handleDeleteQuestion(q.id)}
@@ -1094,7 +823,7 @@ export default function TestPaperGenerator() {
 
                 <div className="flex items-center justify-between pt-1 text-[10px] font-mono text-emerald-400">
                   <span>उत्तर: {q.ans}</span>
-                  <span className="text-slate-500">[{q.marks || 1} अंक]</span>
+                  <span className="text-slate-500">[1 Mark]</span>
                 </div>
               </div>
             ))}
